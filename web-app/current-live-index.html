@@ -11,9 +11,10 @@
     <meta property="og:image" content="https://bvester.com/bvester-social.jpg">
     <meta property="og:url" content="https://bvester.com">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="cache-buster" content="20250913-REVOLUTIONARY-DEPLOY-v9.0">
-    <meta name="timestamp" content="1757805600000">
-    <meta name="deployment" content="revolutionary-linkedin-mint-angellist-for-african-smes">
+    <meta name="cache-buster" content="FIXED-WHITE-BG-1757812890">
+    <meta name="timestamp" content="1757812890000">
+    <meta name="deployment" content="fixed-headers-white-backgrounds">
+    <link rel="stylesheet" href="css/premium-theme.css">
     <link rel="stylesheet" href="css/revolutionary.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -591,6 +592,26 @@
         </div>
     </div>
 
+    <script>
+        // Navigation button handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login button handler
+            const loginBtn = document.querySelector('.btn-login');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() {
+                    window.location.href = 'login.html';
+                });
+            }
+            
+            // Signup button handler
+            const signupBtn = document.querySelector('.btn-signup');
+            if (signupBtn) {
+                signupBtn.addEventListener('click', function() {
+                    window.location.href = 'signup.html';
+                });
+            }
+        });
+    </script>
     <script src="js/revolutionary.js"></script>
 </body>
 </html>

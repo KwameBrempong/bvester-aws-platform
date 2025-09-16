@@ -37,18 +37,6 @@
       ],
       "secrets": [
         {
-          "name": "FIREBASE_PROJECT_ID",
-          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:bvester/firebase-project-id-SUFFIX"
-        },
-        {
-          "name": "FIREBASE_PRIVATE_KEY",
-          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:bvester/firebase-private-key-SUFFIX"
-        },
-        {
-          "name": "FIREBASE_CLIENT_EMAIL",
-          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:bvester/firebase-client-email-SUFFIX"
-        },
-        {
           "name": "STRIPE_SECRET_KEY",
           "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:bvester/stripe-secret-key-SUFFIX"
         },
