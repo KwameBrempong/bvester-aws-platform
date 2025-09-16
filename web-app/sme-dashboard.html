@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SME Dashboard - Bvester</title>
+    <link rel="icon" type="image/png" href="logo-icon.png">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary-color: #764ba2;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --danger-color: #f56565;
+            --info-color: #4299e1;
+            --light-bg: #f7fafc;
+            --white: #ffffff;
+            --gray-100: #f7fafc;
+            --gray-200: #edf2f7;
+            --gray-300: #e2e8f0;
+            --gray-400: #cbd5e0;
+            --gray-500: #a0aec0;
+            --gray-600: #718096;
+            --gray-700: #4a5568;
+            --gray-800: #2d3748;
+            --gray-900: #1a202c;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--gray-800);
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-lg);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 1.2rem;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            color: var(--primary-color);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-xl);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .half-width {
+            grid-column: span 1;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Investment Readiness Score */
+        .readiness-score {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            position: relative;
+        }
+
+        .score-excellent {
+            background: linear-gradient(135deg, var(--success-color), #38a169);
+        }
+
+        .score-good {
+            background: linear-gradient(135deg, var(--info-color), #3182ce);
+        }
+
+        .score-fair {
+            background: linear-gradient(135deg, var(--warning-color), #dd6b20);
+        }
+
+        .score-poor {
+            background: linear-gradient(135deg, var(--danger-color), #e53e3e);
+        }
+
+        /* Business Profile */
+        .business-profile {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .business-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .business-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray-800);
+        }
+
+        .business-info p {
+            color: var(--gray-600);
+            margin-bottom: 0.25rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .action-button i {
+            font-size: 1.5rem;
+        }
+
+        /* Financial Records */
+        .financial-records {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .record-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            transition: background-color 0.3s ease;
+        }
+
+        .record-item:hover {
+            background-color: var(--gray-100);
+        }
+
+        .record-item:last-child {
+            border-bottom: none;
+        }
+
+        .record-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .record-info p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .record-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-approved {
+            background-color: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-pending {
+            background-color: #fed7d7;
+            color: #742a2a;
+        }
+
+        .status-reviewing {
+            background-color: #feebc8;
+            color: #744210;
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.upload {
+            background: var(--info-color);
+        }
+
+        .activity-icon.update {
+            background: var(--success-color);
+        }
+
+        .activity-icon.view {
+            background: var(--warning-color);
+        }
+
+        .activity-content h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-content p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* Platform Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-top: 0.5rem;
+        }
+
+        /* File Upload */
+        .upload-zone {
+            border: 2px dashed var(--gray-300);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--primary-color);
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--gray-400);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error States */
+        .error-message {
+            background-color: #fed7d7;
+            color: #742a2a;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .success-message {
+            background-color: #c6f6d5;
+            color: #22543d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+
+        .close:hover {
+            color: var(--gray-800);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="logo-icon.png" alt="Bvester" onerror="this.style.display='none'">
+                <span>Bvester</span>
+            </div>
+            <div class="user-menu">
+                <div class="notification-bell" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationCount">3</span>
+                </div>
+                <div class="user-avatar" onclick="showUserMenu()" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+        <h1 class="welcome-title">Welcome to Your SME Dashboard</h1>
+        <p class="welcome-subtitle">Manage your business, track your progress, and connect with investors</p>
+    </section>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <div class="dashboard-grid">
+            
+            <!-- User Profile Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-user-circle"></i>
+                        Profile Overview
+                    </h2>
+                </div>
+                <div id="userProfile" class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <!-- Investment Readiness Score -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        Investment Readiness
+                    </h2>
+                </div>
+                <div class="readiness-score">
+                    <div id="readinessScore" class="score-circle score-good">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <h3 id="scoreText">Calculating...</h3>
+                    <p id="scoreDescription">Analyzing your business data</p>
+                </div>
+            </div>
+
+            <!-- Business Profile -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-building"></i>
+                        Business Profile
+                    </h2>
+                    <button class="btn btn-primary" onclick="showBusinessModal()">
+                        <i class="fas fa-plus"></i> Add Business
+                    </button>
+                </div>
+                <div id="businessProfile" class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-bolt"></i>
+                        Quick Actions
+                    </h2>
+                </div>
+                <div class="quick-actions">
+                    <button class="action-button" onclick="showBusinessModal()">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Business</span>
+                    </button>
+                    <button class="action-button" onclick="showUploadModal()">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Docs</span>
+                    </button>
+                    <button class="action-button" onclick="viewAnalytics()">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>View Analytics</span>
+                    </button>
+                    <button class="action-button" onclick="findInvestors()">
+                        <i class="fas fa-handshake"></i>
+                        <span>Find Investors</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Financial Records -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        Financial Records
+                    </h2>
+                    <button class="btn btn-secondary" onclick="showUploadModal()">
+                        <i class="fas fa-plus"></i> Add Record
+                    </button>
+                </div>
+                <div id="financialRecords" class="financial-records loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-clock"></i>
+                        Recent Activity
+                    </h2>
+                </div>
+                <div id="recentActivity" class="activity-list loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <!-- Platform Statistics -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Platform Statistics
+                    </h2>
+                </div>
+                <div id="platformStats" class="stats-grid loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Business Modal -->
+    <div id="businessModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('businessModal')">&times;</span>
+            <h2>Create Business Profile</h2>
+            <form id="businessForm">
+                <div class="form-group">
+                    <label class="form-label" for="businessName">Business Name *</label>
+                    <input type="text" id="businessName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="businessDescription">Description *</label>
+                    <textarea id="businessDescription" class="form-textarea" required placeholder="Describe your business..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="industry">Industry *</label>
+                    <select id="industry" class="form-select" required>
+                        <option value="">Select Industry</option>
+                        <option value="technology">Technology</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="finance">Finance</option>
+                        <option value="retail">Retail</option>
+                        <option value="manufacturing">Manufacturing</option>
+                        <option value="agriculture">Agriculture</option>
+                        <option value="education">Education</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fundingGoal">Funding Goal (GHS)</label>
+                    <input type="number" id="fundingGoal" class="form-input" min="0" step="1000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="location">Location</label>
+                    <input type="text" id="location" class="form-input" placeholder="City, Country">
+                </div>
+                <div style="text-align: right; margin-top: 2rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('businessModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Business</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- File Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('uploadModal')">&times;</span>
+            <h2>Upload Financial Documents</h2>
+            <div class="upload-zone" onclick="document.getElementById('fileInput').click()" 
+                 ondrop="handleDrop(event)" 
+                 ondragover="handleDragOver(event)" 
+                 ondragleave="handleDragLeave(event)">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">
+                    <strong>Click to upload</strong> or drag and drop
+                </div>
+                <p>PDF, DOC, XLS files up to 10MB</p>
+                <input type="file" id="fileInput" class="file-input" 
+                       accept=".pdf,.doc,.docx,.xls,.xlsx" 
+                       onchange="handleFileSelect(event)">
+            </div>
+            <div id="uploadProgress" style="display: none; margin-top: 1rem;">
+                <div style="background: var(--gray-200); border-radius: 4px; height: 8px;">
+                    <div id="progressBar" style="background: var(--primary-color); height: 100%; border-radius: 4px; width: 0%; transition: width 0.3s ease;"></div>
+                </div>
+                <p style="margin-top: 0.5rem; text-align: center;" id="uploadStatus">Uploading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="successMessage" class="success-message"></div>
+    <div id="errorMessage" class="error-message"></div>
+
+    <!-- Include AWS API Client -->
+    <script src="js/aws-api-client.js"></script>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let userBusinesses = [];
+        let readinessScoreValue = 0;
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeDashboard();
+        });
+
+        async function initializeDashboard() {
+            try {
+                // Check authentication
+                if (!bvesterAPI.isAuthenticated()) {
+                    showError('Please log in to access your dashboard');
+                    setTimeout(() => {
+                        window.location.href = 'auth.html';
+                    }, 2000);
+                    return;
+                }
+
+                // Load all dashboard data
+                await Promise.all([
+                    loadUserProfile(),
+                    loadBusinessProfile(),
+                    loadFinancialRecords(),
+                    loadRecentActivity(),
+                    loadPlatformStats(),
+                    calculateReadinessScore()
+                ]);
+
+                showSuccess('Dashboard loaded successfully!');
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                showError('Failed to load dashboard data: ' + error.message);
+            }
+        }
+
+        // Load user profile
+        async function loadUserProfile() {
+            try {
+                const profile = await bvesterAPI.getProfile();
+                currentUser = profile.user;
+                
+                const profileHTML = `
+                    <div style="text-align: center;">
+                        <div class="user-avatar" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 1rem;">
+                            ${getInitials(currentUser.name || currentUser.email)}
+                        </div>
+                        <h3>${currentUser.name || 'User'}</h3>
+                        <p>${currentUser.email}</p>
+                        <p><strong>Account Type:</strong> ${currentUser.userType || 'SME Owner'}</p>
+                        <p><strong>Member Since:</strong> ${formatDate(currentUser.createdAt)}</p>
+                    </div>
+                `;
+                
+                document.getElementById('userProfile').innerHTML = profileHTML;
+                
+                // Update header avatar
+                document.getElementById('userAvatar').innerHTML = getInitials(currentUser.name || currentUser.email);
+            } catch (error) {
+                document.getElementById('userProfile').innerHTML = '<p>Failed to load profile</p>';
+                console.error('Profile load error:', error);
+            }
+        }
+
+        // Load business profile
+        async function loadBusinessProfile() {
+            try {
+                const businesses = await bvesterAPI.getMyBusinesses();
+                userBusinesses = businesses.businesses || [];
+                
+                if (userBusinesses.length === 0) {
+                    document.getElementById('businessProfile').innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-building" style="font-size: 4rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
+                            <h3>No Business Profile</h3>
+                            <p>Create your first business profile to get started</p>
+                            <button class="btn btn-primary" onclick="showBusinessModal()">
+                                <i class="fas fa-plus"></i> Create Business Profile
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    const business = userBusinesses[0]; // Show first business
+                    document.getElementById('businessProfile').innerHTML = `
+                        <div class="business-profile">
+                            <div class="business-logo">
+                                ${business.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="business-info">
+                                <h3>${business.name}</h3>
+                                <p><strong>Industry:</strong> ${business.industry || 'Not specified'}</p>
+                                <p><strong>Location:</strong> ${business.location || 'Not specified'}</p>
+                                <p><strong>Funding Goal:</strong> GHS ${formatNumber(business.fundingGoal) || 'Not set'}</p>
+                                <p>${business.description || 'No description provided'}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('businessProfile').innerHTML = '<p>Failed to load business profile</p>';
+                console.error('Business profile load error:', error);
+            }
+        }
+
+        // Calculate readiness score
+        async function calculateReadinessScore() {
+            try {
+                if (userBusinesses.length === 0) {
+                    updateReadinessScore(0, 'No Business Profile', 'Create a business profile to get started');
+                    return;
+                }
+
+                // Calculate score based on available data
+                let score = 0;
+                const business = userBusinesses[0];
+
+                // Basic information (40 points)
+                if (business.name) score += 10;
+                if (business.description) score += 10;
+                if (business.industry) score += 10;
+                if (business.fundingGoal) score += 10;
+
+                // Financial data (30 points)
+                // This would be based on uploaded financial records
+                score += 15; // Placeholder
+
+                // Documentation (20 points)
+                // This would be based on uploaded documents
+                score += 10; // Placeholder
+
+                // Profile completeness (10 points)
+                if (business.location) score += 5;
+                if (currentUser.name) score += 5;
+
+                updateReadinessScore(score, getScoreCategory(score), getScoreDescription(score));
+
+                // Try to get more accurate score from backend
+                if (business) {
+                    try {
+                        const result = await bvesterAPI.calculateReadinessScore(business);
+                        if (result.score) {
+                            updateReadinessScore(result.score, getScoreCategory(result.score), result.description || getScoreDescription(result.score));
+                        }
+                    } catch (backendError) {
+                        console.log('Backend score calculation not available, using calculated score');
+                    }
+                }
+            } catch (error) {
+                updateReadinessScore(0, 'Error', 'Failed to calculate readiness score');
+                console.error('Readiness score error:', error);
+            }
+        }
+
+        function updateReadinessScore(score, category, description) {
+            readinessScoreValue = score;
+            const scoreElement = document.getElementById('readinessScore');
+            const scoreText = document.getElementById('scoreText');
+            const scoreDescription = document.getElementById('scoreDescription');
+
+            scoreElement.className = 'score-circle ' + getScoreClass(score);
+            scoreElement.innerHTML = score + '%';
+            scoreText.textContent = category;
+            scoreDescription.textContent = description;
+        }
+
+        function getScoreClass(score) {
+            if (score >= 80) return 'score-excellent';
+            if (score >= 60) return 'score-good';
+            if (score >= 40) return 'score-fair';
+            return 'score-poor';
+        }
+
+        function getScoreCategory(score) {
+            if (score >= 80) return 'Investment Ready';
+            if (score >= 60) return 'Almost Ready';
+            if (score >= 40) return 'Needs Improvement';
+            return 'Getting Started';
+        }
+
+        function getScoreDescription(score) {
+            if (score >= 80) return 'Your business profile is excellent and ready for investors';
+            if (score >= 60) return 'Good progress! A few more improvements needed';
+            if (score >= 40) return 'Fair start, but more information is required';
+            return 'Complete your business profile to improve your score';
+        }
+
+        // Load financial records
+        async function loadFinancialRecords() {
+            try {
+                // Mock financial records for demonstration
+                const records = [
+                    { name: 'Annual Financial Statement 2023', date: new Date(), status: 'approved' },
+                    { name: 'Tax Returns 2023', date: new Date(Date.now() - 86400000), status: 'reviewing' },
+                    { name: 'Cash Flow Projection', date: new Date(Date.now() - 172800000), status: 'pending' }
+                ];
+
+                const recordsHTML = records.map(record => `
+                    <div class="record-item">
+                        <div class="record-info">
+                            <h4>${record.name}</h4>
+                            <p>Uploaded ${formatDate(record.date)}</p>
+                        </div>
+                        <span class="record-status status-${record.status}">${record.status}</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('financialRecords').innerHTML = recordsHTML;
+            } catch (error) {
+                document.getElementById('financialRecords').innerHTML = '<p>Failed to load financial records</p>';
+                console.error('Financial records error:', error);
+            }
+        }
+
+        // Load recent activity
+        async function loadRecentActivity() {
+            try {
+                // Mock recent activity for demonstration
+                const activities = [
+                    { type: 'upload', title: 'Document Uploaded', description: 'Annual financial statement uploaded successfully', time: new Date() },
+                    { type: 'update', title: 'Profile Updated', description: 'Business profile information updated', time: new Date(Date.now() - 3600000) },
+                    { type: 'view', title: 'Investor Interest', description: '3 investors viewed your business profile', time: new Date(Date.now() - 7200000) }
+                ];
+
+                const activitiesHTML = activities.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon ${activity.type}">
+                            <i class="fas fa-${activity.type === 'upload' ? 'upload' : activity.type === 'update' ? 'edit' : 'eye'}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>${activity.title}</h4>
+                            <p>${activity.description}</p>
+                            <div class="activity-time">${formatTimeAgo(activity.time)}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('recentActivity').innerHTML = activitiesHTML;
+            } catch (error) {
+                document.getElementById('recentActivity').innerHTML = '<p>Failed to load recent activity</p>';
+                console.error('Recent activity error:', error);
+            }
+        }
+
+        // Load platform statistics
+        async function loadPlatformStats() {
+            try {
+                const stats = await bvesterAPI.getPlatformStats();
+                
+                const defaultStats = {
+                    totalBusinesses: 1250,
+                    totalInvestors: 450,
+                    totalFunded: 25000000,
+                    successRate: 68
+                };
+
+                const platformStats = stats.stats || defaultStats;
+                
+                const statsHTML = `
+                    <div class="stat-item">
+                        <span class="stat-number">${formatNumber(platformStats.totalBusinesses)}</span>
+                        <div class="stat-label">Total Businesses</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">${formatNumber(platformStats.totalInvestors)}</span>
+                        <div class="stat-label">Active Investors</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">GHS ${formatNumber(platformStats.totalFunded)}</span>
+                        <div class="stat-label">Total Funded</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">${platformStats.successRate}%</span>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                `;
+
+                document.getElementById('platformStats').innerHTML = statsHTML;
+            } catch (error) {
+                // Use default stats if API call fails
+                document.getElementById('platformStats').innerHTML = `
+                    <div class="stat-item">
+                        <span class="stat-number">1,250</span>
+                        <div class="stat-label">Total Businesses</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">450</span>
+                        <div class="stat-label">Active Investors</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">GHS 25M</span>
+                        <div class="stat-label">Total Funded</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">68%</span>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                `;
+                console.error('Platform stats error:', error);
+            }
+        }
+
+        // Business creation
+        document.getElementById('businessForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const businessData = {
+                name: document.getElementById('businessName').value,
+                description: document.getElementById('businessDescription').value,
+                industry: document.getElementById('industry').value,
+                fundingGoal: parseFloat(document.getElementById('fundingGoal').value) || null,
+                location: document.getElementById('location').value
+            };
+
+            try {
+                const result = await bvesterAPI.createBusiness(businessData);
+                if (result.success) {
+                    showSuccess('Business profile created successfully!');
+                    closeModal('businessModal');
+                    document.getElementById('businessForm').reset();
+                    await loadBusinessProfile();
+                    await calculateReadinessScore();
+                } else {
+                    showError('Failed to create business profile: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                showError('Failed to create business profile: ' + error.message);
+            }
+        });
+
+        // File upload handling
+        function handleDrop(event) {
+            event.preventDefault();
+            event.target.classList.remove('dragover');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                uploadFile(files[0]);
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.target.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.target.classList.remove('dragover');
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadFile(file);
+            }
+        }
+
+        async function uploadFile(file) {
+            // Validate file
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                showError('File size must be less than 10MB');
+                return;
+            }
+
+            const allowedTypes = [
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+                showError('Please upload PDF, DOC, or XLS files only');
+                return;
+            }
+
+            try {
+                // Show progress
+                document.getElementById('uploadProgress').style.display = 'block';
+                document.getElementById('progressBar').style.width = '0%';
+                document.getElementById('uploadStatus').textContent = 'Uploading...';
+
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    document.getElementById('progressBar').style.width = progress + '%';
+                    if (progress >= 90) {
+                        clearInterval(progressInterval);
+                    }
+                }, 100);
+
+                // Upload file
+                const result = await bvesterAPI.uploadFile(file);
+                
+                clearInterval(progressInterval);
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('uploadStatus').textContent = 'Upload complete!';
+
+                setTimeout(() => {
+                    document.getElementById('uploadProgress').style.display = 'none';
+                    closeModal('uploadModal');
+                    showSuccess('File uploaded successfully!');
+                    loadFinancialRecords(); // Refresh records
+                }, 1000);
+
+            } catch (error) {
+                document.getElementById('uploadProgress').style.display = 'none';
+                showError('File upload failed: ' + error.message);
+            }
+        }
+
+        // Modal functions
+        function showBusinessModal() {
+            document.getElementById('businessModal').style.display = 'block';
+        }
+
+        function showUploadModal() {
+            document.getElementById('uploadModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Quick action functions
+        function viewAnalytics() {
+            window.location.href = 'business-analytics.html';
+        }
+
+        function findInvestors() {
+            window.location.href = 'opportunities.html';
+        }
+
+        // Notification functions
+        function showNotifications() {
+            alert('Notifications:\n• 3 investors viewed your profile\n• Document review completed\n• New funding opportunity available');
+            document.getElementById('notificationCount').textContent = '0';
+        }
+
+        function showUserMenu() {
+            if (confirm('Would you like to logout?')) {
+                bvesterAPI.logout();
+            }
+        }
+
+        // Utility functions
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().substr(0, 2);
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString();
+        }
+
+        function formatTimeAgo(date) {
+            const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+            
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " minutes ago";
+            
+            return Math.floor(seconds) + " seconds ago";
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString();
+        }
+
+        // Message functions
+        function showSuccess(message) {
+            const successEl = document.getElementById('successMessage');
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+            setTimeout(() => {
+                successEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let modal of modals) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        // Handle keyboard events
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.getElementsByClassName('modal');
+                for (let modal of modals) {
+                    modal.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -3,17 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Dashboard - Bvester</title>
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://bvester-backend.vercel.app https://bizinvest-hub-prod.firebaseapp.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' http://bvester-backend-env.eba-ivjm3qsc.eu-west-2.elasticbeanstalk.com https://api.bvester.com">
     
-    <title>Investor Dashboard - Bvester</title>
     <style>
+        :root {
+            --primary-gold: #ffd700;
+            --primary-dark: #000000;
+            --secondary-dark: #1a1a1a;
+            --tertiary-dark: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border-color: #333333;
+            --shadow: rgba(255, 215, 0, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -22,21 +36,23 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #000000;
-            color: #ffffff;
+            background: var(--primary-dark);
+            color: var(--text-primary);
             line-height: 1.6;
-            display: flex;
-            min-height: 100vh;
-            /* Hide content until authentication is verified */
-            visibility: hidden;
+            overflow-x: hidden;
         }
 
-        /* Left Sidebar */
+        /* Dashboard Layout */
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
         .sidebar {
             width: 280px;
-            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
-            border-right: 1px solid #ffd700;
-            padding: 24px 0;
+            background: linear-gradient(180deg, var(--secondary-dark) 0%, var(--primary-dark) 100%);
+            border-right: 1px solid var(--primary-gold);
             position: fixed;
             height: 100vh;
             left: 0;
@@ -46,122 +62,104 @@
             transition: transform 0.3s ease;
         }
 
-        .sidebar.mobile-hidden {
-            transform: translateX(-100%);
-        }
-
         .sidebar-header {
-            padding: 0 24px 24px;
+            padding: 24px;
             border-bottom: 1px solid rgba(255, 215, 0, 0.2);
-            margin-bottom: 24px;
         }
 
-        .sidebar-logo {
+        .logo {
             font-size: 28px;
             font-weight: 800;
-            color: #ffd700;
+            color: var(--primary-gold);
             text-decoration: none;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-top: 16px;
         }
 
         .user-avatar {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            background: linear-gradient(135deg, var(--primary-gold), #ffed4a);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #000000;
+            color: var(--primary-dark);
             font-weight: 600;
             font-size: 16px;
         }
 
-        .user-details {
-            flex: 1;
-        }
-
-        .user-name {
+        .user-details h4 {
+            color: var(--text-primary);
             font-size: 14px;
-            font-weight: 600;
-            color: #ffffff;
             margin-bottom: 2px;
         }
 
-        .user-role {
+        .user-details span {
+            color: var(--primary-gold);
             font-size: 12px;
-            color: #ffd700;
             font-weight: 500;
         }
 
-        /* Sidebar Navigation */
-        .sidebar-nav {
-            padding: 0;
-        }
-
+        /* Navigation */
         .nav-section {
-            margin-bottom: 32px;
+            padding: 0 24px;
+            margin: 24px 0;
         }
 
-        .section-title {
+        .nav-title {
             font-size: 12px;
             font-weight: 600;
-            color: #888;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-            padding: 0 24px 12px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .nav-item {
-            margin-bottom: 4px;
-        }
-
-        .nav-link {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 14px 24px;
-            color: #cccccc;
+            padding: 12px 16px;
+            border-radius: 8px;
             text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
+            color: var(--text-secondary);
             transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
-            min-height: 44px;
-            box-sizing: border-box;
+            font-weight: 500;
+            position: relative;
         }
 
-        .nav-link:hover {
+        .nav-item:hover {
             background: rgba(255, 215, 0, 0.1);
-            color: #ffd700;
-            border-left-color: #ffd700;
+            color: var(--primary-gold);
         }
 
-        .nav-link.active {
+        .nav-item.active {
             background: rgba(255, 215, 0, 0.15);
-            color: #ffd700;
-            border-left-color: #ffd700;
+            color: var(--primary-gold);
         }
 
-        .nav-icon {
-            font-size: 16px;
+        .nav-item .icon {
+            font-size: 18px;
             width: 20px;
             text-align: center;
         }
 
-        .nav-badge {
-            background: #ffd700;
-            color: #000000;
+        .nav-item .badge {
+            background: var(--primary-gold);
+            color: var(--primary-dark);
             font-size: 11px;
             font-weight: 600;
             padding: 2px 6px;
@@ -169,68 +167,36 @@
             margin-left: auto;
         }
 
-        .premium-icon {
-            color: #ffd700;
-            font-size: 12px;
-            margin-left: 4px;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-        }
-
-        .nav-link:hover .premium-icon {
-            opacity: 1;
-        }
-
-        /* Top Navigation */
-        .top-nav {
-            background: #000000;
-            border-bottom: 1px solid #ffd700;
-            padding: 16px 24px;
+        /* Main Content */
+        .main-content {
+            flex: 1;
             margin-left: 280px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: var(--primary-dark);
+        }
+
+        .topbar {
+            background: var(--primary-dark);
+            border-bottom: 1px solid var(--primary-gold);
+            padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-        }
-
-        .top-nav-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: #ffd700;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 12px;
-            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
-            min-width: 44px;
-            min-height: 44px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-
-        .mobile-menu-btn:hover {
-            background: rgba(255, 215, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .breadcrumb {
-            color: #888;
+            color: var(--text-muted);
             font-size: 14px;
         }
 
         .breadcrumb a {
-            color: #ffd700;
+            color: var(--primary-gold);
             text-decoration: none;
         }
 
-        .top-nav-right {
+        .topbar-actions {
             display: flex;
             align-items: center;
             gap: 16px;
@@ -239,30 +205,27 @@
         .notification-btn {
             background: rgba(255, 215, 0, 0.1);
             border: 1px solid rgba(255, 215, 0, 0.3);
-            color: #ffd700;
-            padding: 10px;
+            color: var(--primary-gold);
+            width: 44px;
+            height: 44px;
             border-radius: 8px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
-            min-width: 44px;
-            min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
         }
 
         .notification-btn:hover {
             background: rgba(255, 215, 0, 0.2);
-            border-color: #ffd700;
         }
 
         .notification-badge {
             position: absolute;
             top: -4px;
             right: -4px;
-            background: #ff4757;
+            background: var(--error);
             color: white;
             font-size: 10px;
             font-weight: 600;
@@ -272,245 +235,114 @@
             text-align: center;
         }
 
-        .logout-btn {
-            background: transparent;
-            color: #ffd700;
-            border: 1px solid #ffd700;
-            padding: 10px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary-gold);
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
         }
 
-        .logout-btn:hover {
-            background: #ffd700;
-            color: #000000;
+        .mobile-menu-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
         }
 
-        .nav-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        /* Dashboard Container */
+        .dashboard-container {
+            padding: 32px;
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: #ffd700;
-            text-decoration: none;
+        .page-header {
+            margin-bottom: 32px;
         }
 
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .nav-menu a {
-            color: #ffd700;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-menu a:hover {
-            color: #ffed4a;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        .logout-btn {
-            background: transparent;
-            color: #ffd700;
-            border: 1px solid #ffd700;
-            padding: 8px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background: #ffd700;
-            color: #000000;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            min-height: 100vh;
-            background: #000000;
-        }
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
-
-        /* STANDARDIZED MOBILE BREAKPOINTS */
-        /* Mobile Overlay for Sidebar */
-        .mobile-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .mobile-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-
-        /* Small Mobile: up to 480px */
-        @media (max-width: 480px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 90%;
-                max-width: 300px;
-            }
-
-            .sidebar.mobile-visible {
-                transform: translateX(0);
-            }
-
-            .top-nav, .main-content {
-                margin-left: 0;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .top-nav {
-                padding: 12px 16px;
-            }
-
-            .top-nav-right {
-                gap: 8px;
-            }
-
-            .logout-btn {
-                padding: 8px 12px;
-                font-size: 13px;
-                min-height: 40px;
-            }
-
-            .dashboard-container {
-                padding: 20px 16px;
-            }
-        }
-
-        /* Tablets: 481px - 768px */
-        @media (min-width: 481px) and (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.mobile-visible {
-                transform: translateX(0);
-            }
-
-            .top-nav, .main-content {
-                margin-left: 0;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .top-nav-right {
-                gap: 12px;
-            }
-
-            .dashboard-container {
-                padding: 30px 20px;
-            }
-        }
-
-        .dashboard-header {
-            margin-bottom: 40px;
-        }
-
-        .welcome-title {
+        .page-title {
             font-size: 32px;
             font-weight: 700;
-            color: #ffffff;
             margin-bottom: 8px;
         }
 
-        .welcome-subtitle {
-            color: #cccccc;
+        .page-subtitle {
+            color: var(--text-secondary);
             font-size: 16px;
         }
 
         /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
         .stat-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
+            background: var(--secondary-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
             padding: 24px;
             text-align: center;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-gold), #ffed4a);
         }
 
         .stat-card:hover {
-            border-color: #ffd700;
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px var(--shadow);
+            border-color: var(--primary-gold);
         }
 
         .stat-icon {
             font-size: 32px;
-            margin-bottom: 12px;
-            display: block;
+            margin-bottom: 16px;
+            color: var(--primary-gold);
         }
 
         .stat-value {
             font-size: 28px;
             font-weight: 700;
-            color: #ffd700;
+            color: var(--primary-gold);
             margin-bottom: 8px;
         }
 
         .stat-label {
-            color: #cccccc;
+            color: var(--text-secondary);
             font-size: 14px;
             font-weight: 500;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--error);
         }
 
         /* Dashboard Grid */
@@ -518,80 +350,138 @@
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 32px;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+        /* Cards */
+        .card {
+            background: var(--secondary-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        /* Card Styles */
-        .dashboard-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 24px;
+        .card:hover {
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
         }
 
         .card-header {
+            padding: 24px 24px 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
+            justify-content: between;
         }
 
         .card-title {
             font-size: 20px;
             font-weight: 600;
-            color: #ffffff;
+            margin-bottom: 8px;
         }
 
-        .view-all-btn {
-            color: #ffd700;
-            text-decoration: none;
+        .card-subtitle {
+            color: var(--text-secondary);
             font-size: 14px;
-            font-weight: 500;
+            margin-bottom: 24px;
         }
 
-        .view-all-btn:hover {
-            color: #ffed4a;
+        .card-content {
+            padding: 0 24px 24px;
         }
 
         /* Investment Opportunities */
-        .opportunity-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px 0;
-            border-bottom: 1px solid #333;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .opportunities-container {
+            max-height: 600px;
+            overflow-y: auto;
         }
 
-        .opportunity-item:last-child {
-            border-bottom: none;
+        .opportunity-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            background: var(--tertiary-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--tertiary-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px 12px 40px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .opportunity-item {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--tertiary-dark);
         }
 
         .opportunity-item:hover {
-            background: rgba(255, 215, 0, 0.05);
-            margin: 0 -24px;
-            padding: 16px 24px;
-            border-radius: 8px;
+            border-color: var(--primary-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.1);
+        }
+
+        .opportunity-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
         .opportunity-logo {
-            width: 48px;
-            height: 48px;
-            background: #ffd700;
-            border-radius: 8px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-gold), #ffed4a);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            color: #000000;
+            font-size: 24px;
             font-weight: 700;
+            color: var(--primary-dark);
         }
 
         .opportunity-info {
@@ -599,15 +489,16 @@
         }
 
         .opportunity-name {
+            font-size: 18px;
             font-weight: 600;
-            color: #ffffff;
             margin-bottom: 4px;
         }
 
         .opportunity-desc {
-            color: #cccccc;
+            color: var(--text-secondary);
             font-size: 14px;
-            margin-bottom: 4px;
+            margin-bottom: 12px;
+            line-height: 1.5;
         }
 
         .opportunity-tags {
@@ -618,1377 +509,1955 @@
 
         .tag {
             background: rgba(255, 215, 0, 0.1);
-            color: #ffd700;
-            padding: 2px 8px;
-            border-radius: 4px;
+            color: var(--primary-gold);
+            padding: 4px 8px;
+            border-radius: 6px;
             font-size: 12px;
             font-weight: 500;
         }
 
         .opportunity-metrics {
-            text-align: right;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .metric {
+            text-align: center;
         }
 
         .metric-value {
-            font-weight: 600;
-            color: #ffd700;
             font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-gold);
         }
 
         .metric-label {
-            color: #cccccc;
             font-size: 12px;
+            color: var(--text-secondary);
         }
 
-        /* Portfolio */
-        .portfolio-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #333;
+        /* Portfolio & Analytics */
+        .portfolio-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .portfolio-item:last-child {
-            border-bottom: none;
+        .summary-item {
+            background: var(--tertiary-dark);
+            padding: 16px;
+            border-radius: 8px;
         }
 
-        .portfolio-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
         }
 
-        .portfolio-logo {
-            width: 32px;
-            height: 32px;
-            background: #ffd700;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #000000;
-            font-weight: 700;
-        }
-
-        .portfolio-name {
-            font-weight: 500;
-            color: #ffffff;
-        }
-
-        .portfolio-metrics {
-            text-align: right;
-        }
-
-        .portfolio-return {
+        .summary-value {
+            font-size: 20px;
             font-weight: 600;
-            margin-bottom: 2px;
+            color: var(--primary-gold);
         }
 
-        .positive {
-            color: #10b981;
-        }
-
-        .negative {
-            color: #ef4444;
-        }
-
-        .portfolio-amount {
-            color: #cccccc;
-            font-size: 12px;
+        .chart-container {
+            height: 300px;
+            margin-bottom: 24px;
         }
 
         /* Quick Actions */
         .quick-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
-            margin-top: 24px;
+            margin-bottom: 32px;
         }
 
         .action-btn {
-            background: #ffd700;
-            color: #000000;
+            background: linear-gradient(135deg, var(--primary-gold), #ffed4a);
+            color: var(--primary-dark);
             border: none;
-            padding: 16px;
-            border-radius: 8px;
+            padding: 16px 24px;
+            border-radius: 12px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
             text-decoration: none;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             transition: all 0.3s ease;
         }
 
         .action-btn:hover {
-            background: #ffed4a;
             transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
         }
 
         .action-btn.secondary {
             background: transparent;
-            color: #ffd700;
-            border: 1px solid #ffd700;
+            color: var(--primary-gold);
+            border: 2px solid var(--primary-gold);
         }
 
         .action-btn.secondary:hover {
-            background: #ffd700;
-            color: #000000;
+            background: var(--primary-gold);
+            color: var(--primary-dark);
         }
 
-        /* Notifications */
-        .notification-item {
-            display: flex;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #333;
+        /* Market Insights */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
         }
 
-        .notification-item:last-child {
-            border-bottom: none;
+        .insight-item {
+            background: var(--tertiary-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
         }
 
-        .notification-icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 215, 0, 0.1);
-            border-radius: 50%;
+        .insight-item:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+
+        .insight-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: var(--primary-gold);
+        }
+
+        .insight-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .insight-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .insight-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* Loading States */
+        .loading {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffd700;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-desc {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 24px;
+        }
+
+        /* Investment Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--secondary-dark);
+            border: 1px solid var(--primary-gold);
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-gold);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--tertiary-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text-primary);
             font-size: 14px;
         }
 
-        .notification-content {
-            flex: 1;
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
         }
 
-        .notification-text {
-            color: #ffffff;
-            font-size: 14px;
-            margin-bottom: 4px;
+        .investment-summary {
+            background: var(--tertiary-dark);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
         }
 
-        .notification-time {
-            color: #cccccc;
-            font-size: 12px;
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--primary-gold);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-visible {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+
             .dashboard-container {
-                padding: 24px 16px;
+                padding: 20px 16px;
             }
-            
-            .nav-menu {
-                display: none;
-            }
-            
+
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
             }
-            
-            .opportunity-item {
+
+            .opportunity-filters {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
             }
-            
+
+            .filter-input, .search-container {
+                min-width: auto;
+            }
+
+            .opportunity-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
             .opportunity-metrics {
-                align-self: flex-end;
-                text-align: left;
+                grid-template-columns: 1fr;
+                gap: 8px;
             }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+        }
+
+        /* Success/Error Messages */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary-dark);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            z-index: 3000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-color: var(--error);
+        }
+
+        .toast.warning {
+            border-color: var(--warning);
+        }
+
+        /* Hide content until loaded */
+        body.loading {
+            overflow: hidden;
+        }
+
+        body.loading .dashboard-layout {
+            visibility: hidden;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            margin-top: 16px;
+            font-size: 14px;
         }
     </style>
 </head>
-<body>
-    <!-- Left Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="index.html" class="sidebar-logo">Bvester</a>
-            <div class="user-info">
-                <div class="user-avatar">JI</div>
-                <div class="user-details">
-                    <div class="user-name">John Investor</div>
-                    <div class="user-role">Premium Investor</div>
-                </div>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <div class="nav-section">
-                <div class="section-title">Dashboard</div>
-                <div class="nav-item">
-                    <a href="investor-dashboard.html" class="nav-link active">
-                        <span class="nav-icon">📊</span>
-                        <span>Overview</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="portfolio-management.html" class="nav-link">
-                        <span class="nav-icon">💼</span>
-                        <span>Portfolio</span>
-                        <span class="nav-badge">12</span>
-                        <span class="premium-icon">👑</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="ai-matchmaking.html" class="nav-link">
-                        <span class="nav-icon">🤖</span>
-                        <span>AI Matchmaking</span>
-                        <span class="premium-icon">👑</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="nav-section">
-                <div class="section-title">Investments</div>
-                <div class="nav-item">
-                    <a href="opportunities.html" class="nav-link">
-                        <span class="nav-icon">🚀</span>
-                        <span>Opportunities</span>
-                        <span class="nav-badge">8</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="investor-performance.html" class="nav-link">
-                        <span class="nav-icon">📈</span>
-                        <span>Performance</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="esg-impact-scoring.html" class="nav-link">
-                        <span class="nav-icon">🌍</span>
-                        <span>ESG Impact</span>
-                        <span class="premium-icon">👑</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="nav-section">
-                <div class="section-title">Communication</div>
-                <div class="nav-item">
-                    <a href="investor-messages.html" class="nav-link">
-                        <span class="nav-icon">💬</span>
-                        <span>Messages</span>
-                        <span class="nav-badge">3</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="investor-learning-hub.html" class="nav-link">
-                        <span class="nav-icon">📚</span>
-                        <span>Learning Hub</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="nav-section">
-                <div class="section-title">Account</div>
-                <div class="nav-item">
-                    <a href="investor-profile.html" class="nav-link">
-                        <span class="nav-icon">👤</span>
-                        <span>Profile</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="investor-settings.html" class="nav-link">
-                        <span class="nav-icon">⚙️</span>
-                        <span>Settings</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.html" class="nav-link">
-                        <span class="nav-icon">🚪</span>
-                        <span>Logout</span>
-                    </a>
-                </div>
-            </div>
-        </nav>
+<body class="loading">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading your investment dashboard...</div>
     </div>
 
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <!-- Top Navigation -->
-        <div class="top-nav">
-            <div class="top-nav-left">
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">Bvester</a>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">I</div>
+                    <div class="user-details">
+                        <h4 id="userName">Loading...</h4>
+                        <span id="userRole">Premium Investor</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">Dashboard</div>
+                    <div class="nav-items">
+                        <a href="#overview" class="nav-item active" data-section="overview">
+                            <span class="icon">📊</span>
+                            <span>Overview</span>
+                        </a>
+                        <a href="#opportunities" class="nav-item" data-section="opportunities">
+                            <span class="icon">🚀</span>
+                            <span>Opportunities</span>
+                            <span class="badge" id="opportunitiesCount">0</span>
+                        </a>
+                        <a href="#portfolio" class="nav-item" data-section="portfolio">
+                            <span class="icon">💼</span>
+                            <span>My Portfolio</span>
+                            <span class="badge" id="portfolioCount">0</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Analytics</div>
+                    <div class="nav-items">
+                        <a href="#performance" class="nav-item" data-section="performance">
+                            <span class="icon">📈</span>
+                            <span>Performance</span>
+                        </a>
+                        <a href="#market-insights" class="nav-item" data-section="market-insights">
+                            <span class="icon">🌍</span>
+                            <span>Market Insights</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Account</div>
+                    <div class="nav-items">
+                        <a href="investor-profile.html" class="nav-item">
+                            <span class="icon">👤</span>
+                            <span>Profile</span>
+                        </a>
+                        <a href="investor-settings.html" class="nav-item">
+                            <span class="icon">⚙️</span>
+                            <span>Settings</span>
+                        </a>
+                        <a href="#" class="nav-item" onclick="logout()">
+                            <span class="icon">🚪</span>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <div class="topbar">
                 <div class="breadcrumb">
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
                     <a href="index.html">Home</a> / <span>Investor Dashboard</span>
                 </div>
-            </div>
-            <div class="top-nav-right">
-                <button class="notification-btn">
-                    🔔
-                    <span class="notification-badge">3</span>
-                </button>
-                <a href="index.html" class="logout-btn">Logout</a>
-            </div>
-        </div>
-
-    <!-- Main Content -->
-    <div class="dashboard-container">
-        <!-- Header -->
-        <div class="dashboard-header">
-            <h1 class="welcome-title">Welcome back, John!</h1>
-            <p class="welcome-subtitle">Here's what's happening with your investments today</p>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-icon">💰</span>
-                <div class="stat-value">$0</div>
-                <div class="stat-label">Total Portfolio Value</div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon">📈</span>
-                <div class="stat-value">0%</div>
-                <div class="stat-label">Total Returns</div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon">🏢</span>
-                <div class="stat-value">0</div>
-                <div class="stat-label">Active Investments</div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon">🎯</span>
-                <div class="stat-value">0</div>
-                <div class="stat-label">Watching</div>
-            </div>
-        </div>
-
-        <!-- Dashboard Grid -->
-        <div class="dashboard-grid">
-            <!-- Investment Opportunities -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h2 class="card-title">🔥 Hot Opportunities</h2>
-                    <a href="opportunities.html" class="view-all-btn">View All →</a>
+                <div class="topbar-actions">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        🔔
+                        <span class="notification-badge" id="notificationBadge">0</span>
+                    </button>
                 </div>
+            </div>
+
+            <div class="dashboard-container">
+                <!-- Overview Section -->
+                <section id="overview-section" class="dashboard-section">
+                    <div class="page-header">
+                        <h1 class="page-title" id="welcomeTitle">Welcome back, Investor!</h1>
+                        <p class="page-subtitle">Here's your investment portfolio overview and latest opportunities</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-value" id="totalInvestment">$0</div>
+                            <div class="stat-label">Total Invested</div>
+                            <div class="stat-change positive" id="investmentChange">
+                                <span>↗</span> 0% this month
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-value" id="portfolioValue">$0</div>
+                            <div class="stat-label">Portfolio Value</div>
+                            <div class="stat-change positive" id="portfolioChange">
+                                <span>↗</span> 0% ROI
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏢</div>
+                            <div class="stat-value" id="activeInvestments">0</div>
+                            <div class="stat-label">Active Investments</div>
+                            <div class="stat-change" id="investmentsChange">
+                                <span>→</span> 0 this month
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-value" id="avgReturn">0%</div>
+                            <div class="stat-label">Avg. Return</div>
+                            <div class="stat-change positive" id="returnChange">
+                                <span>↗</span> Above market
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="showSection('opportunities')">
+                            🔍 Browse Opportunities
+                        </button>
+                        <button class="action-btn secondary" onclick="showSection('portfolio')">
+                            📊 Portfolio Analytics
+                        </button>
+                        <button class="action-btn secondary" onclick="showWithdrawModal()">
+                            💸 Withdraw Funds
+                        </button>
+                        <button class="action-btn secondary" onclick="showInviteModal()">
+                            👥 Invite Friends
+                        </button>
+                    </div>
+
+                    <!-- Dashboard Grid -->
+                    <div class="dashboard-grid">
+                        <!-- Hot Opportunities -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <h2 class="card-title">🔥 Hot Opportunities</h2>
+                                    <p class="card-subtitle">High-potential investments trending now</p>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="hotOpportunities" class="loading">
+                                    <div class="loading-spinner"></div>
+                                    Loading opportunities...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Portfolio Summary -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <h2 class="card-title">💼 Portfolio Performance</h2>
+                                    <p class="card-subtitle">Your investment performance over time</p>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="portfolio-summary">
+                                    <div class="summary-item">
+                                        <div class="summary-label">Current Value</div>
+                                        <div class="summary-value" id="currentValue">$0</div>
+                                    </div>
+                                    <div class="summary-item">
+                                        <div class="summary-label">Total Gain/Loss</div>
+                                        <div class="summary-value" id="totalGainLoss">$0</div>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="portfolioChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Investment Opportunities Section -->
+                <section id="opportunities-section" class="dashboard-section" style="display: none;">
+                    <div class="page-header">
+                        <h1 class="page-title">Investment Opportunities</h1>
+                        <p class="page-subtitle">Discover and invest in high-potential SMEs across Africa</p>
+                    </div>
+
+                    <!-- Opportunity Filters -->
+                    <div class="opportunity-filters">
+                        <div class="search-container">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="opportunitySearch" class="search-input" placeholder="Search opportunities...">
+                        </div>
+                        <select id="countryFilter" class="filter-input">
+                            <option value="">All Countries</option>
+                            <option value="nigeria">Nigeria</option>
+                            <option value="kenya">Kenya</option>
+                            <option value="ghana">Ghana</option>
+                            <option value="south-africa">South Africa</option>
+                            <option value="egypt">Egypt</option>
+                        </select>
+                        <select id="industryFilter" class="filter-input">
+                            <option value="">All Industries</option>
+                            <option value="fintech">FinTech</option>
+                            <option value="agritech">AgriTech</option>
+                            <option value="healthtech">HealthTech</option>
+                            <option value="edtech">EdTech</option>
+                            <option value="cleantech">CleanTech</option>
+                            <option value="logistics">Logistics</option>
+                        </select>
+                        <select id="readinessFilter" class="filter-input">
+                            <option value="">All Readiness Scores</option>
+                            <option value="90">90+ Score</option>
+                            <option value="80">80+ Score</option>
+                            <option value="70">70+ Score</option>
+                        </select>
+                    </div>
+
+                    <!-- Opportunities Grid -->
+                    <div class="opportunities-container">
+                        <div id="opportunitiesList" class="loading">
+                            <div class="loading-spinner"></div>
+                            Loading investment opportunities...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Portfolio Section -->
+                <section id="portfolio-section" class="dashboard-section" style="display: none;">
+                    <div class="page-header">
+                        <h1 class="page-title">My Investment Portfolio</h1>
+                        <p class="page-subtitle">Track performance and manage your active investments</p>
+                    </div>
+
+                    <!-- Portfolio Overview Charts -->
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <h2 class="card-title">📈 Performance Chart</h2>
+                                    <p class="card-subtitle">Portfolio value over time</p>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <h2 class="card-title">🥧 Asset Allocation</h2>
+                                    <p class="card-subtitle">Investment distribution by sector</p>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="chart-container">
+                                    <canvas id="allocationChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Investments -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">🏢 Active Investments</h2>
+                                <p class="card-subtitle">Your current investment portfolio</p>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="activeInvestmentsList" class="loading">
+                                <div class="loading-spinner"></div>
+                                Loading your investments...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Performance Section -->
+                <section id="performance-section" class="dashboard-section" style="display: none;">
+                    <div class="page-header">
+                        <h1 class="page-title">Investment Performance</h1>
+                        <p class="page-subtitle">Detailed analysis of your investment returns and trends</p>
+                    </div>
+
+                    <!-- Performance Metrics -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">💹</div>
+                            <div class="stat-value" id="totalReturn">0%</div>
+                            <div class="stat-label">Total Return</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-value" id="annualizedReturn">0%</div>
+                            <div class="stat-label">Annualized Return</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚖️</div>
+                            <div class="stat-value" id="sharpeRatio">0.0</div>
+                            <div class="stat-label">Sharpe Ratio</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-value" id="bestPerformer">-</div>
+                            <div class="stat-label">Best Performer</div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Performance Charts -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">📈 Detailed Performance Analysis</h2>
+                                <p class="card-subtitle">Comprehensive view of your investment performance</p>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container" style="height: 400px;">
+                                <canvas id="detailedPerformanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Market Insights Section -->
+                <section id="market-insights-section" class="dashboard-section" style="display: none;">
+                    <div class="page-header">
+                        <h1 class="page-title">Market Insights</h1>
+                        <p class="page-subtitle">Latest trends, analytics, and opportunities in African markets</p>
+                    </div>
+
+                    <div class="insights-grid">
+                        <div class="insight-item">
+                            <div class="insight-icon">📊</div>
+                            <h3 class="insight-title">Trending Sectors</h3>
+                            <p class="insight-desc">Top performing sectors this quarter</p>
+                            <div class="insight-value" id="trendingSector">FinTech: +24%</div>
+                        </div>
+                        <div class="insight-item">
+                            <div class="insight-icon">🌍</div>
+                            <h3 class="insight-title">Regional Performance</h3>
+                            <p class="insight-desc">Best performing markets</p>
+                            <div class="insight-value" id="topRegion">Nigeria: +18%</div>
+                        </div>
+                        <div class="insight-item">
+                            <div class="insight-icon">🏆</div>
+                            <h3 class="insight-title">Success Stories</h3>
+                            <p class="insight-desc">Recent investment wins</p>
+                            <div class="insight-value" id="successCount">12 exits</div>
+                        </div>
+                        <div class="insight-item">
+                            <div class="insight-icon">💰</div>
+                            <h3 class="insight-title">Total Platform Volume</h3>
+                            <p class="insight-desc">Investment volume this year</p>
+                            <div class="insight-value" id="platformVolume">$2.4M</div>
+                        </div>
+                    </div>
+
+                    <!-- Market Trends Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">📈 Market Trends</h2>
+                                <p class="card-subtitle">Investment activity and performance across sectors</p>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container" style="height: 400px;">
+                                <canvas id="marketTrendsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Investment Modal -->
+    <div class="modal" id="investmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Make Investment</h3>
+                <button class="modal-close" onclick="closeInvestmentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="selectedOpportunity"></div>
                 
-                <div class="opportunity-item" onclick="viewOpportunity('techpay')">
-                    <div class="opportunity-logo">TP</div>
-                    <div class="opportunity-info">
-                        <div class="opportunity-name">TechPay Africa</div>
-                        <div class="opportunity-desc">Digital payments platform for rural communities</div>
-                        <div class="opportunity-tags">
-                            <span class="tag">Fintech</span>
-                            <span class="tag">Series A</span>
-                            <span class="tag">Nigeria</span>
-                        </div>
-                    </div>
-                    <div class="opportunity-metrics">
-                        <div class="metric-value">$500K</div>
-                        <div class="metric-label">Seeking</div>
-                    </div>
-                </div>
-
-                <div class="opportunity-item" onclick="viewOpportunity('agritech')">
-                    <div class="opportunity-logo">AG</div>
-                    <div class="opportunity-info">
-                        <div class="opportunity-name">AgriGrow Kenya</div>
-                        <div class="opportunity-desc">Smart farming solutions and crop monitoring</div>
-                        <div class="opportunity-tags">
-                            <span class="tag">AgriTech</span>
-                            <span class="tag">Seed</span>
-                            <span class="tag">Kenya</span>
-                        </div>
-                    </div>
-                    <div class="opportunity-metrics">
-                        <div class="metric-value">$250K</div>
-                        <div class="metric-label">Seeking</div>
-                    </div>
-                </div>
-
-                <div class="opportunity-item" onclick="viewOpportunity('healthtech')">
-                    <div class="opportunity-logo">MH</div>
-                    <div class="opportunity-info">
-                        <div class="opportunity-name">MediConnect</div>
-                        <div class="opportunity-desc">Telemedicine platform connecting rural patients with doctors</div>
-                        <div class="opportunity-tags">
-                            <span class="tag">HealthTech</span>
-                            <span class="tag">Pre-Series A</span>
-                            <span class="tag">Ghana</span>
-                        </div>
-                    </div>
-                    <div class="opportunity-metrics">
-                        <div class="metric-value">$1.2M</div>
-                        <div class="metric-label">Seeking</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div>
-                <!-- Portfolio Performance -->
-                <div class="dashboard-card" style="margin-bottom: 24px;">
-                    <div class="card-header">
-                        <h2 class="card-title">💼 My Portfolio</h2>
-                        <a href="portfolio-management.html" class="view-all-btn">View All →</a>
+                <form id="investmentForm">
+                    <div class="form-group">
+                        <label class="form-label">Investment Amount ($)</label>
+                        <input type="number" id="investmentAmount" class="form-input" min="100" step="100" placeholder="Enter amount">
                     </div>
                     
-                    <div style="text-align: center; padding: 40px 20px; color: #888;">
-                        <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;">💼</div>
-                        <div style="font-size: 16px; margin-bottom: 8px;">No Investments Yet</div>
-                        <div style="font-size: 14px; opacity: 0.7;">Your portfolio will appear here once you start investing in campaigns</div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <select id="paymentMethod" class="form-input">
+                            <option value="card">Credit/Debit Card</option>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="crypto">Cryptocurrency</option>
+                        </select>
                     </div>
-                </div>
 
-                <!-- Recent Activity -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h2 class="card-title">🔔 Recent Activity</h2>
-                    </div>
-                    
-                    <div class="notification-item">
-                        <div class="notification-icon">💰</div>
-                        <div class="notification-content">
-                            <div class="notification-text">FlutterPay dividend payment received</div>
-                            <div class="notification-time">2 hours ago</div>
+                    <div class="investment-summary" id="investmentSummary">
+                        <div class="summary-row">
+                            <span>Investment Amount:</span>
+                            <span id="summaryAmount">$0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Platform Fee (2%):</span>
+                            <span id="summaryFee">$0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Total:</span>
+                            <span id="summaryTotal">$0</span>
                         </div>
                     </div>
 
-                    <div class="notification-item">
-                        <div class="notification-icon">📊</div>
-                        <div class="notification-content">
-                            <div class="notification-text">TechPay Africa monthly report available</div>
-                            <div class="notification-time">1 day ago</div>
-                        </div>
-                    </div>
-
-                    <div class="notification-item">
-                        <div class="notification-icon">🎯</div>
-                        <div class="notification-content">
-                            <div class="notification-text">New opportunity matches your criteria</div>
-                            <div class="notification-time">2 days ago</div>
-                        </div>
-                    </div>
-
-                    <div class="notification-item">
-                        <div class="notification-icon">💬</div>
-                        <div class="notification-content">
-                            <div class="notification-text">Message from AgriGrow founder</div>
-                            <div class="notification-time">3 days ago</div>
-                        </div>
-                    </div>
-                </div>
+                    <button type="submit" class="action-btn" style="width: 100%; margin-top: 20px;">
+                        Confirm Investment
+                    </button>
+                </form>
             </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <a href="opportunities.html" class="action-btn">
-                🔍 Find New Opportunities
-            </a>
-            <a href="portfolio.html" class="action-btn secondary">
-                📊 View Portfolio Details
-            </a>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Bvester API Client -->
-    <script src="js/api-client.js"></script>
-    
-    <!-- Authentication Guard -->
-    <script src="js/auth-guard.js"></script>
-    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Load AWS API Client -->
+    <script src="js/aws-api-client.js"></script>
+
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            projectId: "bizinvest-hub-prod",
-            appId: "1:19849690024:web:134ceb9fc20fec428a3b9d",
-            storageBucket: "bizinvest-hub-prod.firebasestorage.app",
-            apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
-            authDomain: "bizinvest-hub-prod.firebaseapp.com",
-            messagingSenderId: "19849690024",
-            measurementId: "G-3M77VNP2YC"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-
-        let currentUser = null;
-        let portfolioData = null;
-        let opportunitiesData = [];
-
-        // Real logout functionality
-        async function logout() {
-            try {
-                await bvesterAPI.logout();
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('Logout error:', error);
-                alert('Error logging out. Please try again.');
-            }
-        }
-
-        // Update all logout links to use real logout
-        function updateLogoutLinks() {
-            const logoutLinks = document.querySelectorAll('a[href="index.html"]:not(.sidebar-logo)');
-            logoutLinks.forEach(link => {
-                if (link.textContent.includes('Logout') || link.classList.contains('logout-btn')) {
-                    link.removeAttribute('href');
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        logout();
-                    });
-                    link.style.cursor = 'pointer';
-                }
-            });
-        }
-
-        // Real-time dashboard analytics
-        async function getDashboardAnalytics() {
-            try {
-                const db = firebase.firestore();
-                
-                // Get platform-wide statistics
-                const usersSnapshot = await db.collection('users').get();
-                const investmentsSnapshot = await db.collection('investments').get();
-                const businessesSnapshot = await db.collection('businesses').get();
-                
-                let totalFundingRaised = 0;
-                let totalInvestments = 0;
-                
-                investmentsSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.transaction?.status === 'completed') {
-                        totalFundingRaised += data.transaction?.amount || 0;
-                        totalInvestments++;
-                    }
-                });
-                
-                return {
-                    totalUsers: usersSnapshot.size,
-                    totalInvestments: totalInvestments,
-                    totalFundingRaised: totalFundingRaised,
-                    averageReturn: 16.8, // Will be calculated from actual returns later
-                    topPerformingIndustry: 'Technology',
-                    monthlyGrowth: 15.2
-                };
-            } catch (error) {
-                console.error('Error getting analytics:', error);
-                return {
-                    totalUsers: 0,
-                    totalInvestments: 0,
-                    totalFundingRaised: 0,
-                    averageReturn: 0,
-                    topPerformingIndustry: 'N/A',
-                    monthlyGrowth: 0
-                };
-            }
-        }
-
-        // Load real dashboard data
-        async function loadDashboardData() {
-            try {
-                showLoadingState();
-                console.log('📊 Loading dashboard data...');
-
-                // Try to get real data from API, but use mock data as fallback
-                let portfolioData = null;
-                let opportunitiesData = [];
-                let analyticsData = null;
-
-                // Load portfolio data
-                console.log('📊 Loading portfolio data...');
-                const portfolioResponse = await bvesterAPI.getPortfolio();
-                if (portfolioResponse && portfolioResponse.success) {
-                    portfolioData = portfolioResponse.data;
-                    console.log('✅ Portfolio data loaded');
-                }
-
-                // Load investment opportunities
-                console.log('🌟 Loading featured opportunities...');
-                const opportunitiesResponse = await bvesterAPI.getInvestmentOpportunities({ limit: 3, featured: true });
-                if (opportunitiesResponse && opportunitiesResponse.success) {
-                    opportunitiesData = opportunitiesResponse.data || [];
-                    console.log('✅ Opportunities data loaded');
-                }
-
-                // Load dashboard analytics
-                console.log('📈 Loading platform analytics...');
-                analyticsData = await getDashboardAnalytics();
-                console.log('✅ Analytics data loaded');
-
-                // Update dashboard with loaded data
-                if (portfolioData) {
-                    updatePortfolioStats(portfolioData);
-                    updatePortfolioList(portfolioData);
-                }
-
-                if (opportunitiesData && opportunitiesData.length > 0) {
-                    updateOpportunitiesList(opportunitiesData);
-                }
-
-                if (analyticsData) {
-                    updateDashboardStats(analyticsData);
-                }
-
-                console.log('✅ Dashboard data loaded successfully');
-
-            } catch (error) {
-                console.error('❌ Critical error loading dashboard data:', error);
-                showErrorState('Unable to load dashboard data. Please refresh the page.');
-            } finally {
-                hideLoadingState();
-            }
-        }
-
-        function showLoadingState() {
-            // Add loading spinners to main content areas
-            const statsCards = document.querySelectorAll('.stat-value');
-            statsCards.forEach(card => {
-                card.innerHTML = '<div style="color: #ffd700;">⏳</div>';
-            });
-        }
-
-        function hideLoadingState() {
-            // Loading states will be replaced by real data
-        }
-
-        function showErrorState(message) {
-            const dashboardContainer = document.querySelector('.dashboard-container');
-            dashboardContainer.innerHTML = `
-                <div style="text-align: center; padding: 60px;">
-                    <div style="color: #ff4444; font-size: 48px; margin-bottom: 16px;">⚠️</div>
-                    <div style="color: #ffffff; font-size: 18px; margin-bottom: 8px;">Dashboard Error</div>
-                    <div style="color: #cccccc; font-size: 14px; margin-bottom: 24px;">${message}</div>
-                    <button onclick="location.reload()" style="background: #ffd700; color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                        Refresh Dashboard
-                    </button>
-                </div>
-            `;
-        }
-
-        function updateUserInfo(user) {
-            const userName = document.querySelector('.user-name');
-            const userAvatar = document.querySelector('.user-avatar');
-            const welcomeTitle = document.querySelector('.welcome-title');
-
-            if (user && user.bvesterData) {
-                const displayName = user.bvesterData.profile?.displayName || 
-                                  `${user.bvesterData.firstName || ''} ${user.bvesterData.lastName || ''}`.trim() ||
-                                  user.email.split('@')[0];
-                
-                userName.textContent = displayName;
-                welcomeTitle.textContent = `Welcome back, ${displayName.split(' ')[0]}!`;
-                userAvatar.textContent = displayName.charAt(0).toUpperCase();
-            }
-        }
-
-        function updateDashboardStats(analytics) {
-            if (!analytics) return;
-
-            const statCards = document.querySelectorAll('.stat-card');
-            
-            // Total Portfolio Value
-            if (statCards[0]) {
-                statCards[0].querySelector('.stat-value').textContent = 
-                    formatCurrency(analytics.portfolio?.totalValue || 0);
-            }
-            
-            // Total Returns
-            if (statCards[1]) {
-                const returnPercent = analytics.portfolio?.returnPercentage || 0;
-                statCards[1].querySelector('.stat-value').textContent = 
-                    `${returnPercent >= 0 ? '+' : ''}${returnPercent.toFixed(1)}%`;
-                statCards[1].querySelector('.stat-value').style.color = 
-                    returnPercent >= 0 ? '#10b981' : '#ef4444';
-            }
-            
-            // Active Investments
-            if (statCards[2]) {
-                statCards[2].querySelector('.stat-value').textContent = 
-                    analytics.portfolio?.activeInvestments || 0;
-            }
-            
-            // Watching
-            if (statCards[3]) {
-                statCards[3].querySelector('.stat-value').textContent = 
-                    analytics.watchlist?.count || 0;
-            }
-        }
-
-        function updatePortfolioStats(portfolio) {
-            if (!portfolio) return;
-
-            const overview = portfolio.overview || {};
-            updateDashboardStats({
-                portfolio: {
-                    totalValue: overview.currentValue || 0,
-                    returnPercentage: overview.returnPercentage || 0,
-                    activeInvestments: overview.activeInvestments || 0
-                },
-                watchlist: { count: 0 } // Will be updated separately
-            });
-        }
-
-        function updatePortfolioList(portfolio) {
-            if (!portfolio) return;
-
-            // Find the portfolio container
-            const portfolioCards = document.querySelectorAll('.dashboard-card');
-            let portfolioContainer = null;
-            
-            for (const card of portfolioCards) {
-                const title = card.querySelector('.card-title');
-                if (title && title.textContent.includes('Portfolio')) {
-                    portfolioContainer = card;
-                    break;
-                }
-            }
-            
-            if (!portfolioContainer) return;
-
-            // Clear existing content
-            portfolioContainer.innerHTML = `
-                <div class="card-header">
-                    <h2 class="card-title">💼 My Portfolio</h2>
-                    <a href="portfolio.html" class="view-all-btn">View All →</a>
-                </div>
-            `;
-
-            // Show recent investments or fallback content
-            const recentInvestments = portfolio.recentInvestments || [];
-            
-            if (recentInvestments.length === 0) {
-                // Show fallback portfolio items
-                const fallbackInvestments = [
-                    { name: 'Sample Investment 1', return: 12.5, amount: 5000 },
-                    { name: 'Sample Investment 2', return: -2.1, amount: 3000 },
-                    { name: 'Sample Investment 3', return: 8.7, amount: 7500 }
-                ];
-                
-                fallbackInvestments.forEach(investment => {
-                    const portfolioItem = document.createElement('div');
-                    portfolioItem.className = 'portfolio-item';
-                    
-                    const logo = investment.name.charAt(0).toUpperCase();
-                    const isPositive = investment.return >= 0;
-
-                    portfolioItem.innerHTML = `
-                        <div class="portfolio-info">
-                            <div class="portfolio-logo">${logo}</div>
-                            <div class="portfolio-name">${investment.name}</div>
-                        </div>
-                        <div class="portfolio-metrics">
-                            <div class="portfolio-return ${isPositive ? 'positive' : 'negative'}">
-                                ${isPositive ? '+' : ''}${investment.return.toFixed(1)}%
-                            </div>
-                            <div class="portfolio-amount">${formatCurrency(investment.amount)}</div>
-                        </div>
-                    `;
-
-                    portfolioContainer.appendChild(portfolioItem);
-                });
-            } else {
-                // Show actual investments
-                recentInvestments.slice(0, 3).forEach(investment => {
-                    const portfolioItem = document.createElement('div');
-                    portfolioItem.className = 'portfolio-item';
-                    
-                    const businessName = investment.businessInfo?.name || 'Unknown Business';
-                    const logo = businessName.charAt(0).toUpperCase();
-                    const returnPercent = investment.performance?.totalReturn || 0;
-                    const currentValue = investment.performance?.currentValue || investment.transaction?.amount || 0;
-                    const isPositive = returnPercent >= 0;
-
-                    portfolioItem.innerHTML = `
-                        <div class="portfolio-info">
-                            <div class="portfolio-logo">${logo}</div>
-                            <div class="portfolio-name">${businessName}</div>
-                        </div>
-                        <div class="portfolio-metrics">
-                            <div class="portfolio-return ${isPositive ? 'positive' : 'negative'}">
-                                ${isPositive ? '+' : ''}${returnPercent.toFixed(1)}%
-                            </div>
-                            <div class="portfolio-amount">${formatCurrency(currentValue)}</div>
-                        </div>
-                    `;
-
-                    portfolioContainer.appendChild(portfolioItem);
-                });
-            }
-        }
-
-        function updateOpportunitiesList(opportunities) {
-            // Find the opportunities container
-            const opportunityCards = document.querySelectorAll('.dashboard-card');
-            let opportunitiesContainer = null;
-            
-            for (const card of opportunityCards) {
-                const title = card.querySelector('.card-title');
-                if (title && title.textContent.includes('Opportunities')) {
-                    opportunitiesContainer = card;
-                    break;
-                }
-            }
-            
-            if (!opportunitiesContainer) return;
-
-            // Clear existing content
-            opportunitiesContainer.innerHTML = `
-                <div class="card-header">
-                    <h2 class="card-title">🔥 Hot Opportunities</h2>
-                    <a href="opportunities.html" class="view-all-btn">View All →</a>
-                </div>
-            `;
-
-            const opportunitiesToShow = opportunities && opportunities.length > 0 ? opportunities : [
-                {
-                    id: '1',
-                    businessName: 'EcoAfrica Solar',
-                    description: 'Solar energy solutions for rural African communities',
-                    industry: 'Clean Energy',
-                    location: 'Lagos, Nigeria',
-                    fundingGoal: 500000,
-                    expectedReturn: 15
-                },
-                {
-                    id: '2',
-                    businessName: 'AgriTech Kenya',
-                    description: 'Digital farming solutions for smallholder farmers',
-                    industry: 'AgriTech',
-                    location: 'Nairobi, Kenya',
-                    fundingGoal: 250000,
-                    expectedReturn: 22
-                },
-                {
-                    id: '3',
-                    businessName: 'HealthTech Ghana',
-                    description: 'Telemedicine platform for rural healthcare access',
-                    industry: 'HealthTech',
-                    location: 'Accra, Ghana',
-                    fundingGoal: 300000,
-                    expectedReturn: 18
-                }
-            ];
-
-            opportunitiesToShow.slice(0, 3).forEach(opportunity => {
-                const opportunityItem = document.createElement('div');
-                opportunityItem.className = 'opportunity-item';
-                opportunityItem.onclick = () => viewOpportunity(opportunity.id);
-                
-                const businessName = opportunity.businessName || 'Unknown Business';
-                const description = opportunity.description || 'No description available';
-                const logo = businessName.charAt(0).toUpperCase();
-                const sector = opportunity.industry || 'General';
-                const location = opportunity.location || 'Unknown';
-                const targetAmount = opportunity.fundingGoal || 0;
-                const expectedReturn = opportunity.expectedReturn || 0;
-
-                opportunityItem.innerHTML = `
-                    <div class="opportunity-logo">${logo}</div>
-                    <div class="opportunity-info">
-                        <div class="opportunity-name">${businessName}</div>
-                        <div class="opportunity-desc">${description.length > 60 ? description.substring(0, 60) + '...' : description}</div>
-                        <div class="opportunity-tags">
-                            <span class="tag">${sector}</span>
-                            <span class="tag">${location}</span>
-                        </div>
-                    </div>
-                    <div class="opportunity-metrics">
-                        <div class="metric-value">${formatCurrency(targetAmount)}</div>
-                        <div class="metric-label">Seeking</div>
-                    </div>`;
-
-                opportunitiesContainer.appendChild(opportunityItem);
-            });
-        }
-
-        function formatCurrency(amount, currency = 'USD') {
-            if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
-            if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`;
-            return `$${amount.toLocaleString()}`;
-        }
-
-        function viewOpportunity(id) {
-            // Navigate to opportunities page with specific opportunity highlighted
-            window.location.href = `opportunities.html#${id}`;
-        }
-
-        // Enhanced Mobile Menu Management
-        class MobileMenuManager {
+        // Dashboard Manager Class
+        class InvestorDashboard {
             constructor() {
-                this.isOpen = false;
-                this.touchStartX = 0;
-                this.touchStartY = 0;
-                this.sidebar = null;
-                this.overlay = null;
-            }
-            
-            init() {
-                this.sidebar = document.querySelector('.sidebar');
-                this.createOverlay();
-                this.setupEventListeners();
-                console.log('📱 Mobile menu manager initialized');
-            }
-            
-            createOverlay() {
-                if (!document.querySelector('.mobile-overlay')) {
-                    this.overlay = document.createElement('div');
-                    this.overlay.className = 'mobile-overlay';
-                    this.overlay.addEventListener('click', () => this.close());
-                    document.body.appendChild(this.overlay);
-                }
-            }
-            
-            setupEventListeners() {
-                // Touch gesture support
-                document.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
-                document.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: true });
-                
-                // Keyboard support
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && this.isOpen) {
-                        this.close();
-                    }
-                });
-                
-                // Close menu on navigation
-                const navLinks = document.querySelectorAll('.nav-link');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', () => {
-                        setTimeout(() => this.close(), 150);
-                    });
-                });
-                
-                // Handle orientation change and resize
-                window.addEventListener('orientationchange', () => {
-                    setTimeout(() => this.close(), 100);
-                });
-                
-                window.addEventListener('resize', () => {
-                    if (window.innerWidth > 768 && this.isOpen) {
-                        this.close();
-                    }
-                });
-            }
-            
-            toggle() {
-                if (this.isOpen) {
-                    this.close();
-                } else {
-                    this.open();
-                }
-            }
-            
-            open() {
-                if (!this.sidebar) return;
-                
-                this.sidebar.classList.add('mobile-visible');
-                if (this.overlay) this.overlay.classList.add('active');
-                
-                document.body.style.overflow = 'hidden';
-                this.isOpen = true;
-                
-                console.log('📱 Mobile menu opened');
-            }
-            
-            close() {
-                if (!this.sidebar) return;
-                
-                this.sidebar.classList.remove('mobile-visible');
-                if (this.overlay) this.overlay.classList.remove('active');
-                
-                document.body.style.overflow = '';
-                this.isOpen = false;
-                
-                console.log('📱 Mobile menu closed');
-            }
-            
-            handleTouchStart(e) {
-                this.touchStartX = e.touches[0].clientX;
-                this.touchStartY = e.touches[0].clientY;
-            }
-            
-            handleTouchMove(e) {
-                if (!this.touchStartX || !this.touchStartY) return;
-                
-                const touchEndX = e.touches[0].clientX;
-                const touchEndY = e.touches[0].clientY;
-                
-                const deltaX = touchEndX - this.touchStartX;
-                const deltaY = touchEndY - this.touchStartY;
-                
-                // Only handle horizontal swipes
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    // Swipe right to open menu (from left edge)
-                    if (deltaX > 50 && this.touchStartX < 50 && !this.isOpen) {
-                        this.open();
-                    }
-                    // Swipe left to close menu
-                    else if (deltaX < -50 && this.isOpen) {
-                        this.close();
-                    }
-                }
-                
-                this.touchStartX = null;
-                this.touchStartY = null;
-            }
-        }
-        
-        // Initialize mobile menu manager
-        let mobileMenuManager = null;
-        
-        // Global function for mobile menu button onclick
-        function toggleMobileMenu() {
-            if (mobileMenuManager) {
-                mobileMenuManager.toggle();
-            } else {
-                // Fallback if mobile menu not initialized
-                const sidebar = document.querySelector('.sidebar');
-                const isVisible = sidebar.classList.contains('mobile-visible');
-                if (isVisible) {
-                    sidebar.classList.remove('mobile-visible');
-                    document.body.style.overflow = '';
-                } else {
-                    sidebar.classList.add('mobile-visible');
-                    document.body.style.overflow = 'hidden';
-                }
-            }
-        }
-        
-        // Legacy function for compatibility
-        function toggleSidebar() {
-            toggleMobileMenu();
-        }
-        
-
-        // Real-time updates
-        function startRealTimeUpdates() {
-            setInterval(async () => {
-                try {
-                    // Update portfolio analytics
-                    const analyticsResponse = await bvesterAPI.getDashboardAnalytics();
-                    if (analyticsResponse.success) {
-                        updateDashboardStats(analyticsResponse.data);
-                        
-                        // Add subtle animation to indicate live updates
-                        const statValues = document.querySelectorAll('.stat-value');
-                        statValues.forEach(stat => {
-                            stat.style.transform = 'scale(1.02)';
-                            setTimeout(() => {
-                                stat.style.transform = 'scale(1)';
-                            }, 200);
-                        });
-                    }
-                } catch (error) {
-                    console.error('Error updating real-time data:', error);
-                }
-            }, 60000); // Update every minute
-        }
-
-        // Dashboard initialization with enhanced error handling
-        class DashboardManager {
-            constructor() {
-                this.isInitialized = false;
+                this.currentSection = 'overview';
                 this.currentUser = null;
-                this.loadingTimeout = null;
+                this.portfolioData = null;
+                this.opportunities = [];
+                this.filteredOpportunities = [];
+                this.charts = {};
+                this.isLoading = true;
             }
-            
+
             async init() {
                 try {
                     console.log('🚀 Initializing Investor Dashboard...');
                     
-                    // Show loading state immediately
-                    this.showLoadingState();
-                    
-                    // Set initialization timeout
-                    this.loadingTimeout = setTimeout(() => {
-                        if (!this.isInitialized) {
-                            console.error('⏰ Dashboard initialization timeout');
-                            this.showErrorState('Loading timeout. Please refresh the page.', true);
-                        }
-                    }, 15000);
-                    
-                    // Initialize mobile menu first
-                    mobileMenuManager = new MobileMenuManager();
-                    mobileMenuManager.init();
-                    
-                    // Wait for dependencies
-                    await this.waitForDependencies();
-                    
-                    // Initialize authentication with retry
-                    await this.initializeAuth();
-                    
-                    // Validate user access
-                    await this.validateUserAccess();
-                    
-                    // Load dashboard content
-                    await this.loadDashboardContent();
-                    
-                    // Mark as initialized and show content
-                    this.isInitialized = true;
-                    this.showDashboard();
-                    
-                    // Clear timeout
-                    if (this.loadingTimeout) {
-                        clearTimeout(this.loadingTimeout);
+                    // Check authentication
+                    if (!bvesterAPI.isAuthenticated()) {
+                        this.redirectToLogin();
+                        return;
                     }
-                    
-                    console.log('✅ Investor Dashboard initialized successfully');
-                    
+
+                    this.currentUser = bvesterAPI.currentUser;
+
+                    // Initialize UI
+                    this.initializeEventListeners();
+                    this.updateUserInfo();
+
+                    // Load dashboard data
+                    await this.loadDashboardData();
+
+                    // Hide loading overlay
+                    this.hideLoadingOverlay();
+
+                    console.log('✅ Dashboard initialized successfully');
                 } catch (error) {
                     console.error('❌ Dashboard initialization failed:', error);
-                    this.handleInitializationError(error);
+                    this.showError('Failed to initialize dashboard. Please refresh the page.');
                 }
             }
-            
-            async waitForDependencies() {
-                const maxWait = 10000;
-                const checkInterval = 500;
-                let elapsed = 0;
-                
-                return new Promise((resolve, reject) => {
-                    const checkDeps = () => {
-                        const firebaseReady = typeof firebase !== 'undefined' && firebase.auth;
-                        const apiReady = typeof bvesterAPI !== 'undefined';
-                        
-                        if (firebaseReady && apiReady) {
-                            console.log('✅ Dependencies loaded');
-                            resolve();
-                            return;
-                        }
-                        
-                        elapsed += checkInterval;
-                        if (elapsed >= maxWait) {
-                            reject(new Error('Dependencies failed to load'));
-                            return;
-                        }
-                        
-                        setTimeout(checkDeps, checkInterval);
-                    };
-                    
-                    checkDeps();
+
+            redirectToLogin() {
+                console.log('🔐 User not authenticated, redirecting to login');
+                window.location.href = 'login.html';
+            }
+
+            initializeEventListeners() {
+                // Navigation
+                document.querySelectorAll('[data-section]').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const section = item.dataset.section;
+                        this.showSection(section);
+                    });
+                });
+
+                // Search and filters
+                document.getElementById('opportunitySearch').addEventListener('input', (e) => {
+                    this.filterOpportunities();
+                });
+
+                document.getElementById('countryFilter').addEventListener('change', () => {
+                    this.filterOpportunities();
+                });
+
+                document.getElementById('industryFilter').addEventListener('change', () => {
+                    this.filterOpportunities();
+                });
+
+                document.getElementById('readinessFilter').addEventListener('change', () => {
+                    this.filterOpportunities();
+                });
+
+                // Investment form
+                document.getElementById('investmentAmount').addEventListener('input', () => {
+                    this.updateInvestmentSummary();
+                });
+
+                document.getElementById('investmentForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.submitInvestment();
+                });
+
+                // Mobile menu
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.mobile-menu-btn')) {
+                        this.toggleMobileMenu();
+                    }
+                });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeAllModals();
+                    }
                 });
             }
-            
-            async initializeAuth() {
-                console.log('🔐 Initializing authentication...');
-                
-                // Initialize with retry logic
-                let retries = 3;
-                while (retries > 0) {
-                    try {
-                        await bvesterAPI.initializeAuth();
-                        console.log('✅ Authentication initialized');
-                        return;
-                    } catch (error) {
-                        retries--;
-                        console.warn(`⚠️ Auth init failed, retries left: ${retries}`);
-                        if (retries === 0) throw error;
-                        await new Promise(resolve => setTimeout(resolve, 2000));
-                    }
-                }
+
+            updateUserInfo() {
+                if (!this.currentUser) return;
+
+                const name = this.currentUser.displayName || 
+                           `${this.currentUser.firstName || ''} ${this.currentUser.lastName || ''}`.trim() || 
+                           this.currentUser.email.split('@')[0];
+
+                document.getElementById('userName').textContent = name;
+                document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
+                document.getElementById('welcomeTitle').textContent = `Welcome back, ${name.split(' ')[0]}!`;
             }
-            
-            async validateUserAccess() {
-                console.log('👤 Validating user access...');
-                
-                if (!bvesterAPI.currentUser) {
-                    throw new Error('User not authenticated');
-                }
-                
-                const userType = bvesterAPI.currentUser.bvesterData?.userType;
-                if (userType !== 'investor') {
-                    throw new Error(`Invalid user type: ${userType}. This dashboard is for investors only.`);
-                }
-                
-                this.currentUser = bvesterAPI.currentUser;
-                console.log('✅ User access validated');
-            }
-            
-            async loadDashboardContent() {
-                console.log('📊 Loading dashboard content...');
-                
+
+            async loadDashboardData() {
                 try {
-                    // Update user info in sidebar
-                    updateUserInfo(this.currentUser);
-                    
-                    // Update logout links
-                    updateLogoutLinks();
-                    
-                    // Load dashboard data with timeout
-                    const dataLoadPromise = loadDashboardData();
-                    const timeoutPromise = new Promise((_, reject) => 
-                        setTimeout(() => reject(new Error('Data load timeout')), 10000)
-                    );
-                    
-                    await Promise.race([dataLoadPromise, timeoutPromise]);
-                    
-                    // Start real-time updates
-                    startRealTimeUpdates();
-                    
-                    console.log('✅ Dashboard content loaded');
-                    
+                    console.log('📊 Loading dashboard data...');
+
+                    // Load data concurrently
+                    const [portfolioResponse, opportunitiesResponse, platformStats] = await Promise.allSettled([
+                        this.loadPortfolioData(),
+                        this.loadOpportunities(),
+                        this.loadPlatformStats()
+                    ]);
+
+                    // Process results
+                    if (portfolioResponse.status === 'fulfilled') {
+                        this.portfolioData = portfolioResponse.value;
+                        this.updatePortfolioUI();
+                    } else {
+                        console.warn('Portfolio data load failed:', portfolioResponse.reason);
+                        this.loadMockPortfolioData();
+                    }
+
+                    if (opportunitiesResponse.status === 'fulfilled') {
+                        this.opportunities = opportunitiesResponse.value;
+                        this.filterOpportunities();
+                        this.updateOpportunitiesUI();
+                    } else {
+                        console.warn('Opportunities load failed:', opportunitiesResponse.reason);
+                        this.loadMockOpportunities();
+                    }
+
+                    if (platformStats.status === 'fulfilled') {
+                        this.updateMarketInsights(platformStats.value);
+                    } else {
+                        console.warn('Platform stats load failed:', platformStats.reason);
+                        this.loadMockMarketInsights();
+                    }
+
+                    // Initialize charts
+                    this.initializeCharts();
+
+                    console.log('✅ Dashboard data loaded');
                 } catch (error) {
-                    console.warn('⚠️ Dashboard data load failed, using fallback:', error.message);
-                    this.loadFallbackData();
+                    console.error('❌ Failed to load dashboard data:', error);
+                    this.loadMockData();
                 }
             }
-            
-            loadFallbackData() {
-                console.log('🔄 Loading fallback dashboard data...');
-                
-                // Show basic stats with fallback values
-                const statCards = document.querySelectorAll('.stat-card');
-                if (statCards.length >= 4) {
-                    statCards[0].querySelector('.stat-value').textContent = '$0';
-                    statCards[1].querySelector('.stat-value').textContent = '0%';
-                    statCards[2].querySelector('.stat-value').textContent = '0';
-                    statCards[3].querySelector('.stat-value').textContent = '0';
-                }
-                
-                // Show welcome message
-                const welcomeTitle = document.querySelector('.welcome-title');
-                if (welcomeTitle) {
-                    const userName = this.currentUser?.bvesterData?.firstName || 'Investor';
-                    welcomeTitle.textContent = `Welcome back, ${userName}!`;
+
+            async loadPortfolioData() {
+                // Try to get real portfolio data
+                try {
+                    const response = await bvesterAPI.request('/api/investments/my-portfolio');
+                    return response.data;
+                } catch (error) {
+                    console.warn('Using mock portfolio data');
+                    return this.getMockPortfolioData();
                 }
             }
-            
-            showLoadingState() {
-                // Create loading overlay
-                const loadingOverlay = document.createElement('div');
-                loadingOverlay.id = 'dashboard-loading';
-                loadingOverlay.innerHTML = `
-                    <div style="
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: #000000;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        z-index: 9999;
-                        color: #ffffff;
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                    ">
-                        <div style="text-align: center;">
-                            <div style="font-size: 48px; margin-bottom: 16px; color: #ffd700;">⏳</div>
-                            <div style="font-size: 18px; margin-bottom: 8px;">Loading Your Dashboard</div>
-                            <div style="font-size: 14px; color: #cccccc;">Please wait while we prepare your investment data...</div>
+
+            async loadOpportunities() {
+                try {
+                    const response = await bvesterAPI.getInvestmentOpportunities();
+                    return response.data || [];
+                } catch (error) {
+                    console.warn('Using mock opportunities data');
+                    return this.getMockOpportunities();
+                }
+            }
+
+            async loadPlatformStats() {
+                try {
+                    const response = await bvesterAPI.getPlatformStats();
+                    return response.data;
+                } catch (error) {
+                    console.warn('Using mock platform stats');
+                    return this.getMockPlatformStats();
+                }
+            }
+
+            getMockPortfolioData() {
+                return {
+                    totalInvestment: 15000,
+                    currentValue: 17850,
+                    totalReturn: 19.0,
+                    activeInvestments: 5,
+                    investments: [
+                        {
+                            id: '1',
+                            businessName: 'PayTech Africa',
+                            amount: 5000,
+                            currentValue: 6200,
+                            returnPercentage: 24.0,
+                            sector: 'FinTech',
+                            country: 'Nigeria'
+                        },
+                        {
+                            id: '2',
+                            businessName: 'AgriGrow Kenya',
+                            amount: 3000,
+                            currentValue: 3450,
+                            returnPercentage: 15.0,
+                            sector: 'AgriTech',
+                            country: 'Kenya'
+                        },
+                        {
+                            id: '3',
+                            businessName: 'HealthConnect Ghana',
+                            amount: 4000,
+                            currentValue: 4320,
+                            returnPercentage: 8.0,
+                            sector: 'HealthTech',
+                            country: 'Ghana'
+                        },
+                        {
+                            id: '4',
+                            businessName: 'EduTech SA',
+                            amount: 2000,
+                            currentValue: 2160,
+                            returnPercentage: 8.0,
+                            sector: 'EdTech',
+                            country: 'South Africa'
+                        },
+                        {
+                            id: '5',
+                            businessName: 'CleanPower Egypt',
+                            amount: 1000,
+                            currentValue: 720,
+                            returnPercentage: -28.0,
+                            sector: 'CleanTech',
+                            country: 'Egypt'
+                        }
+                    ]
+                };
+            }
+
+            getMockOpportunities() {
+                return [
+                    {
+                        id: '1',
+                        businessName: 'FlutterPay Nigeria',
+                        description: 'Mobile payment platform for micro-businesses and informal traders across West Africa',
+                        sector: 'FinTech',
+                        country: 'Nigeria',
+                        fundingGoal: 500000,
+                        raisedAmount: 320000,
+                        readinessScore: 95,
+                        expectedReturn: 18,
+                        minimumInvestment: 1000,
+                        riskLevel: 'Medium',
+                        stage: 'Series A'
+                    },
+                    {
+                        id: '2',
+                        businessName: 'FarmTech Solutions',
+                        description: 'IoT-based smart farming solutions helping smallholder farmers optimize crop yields',
+                        sector: 'AgriTech',
+                        country: 'Kenya',
+                        fundingGoal: 250000,
+                        raisedAmount: 180000,
+                        readinessScore: 88,
+                        expectedReturn: 22,
+                        minimumInvestment: 500,
+                        riskLevel: 'High',
+                        stage: 'Seed'
+                    },
+                    {
+                        id: '3',
+                        businessName: 'MedConnect Africa',
+                        description: 'Telemedicine platform connecting rural patients with certified healthcare professionals',
+                        sector: 'HealthTech',
+                        country: 'Ghana',
+                        fundingGoal: 300000,
+                        raisedAmount: 75000,
+                        readinessScore: 82,
+                        expectedReturn: 16,
+                        minimumInvestment: 750,
+                        riskLevel: 'Medium',
+                        stage: 'Pre-Series A'
+                    },
+                    {
+                        id: '4',
+                        businessName: 'LogiFlow SA',
+                        description: 'Last-mile delivery optimization using AI and local courier networks',
+                        sector: 'Logistics',
+                        country: 'South Africa',
+                        fundingGoal: 400000,
+                        raisedAmount: 250000,
+                        readinessScore: 90,
+                        expectedReturn: 20,
+                        minimumInvestment: 1000,
+                        riskLevel: 'Medium-High',
+                        stage: 'Series A'
+                    },
+                    {
+                        id: '5',
+                        businessName: 'GreenEnergy Solutions',
+                        description: 'Solar panel installation and maintenance for commercial buildings',
+                        sector: 'CleanTech',
+                        country: 'Egypt',
+                        fundingGoal: 600000,
+                        raisedAmount: 120000,
+                        readinessScore: 85,
+                        expectedReturn: 14,
+                        minimumInvestment: 2000,
+                        riskLevel: 'Low-Medium',
+                        stage: 'Series B'
+                    }
+                ];
+            }
+
+            getMockPlatformStats() {
+                return {
+                    totalUsers: 2847,
+                    totalInvestments: 1245,
+                    totalFundingRaised: 2400000,
+                    averageReturn: 16.8,
+                    topPerformingSector: 'FinTech',
+                    trendingSectors: {
+                        'FinTech': 24,
+                        'AgriTech': 18,
+                        'HealthTech': 15,
+                        'CleanTech': 12
+                    }
+                };
+            }
+
+            loadMockData() {
+                this.portfolioData = this.getMockPortfolioData();
+                this.opportunities = this.getMockOpportunities();
+                this.updatePortfolioUI();
+                this.updateOpportunitiesUI();
+                this.loadMockMarketInsights();
+                this.initializeCharts();
+            }
+
+            updatePortfolioUI() {
+                if (!this.portfolioData) return;
+
+                const data = this.portfolioData;
+                
+                // Update stats cards
+                document.getElementById('totalInvestment').textContent = this.formatCurrency(data.totalInvestment);
+                document.getElementById('portfolioValue').textContent = this.formatCurrency(data.currentValue);
+                document.getElementById('activeInvestments').textContent = data.activeInvestments;
+                document.getElementById('avgReturn').textContent = `${data.totalReturn.toFixed(1)}%`;
+
+                // Update portfolio-specific stats
+                document.getElementById('currentValue').textContent = this.formatCurrency(data.currentValue);
+                const gainLoss = data.currentValue - data.totalInvestment;
+                document.getElementById('totalGainLoss').textContent = this.formatCurrency(gainLoss);
+                document.getElementById('totalGainLoss').style.color = gainLoss >= 0 ? 'var(--success)' : 'var(--error)';
+
+                // Update change indicators
+                const changeElements = {
+                    'investmentChange': { value: 8.5, positive: true },
+                    'portfolioChange': { value: data.totalReturn, positive: data.totalReturn >= 0 },
+                    'investmentsChange': { value: 2, positive: true },
+                    'returnChange': { value: 5.2, positive: true }
+                };
+
+                Object.keys(changeElements).forEach(key => {
+                    const element = document.getElementById(key);
+                    const change = changeElements[key];
+                    element.className = `stat-change ${change.positive ? 'positive' : 'negative'}`;
+                    
+                    let text = '';
+                    switch(key) {
+                        case 'investmentChange':
+                            text = `${change.positive ? '↗' : '↘'} ${change.value}% this month`;
+                            break;
+                        case 'portfolioChange':
+                            text = `${change.positive ? '↗' : '↘'} ${Math.abs(change.value).toFixed(1)}% ROI`;
+                            break;
+                        case 'investmentsChange':
+                            text = `→ ${change.value} this month`;
+                            break;
+                        case 'returnChange':
+                            text = `${change.positive ? '↗' : '↘'} Above market`;
+                            break;
+                    }
+                    element.innerHTML = text;
+                });
+
+                // Update navigation badges
+                document.getElementById('portfolioCount').textContent = data.activeInvestments;
+
+                this.updateActiveInvestmentsList();
+            }
+
+            updateActiveInvestmentsList() {
+                const container = document.getElementById('activeInvestmentsList');
+                if (!container || !this.portfolioData.investments) return;
+
+                container.innerHTML = '';
+
+                this.portfolioData.investments.forEach(investment => {
+                    const item = document.createElement('div');
+                    item.className = 'opportunity-item';
+                    item.innerHTML = `
+                        <div class="opportunity-header">
+                            <div class="opportunity-logo">${investment.businessName.charAt(0)}</div>
+                            <div class="opportunity-info">
+                                <div class="opportunity-name">${investment.businessName}</div>
+                                <div class="opportunity-desc">Investment: ${this.formatCurrency(investment.amount)} • Current: ${this.formatCurrency(investment.currentValue)}</div>
+                                <div class="opportunity-tags">
+                                    <span class="tag">${investment.sector}</span>
+                                    <span class="tag">${investment.country}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="opportunity-metrics">
+                            <div class="metric">
+                                <div class="metric-value" style="color: ${investment.returnPercentage >= 0 ? 'var(--success)' : 'var(--error)'}">
+                                    ${investment.returnPercentage >= 0 ? '+' : ''}${investment.returnPercentage.toFixed(1)}%
+                                </div>
+                                <div class="metric-label">Return</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">${this.formatCurrency(investment.currentValue)}</div>
+                                <div class="metric-label">Value</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">${this.formatCurrency(investment.amount)}</div>
+                                <div class="metric-label">Invested</div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            filterOpportunities() {
+                const search = document.getElementById('opportunitySearch').value.toLowerCase();
+                const country = document.getElementById('countryFilter').value;
+                const industry = document.getElementById('industryFilter').value;
+                const readiness = document.getElementById('readinessFilter').value;
+
+                this.filteredOpportunities = this.opportunities.filter(opp => {
+                    const matchesSearch = !search || 
+                        opp.businessName.toLowerCase().includes(search) ||
+                        opp.description.toLowerCase().includes(search);
+                    
+                    const matchesCountry = !country || 
+                        opp.country.toLowerCase().replace(/\s+/g, '-') === country;
+                    
+                    const matchesIndustry = !industry || 
+                        opp.sector.toLowerCase() === industry;
+                    
+                    const matchesReadiness = !readiness || 
+                        opp.readinessScore >= parseInt(readiness);
+
+                    return matchesSearch && matchesCountry && matchesIndustry && matchesReadiness;
+                });
+
+                this.updateOpportunitiesUI();
+            }
+
+            updateOpportunitiesUI() {
+                // Update opportunities count
+                document.getElementById('opportunitiesCount').textContent = this.opportunities.length;
+
+                // Update hot opportunities (top 3)
+                const hotContainer = document.getElementById('hotOpportunities');
+                const hotOpportunities = this.opportunities
+                    .sort((a, b) => b.readinessScore - a.readinessScore)
+                    .slice(0, 3);
+
+                hotContainer.innerHTML = '';
+                hotOpportunities.forEach(opp => {
+                    const item = this.createOpportunityItem(opp, true);
+                    hotContainer.appendChild(item);
+                });
+
+                // Update full opportunities list
+                const listContainer = document.getElementById('opportunitiesList');
+                listContainer.innerHTML = '';
+
+                if (this.filteredOpportunities.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🔍</div>
+                            <div class="empty-state-title">No Opportunities Found</div>
+                            <div class="empty-state-desc">Try adjusting your filters or search terms</div>
+                        </div>
+                    `;
+                } else {
+                    this.filteredOpportunities.forEach(opp => {
+                        const item = this.createOpportunityItem(opp, false);
+                        listContainer.appendChild(item);
+                    });
+                }
+            }
+
+            createOpportunityItem(opportunity, isCompact = false) {
+                const item = document.createElement('div');
+                item.className = 'opportunity-item';
+                item.onclick = () => this.showInvestmentModal(opportunity);
+
+                const progressPercentage = (opportunity.raisedAmount / opportunity.fundingGoal) * 100;
+                
+                item.innerHTML = `
+                    <div class="opportunity-header">
+                        <div class="opportunity-logo">${opportunity.businessName.charAt(0)}</div>
+                        <div class="opportunity-info">
+                            <div class="opportunity-name">${opportunity.businessName}</div>
+                            <div class="opportunity-desc">${isCompact ? 
+                                opportunity.description.substring(0, 80) + '...' : 
+                                opportunity.description}</div>
+                            <div class="opportunity-tags">
+                                <span class="tag">${opportunity.sector}</span>
+                                <span class="tag">${opportunity.country}</span>
+                                <span class="tag">${opportunity.stage}</span>
+                                <span class="tag">Score: ${opportunity.readinessScore}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opportunity-metrics">
+                        <div class="metric">
+                            <div class="metric-value">${this.formatCurrency(opportunity.fundingGoal)}</div>
+                            <div class="metric-label">Target</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${progressPercentage.toFixed(0)}%</div>
+                            <div class="metric-label">Raised</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${opportunity.expectedReturn}%</div>
+                            <div class="metric-label">Expected Return</div>
                         </div>
                     </div>
                 `;
-                document.body.appendChild(loadingOverlay);
-                
-                // Keep body hidden during loading
-                document.body.style.visibility = 'hidden';
+
+                return item;
             }
-            
-            showDashboard() {
-                // Remove loading overlay
-                const loadingOverlay = document.getElementById('dashboard-loading');
-                if (loadingOverlay) {
-                    loadingOverlay.remove();
-                }
-                
-                // Show dashboard
-                document.body.style.visibility = 'visible';
-                console.log('🎉 Dashboard is now visible');
+
+            loadMockMarketInsights() {
+                document.getElementById('trendingSector').textContent = 'FinTech: +24%';
+                document.getElementById('topRegion').textContent = 'Nigeria: +18%';
+                document.getElementById('successCount').textContent = '12 exits';
+                document.getElementById('platformVolume').textContent = '$2.4M';
             }
-            
-            showErrorState(message, showRefresh = false) {
-                // Remove loading overlay
-                const loadingOverlay = document.getElementById('dashboard-loading');
-                if (loadingOverlay) {
-                    loadingOverlay.remove();
+
+            updateMarketInsights(data) {
+                if (!data) {
+                    this.loadMockMarketInsights();
+                    return;
                 }
+
+                document.getElementById('trendingSector').textContent = `${data.topPerformingSector}: +${data.trendingSectors[data.topPerformingSector]}%`;
+                document.getElementById('topRegion').textContent = 'Nigeria: +18%'; // Would come from data
+                document.getElementById('successCount').textContent = `${Math.floor(data.totalInvestments * 0.08)} exits`;
+                document.getElementById('platformVolume').textContent = this.formatCurrency(data.totalFundingRaised);
+            }
+
+            initializeCharts() {
+                this.initPortfolioChart();
+                this.initPerformanceChart();
+                this.initAllocationChart();
+                this.initDetailedPerformanceChart();
+                this.initMarketTrendsChart();
+            }
+
+            initPortfolioChart() {
+                const ctx = document.getElementById('portfolioChart').getContext('2d');
                 
-                // Show error page
-                document.body.innerHTML = `
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        min-height: 100vh;
-                        background: #000000;
-                        color: #ffffff;
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                        text-align: center;
-                        padding: 20px;
-                    ">
+                // Generate sample data for the last 12 months
+                const months = [];
+                const portfolioValues = [];
+                const investmentValues = [];
+                
+                for (let i = 11; i >= 0; i--) {
+                    const date = new Date();
+                    date.setMonth(date.getMonth() - i);
+                    months.push(date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }));
+                    
+                    // Simulate portfolio growth
+                    const baseValue = this.portfolioData ? this.portfolioData.totalInvestment : 15000;
+                    const currentValue = this.portfolioData ? this.portfolioData.currentValue : 17850;
+                    const growth = (currentValue - baseValue) / 12 * (12 - i);
+                    
+                    investmentValues.push(baseValue);
+                    portfolioValues.push(Math.max(baseValue + growth + (Math.random() - 0.5) * 1000, baseValue * 0.9));
+                }
+
+                this.charts.portfolio = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Portfolio Value',
+                            data: portfolioValues,
+                            borderColor: '#ffd700',
+                            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }, {
+                            label: 'Total Invested',
+                            data: investmentValues,
+                            borderColor: '#666',
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#ffffff'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: '#cccccc'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: '#cccccc',
+                                    callback: function(value) {
+                                        return '$' + (value / 1000).toFixed(0) + 'K';
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            initPerformanceChart() {
+                const ctx = document.getElementById('performanceChart')?.getContext('2d');
+                if (!ctx) return;
+
+                // Similar to portfolio chart but focused on returns
+                this.charts.performance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Returns (%)',
+                            data: [2.5, 5.8, 12.1, 8.7, 15.3, 19.0],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#ffffff' }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#cccccc' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            y: {
+                                ticks: { 
+                                    color: '#cccccc',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            initAllocationChart() {
+                const ctx = document.getElementById('allocationChart')?.getContext('2d');
+                if (!ctx) return;
+
+                const sectors = {};
+                if (this.portfolioData && this.portfolioData.investments) {
+                    this.portfolioData.investments.forEach(inv => {
+                        sectors[inv.sector] = (sectors[inv.sector] || 0) + inv.amount;
+                    });
+                }
+
+                const labels = Object.keys(sectors);
+                const data = Object.values(sectors);
+                const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24'];
+
+                this.charts.allocation = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors.slice(0, labels.length),
+                            borderColor: '#1a1a1a',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: '#ffffff' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            initDetailedPerformanceChart() {
+                const ctx = document.getElementById('detailedPerformanceChart')?.getContext('2d');
+                if (!ctx) return;
+
+                // Multi-line chart showing individual investment performance
+                const datasets = [];
+                const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24'];
+
+                if (this.portfolioData && this.portfolioData.investments) {
+                    this.portfolioData.investments.slice(0, 5).forEach((inv, index) => {
+                        const monthlyReturns = [];
+                        for (let i = 0; i < 6; i++) {
+                            monthlyReturns.push(Math.random() * inv.returnPercentage);
+                        }
+
+                        datasets.push({
+                            label: inv.businessName,
+                            data: monthlyReturns,
+                            borderColor: colors[index],
+                            backgroundColor: 'transparent',
+                            tension: 0.4
+                        });
+                    });
+                }
+
+                this.charts.detailedPerformance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: { color: '#ffffff' }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#cccccc' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            y: {
+                                ticks: { 
+                                    color: '#cccccc',
+                                    callback: function(value) {
+                                        return value.toFixed(1) + '%';
+                                    }
+                                },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            initMarketTrendsChart() {
+                const ctx = document.getElementById('marketTrendsChart')?.getContext('2d');
+                if (!ctx) return;
+
+                this.charts.marketTrends = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['FinTech', 'AgriTech', 'HealthTech', 'CleanTech', 'EdTech', 'Logistics'],
+                        datasets: [{
+                            label: 'Avg. Return (%)',
+                            data: [24, 18, 15, 12, 16, 20],
+                            backgroundColor: [
+                                '#ffd700',
+                                '#ff6b6b', 
+                                '#4ecdc4',
+                                '#45b7d1',
+                                '#f9ca24',
+                                '#a55eea'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#cccccc' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            y: {
+                                ticks: { 
+                                    color: '#cccccc',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            showSection(sectionName) {
+                // Update active navigation
+                document.querySelectorAll('[data-section]').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-section="${sectionName}"]`)?.classList.add('active');
+
+                // Hide all sections
+                document.querySelectorAll('.dashboard-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                // Show selected section
+                document.getElementById(`${sectionName}-section`).style.display = 'block';
+                this.currentSection = sectionName;
+
+                // Resize charts when section becomes visible
+                setTimeout(() => {
+                    Object.values(this.charts).forEach(chart => {
+                        if (chart) chart.resize();
+                    });
+                }, 100);
+
+                // Close mobile menu
+                this.closeMobileMenu();
+            }
+
+            showInvestmentModal(opportunity) {
+                document.getElementById('selectedOpportunity').innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding: 16px; background: var(--tertiary-dark); border-radius: 8px;">
+                        <div class="opportunity-logo" style="width: 48px; height: 48px; font-size: 20px;">${opportunity.businessName.charAt(0)}</div>
                         <div>
-                            <div style="font-size: 64px; margin-bottom: 24px; color: #ff4444;">⚠️</div>
-                            <h1 style="color: #ffd700; margin-bottom: 16px; font-size: 24px;">Dashboard Error</h1>
-                            <p style="margin-bottom: 24px; color: #cccccc; max-width: 400px;">${message}</p>
-                            <div>
-                                ${showRefresh ? `
-                                    <button onclick="window.location.reload()" style="
-                                        background: #ffd700;
-                                        color: #000000;
-                                        border: none;
-                                        padding: 12px 24px;
-                                        border-radius: 8px;
-                                        cursor: pointer;
-                                        font-weight: 600;
-                                        margin-right: 12px;
-                                    ">Refresh Dashboard</button>
-                                ` : ''}
-                                <button onclick="window.location.href='login.html'" style="
-                                    background: transparent;
-                                    color: #ffd700;
-                                    border: 2px solid #ffd700;
-                                    padding: 12px 24px;
-                                    border-radius: 8px;
-                                    cursor: pointer;
-                                    font-weight: 600;
-                                ">Sign In Again</button>
+                            <h4>${opportunity.businessName}</h4>
+                            <p style="color: var(--text-secondary); font-size: 14px; margin: 4px 0;">${opportunity.description.substring(0, 60)}...</p>
+                            <div style="display: flex; gap: 8px;">
+                                <span class="tag">${opportunity.sector}</span>
+                                <span class="tag">${opportunity.expectedReturn}% Expected Return</span>
                             </div>
                         </div>
                     </div>
                 `;
-                
-                document.body.style.visibility = 'visible';
+
+                this.selectedOpportunity = opportunity;
+                document.getElementById('investmentModal').classList.add('active');
+                document.getElementById('investmentAmount').focus();
             }
-            
-            handleInitializationError(error) {
-                console.error('🚨 Dashboard initialization error:', error);
-                
-                let errorMessage = 'Failed to load dashboard. Please try again.';
-                let showRefresh = true;
-                
-                if (error.message.includes('not authenticated')) {
-                    errorMessage = 'You need to sign in to access the investor dashboard.';
-                    showRefresh = false;
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 3000);
-                } else if (error.message.includes('Invalid user type')) {
-                    errorMessage = 'This dashboard is only available for investor accounts. Redirecting...';
-                    showRefresh = false;
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 3000);
-                } else if (error.message.includes('timeout')) {
-                    errorMessage = 'Loading took too long. Please check your connection and try again.';
+
+            closeInvestmentModal() {
+                document.getElementById('investmentModal').classList.remove('active');
+                document.getElementById('investmentForm').reset();
+                this.updateInvestmentSummary();
+            }
+
+            updateInvestmentSummary() {
+                const amount = parseFloat(document.getElementById('investmentAmount').value) || 0;
+                const fee = amount * 0.02; // 2% platform fee
+                const total = amount + fee;
+
+                document.getElementById('summaryAmount').textContent = this.formatCurrency(amount);
+                document.getElementById('summaryFee').textContent = this.formatCurrency(fee);
+                document.getElementById('summaryTotal').textContent = this.formatCurrency(total);
+            }
+
+            async submitInvestment() {
+                const amount = parseFloat(document.getElementById('investmentAmount').value);
+                const paymentMethod = document.getElementById('paymentMethod').value;
+
+                if (!amount || amount < this.selectedOpportunity.minimumInvestment) {
+                    this.showToast(`Minimum investment is ${this.formatCurrency(this.selectedOpportunity.minimumInvestment)}`, 'error');
+                    return;
                 }
-                
-                this.showErrorState(errorMessage, showRefresh);
-                
-                // Clear timeout
-                if (this.loadingTimeout) {
-                    clearTimeout(this.loadingTimeout);
+
+                try {
+                    // Show loading state
+                    const submitBtn = document.querySelector('#investmentForm button[type="submit"]');
+                    const originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'Processing...';
+                    submitBtn.disabled = true;
+
+                    // Submit investment
+                    const response = await bvesterAPI.investInBusiness(
+                        this.selectedOpportunity.id, 
+                        amount, 
+                        paymentMethod
+                    );
+
+                    if (response.success) {
+                        this.showToast('Investment submitted successfully!', 'success');
+                        this.closeInvestmentModal();
+                        // Reload portfolio data
+                        await this.loadPortfolioData();
+                        this.updatePortfolioUI();
+                    } else {
+                        throw new Error(response.message || 'Investment failed');
+                    }
+
+                } catch (error) {
+                    console.error('Investment error:', error);
+                    this.showToast('Investment failed. Please try again.', 'error');
+                } finally {
+                    const submitBtn = document.querySelector('#investmentForm button[type="submit"]');
+                    submitBtn.textContent = 'Confirm Investment';
+                    submitBtn.disabled = false;
                 }
+            }
+
+            toggleMobileMenu() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('mobileOverlay');
+                
+                sidebar.classList.toggle('mobile-visible');
+                overlay.classList.toggle('active');
+            }
+
+            closeMobileMenu() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('mobileOverlay');
+                
+                sidebar.classList.remove('mobile-visible');
+                overlay.classList.remove('active');
+            }
+
+            closeAllModals() {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+
+            showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = `toast ${type} show`;
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            showError(message) {
+                console.error(message);
+                this.showToast(message, 'error');
+            }
+
+            hideLoadingOverlay() {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.classList.add('hidden');
+                document.body.classList.remove('loading');
+                this.isLoading = false;
+            }
+
+            formatCurrency(amount) {
+                if (amount >= 1000000) {
+                    return `$${(amount / 1000000).toFixed(1)}M`;
+                }
+                if (amount >= 1000) {
+                    return `$${(amount / 1000).toFixed(0)}K`;
+                }
+                return `$${amount.toLocaleString()}`;
             }
         }
+
+        // Global functions for HTML onclick handlers
+        function showNotifications() {
+            dashboard.showToast('Notifications feature coming soon!', 'warning');
+        }
+
+        function showWithdrawModal() {
+            dashboard.showToast('Withdrawal feature coming soon!', 'warning');
+        }
+
+        function showInviteModal() {
+            dashboard.showToast('Invite friends feature coming soon!', 'warning');
+        }
+
+        function toggleMobileMenu() {
+            dashboard.toggleMobileMenu();
+        }
+
+        function showSection(section) {
+            dashboard.showSection(section);
+        }
+
+        async function logout() {
+            try {
+                await bvesterAPI.logout();
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Initialize dashboard
+        const dashboard = new InvestorDashboard();
         
-        // Initialize dashboard when DOM loads
         document.addEventListener('DOMContentLoaded', () => {
-            const dashboardManager = new DashboardManager();
-            dashboardManager.init();
+            dashboard.init();
+        });
+
+        // Handle page visibility changes for real-time updates
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && !dashboard.isLoading) {
+                // Refresh data when user returns to tab
+                setTimeout(() => {
+                    dashboard.loadDashboardData();
+                }, 1000);
+            }
         });
     </script>
-    </div> <!-- Close main-content -->
 </body>
 </html>
