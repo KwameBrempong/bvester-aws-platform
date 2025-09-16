@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester - The Future of Investment is Here</title>
+    <meta name="description" content="Join 50,000+ smart investors building wealth with AI-powered investment strategies. Get exclusive early access and $100 bonus!">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Bvester - The Future of Investment is Here">
+    <meta property="og:description" content="Join 50,000+ smart investors building wealth with AI-powered investment strategies">
+    <meta property="og:image" content="https://bvester.com/og-image.jpg">
+    <meta property="og:url" content="https://bvester.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-gold: #FFD700;
+            --secondary-gold: #FFA500;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+            --card-bg: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+            --success-green: #00ff88;
+            --danger-red: #ff4757;
+            --gradient-primary: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            --gradient-dark: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            --shadow-gold: 0 0 30px rgba(255, 215, 0, 0.3);
+            --shadow-dark: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 165, 0, 0.1) 0%, transparent 50%),
+                        var(--dark-bg);
+        }
+        
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,215,0,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)" /></svg>');
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-gold);
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--primary-gold);
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 100px;
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .hero-text h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #FFD700 50%, #FFA500 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-text .highlight {
+            color: var(--primary-gold);
+            position: relative;
+        }
+        
+        .hero-text .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-primary);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .hero-text p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+        
+        .live-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .cta-form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: var(--shadow-dark);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            background: var(--darker-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        .cta-button {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: var(--gradient-primary);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        .bonus-info {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+            border: 1px solid var(--success-green);
+        }
+        
+        .bonus-amount {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--success-green);
+        }
+        
+        /* Social Proof Notifications */
+        .social-proof-notifications {
+            position: fixed;
+            top: 50%;
+            left: 2rem;
+            transform: translateY(-50%);
+            z-index: 500;
+            max-width: 300px;
+        }
+        
+        .notification {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-gold);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateX(-100px);
+            animation: slideIn 0.5s ease forwards;
+            box-shadow: var(--shadow-dark);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .notification-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark-bg);
+        }
+        
+        .notification-text {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .notification-name {
+            font-weight: 600;
+            color: var(--primary-gold);
+        }
+        
+        .notification-action {
+            color: var(--text-secondary);
+        }
+        
+        .notification-amount {
+            font-weight: 700;
+            color: var(--success-green);
+        }
+        
+        /* Section Styling */
+        .section {
+            padding: 5rem 0;
+            position: relative;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Referral Section */
+        .referral-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .referral-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .referral-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .referral-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-gold);
+            border-color: var(--primary-gold);
+        }
+        
+        .referral-tier {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tier-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--dark-bg);
+        }
+        
+        .tier-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .tier-reward {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+        }
+        
+        .tier-requirements {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        
+        .share-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .share-button.whatsapp {
+            background: #25D366;
+        }
+        
+        .share-button.twitter {
+            background: #1DA1F2;
+        }
+        
+        .share-button.linkedin {
+            background: #0077B5;
+        }
+        
+        .share-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .referral-code-generator {
+            background: var(--darker-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .generated-code {
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-gold);
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px dashed var(--primary-gold);
+            margin: 1rem 0;
+        }
+        
+        .copy-button {
+            background: var(--gradient-primary);
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Leaderboard */
+        .leaderboard {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .leaderboard-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            background: var(--darker-bg);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .leaderboard-item:first-child {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+            border-color: var(--primary-gold);
+        }
+        
+        .leaderboard-rank {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+            width: 30px;
+        }
+        
+        .leaderboard-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .leaderboard-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark-bg);
+        }
+        
+        .leaderboard-name {
+            font-weight: 600;
+        }
+        
+        .leaderboard-referrals {
+            font-weight: 700;
+            color: var(--success-green);
+        }
+        
+        /* Activity Feed */
+        .activity-feed {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-bg);
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .activity-amount {
+            font-weight: 700;
+            color: var(--success-green);
+        }
+        
+        /* Success Stories Carousel */
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+        
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+            background: var(--card-bg);
+            padding: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .story-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--dark-bg);
+        }
+        
+        .story-quote {
+            font-size: 1.25rem;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .story-author {
+            font-weight: 700;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .story-profit {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--success-green);
+        }
+        
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .carousel-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid var(--primary-gold);
+            background: var(--card-bg);
+            color: var(--primary-gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-button:hover {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+        }
+        
+        /* Gamification Section */
+        .gamification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-gold);
+            border-color: var(--primary-gold);
+        }
+        
+        .game-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--dark-bg);
+        }
+        
+        .level-progress {
+            background: var(--darker-bg);
+            border-radius: 20px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .level-bar {
+            background: var(--card-bg);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .level-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .level-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .achievement-badges {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--dark-bg);
+        }
+        
+        .badge.locked {
+            background: var(--text-muted);
+            opacity: 0.5;
+        }
+        
+        /* FOMO Elements */
+        .fomo-bar {
+            position: fixed;
+            top: 80px;
+            right: 2rem;
+            background: var(--danger-red);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-dark);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+        
+        .fomo-text {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .countdown-item {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-gold);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        .countdown-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+            display: block;
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        .viewing-indicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--primary-gold);
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+        
+        .viewing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success-green);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Community Section */
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .community-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .community-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-gold);
+            border-color: var(--primary-gold);
+        }
+        
+        .community-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .community-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--dark-bg);
+        }
+        
+        .community-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .member-avatars {
+            display: flex;
+            margin: 1rem 0;
+        }
+        
+        .member-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--dark-bg);
+            margin-left: -5px;
+            border: 2px solid var(--card-bg);
+        }
+        
+        .member-avatar:first-child {
+            margin-left: 0;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--darker-bg);
+            padding: 3rem 0 1rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            margin-top: 5rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h4 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section a:hover {
+            color: var(--primary-gold);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            color: var(--text-muted);
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .live-stats {
+                justify-content: center;
+            }
+            
+            .social-proof-notifications {
+                display: none;
+            }
+            
+            .fomo-bar {
+                position: static;
+                margin: 1rem;
+                width: calc(100% - 2rem);
+            }
+            
+            .viewing-indicator {
+                position: static;
+                margin: 1rem;
+                justify-content: center;
+            }
+            
+            .referral-grid,
+            .gamification-grid,
+            .community-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-gold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">Bvester</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#referrals">Referrals</a></li>
+                <li><a href="#community">Community</a></li>
+                <li><a href="#rewards">Rewards</a></li>
+            </ul>
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live</span>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- FOMO Bar -->
+    <div class="fomo-bar">
+        <div class="fomo-text">LIMITED TIME: Only 47 spots left!</div>
+        <div style="font-size: 0.9rem;">Join now and get $100 bonus</div>
+    </div>
+    
+    <!-- Social Proof Notifications -->
+    <div class="social-proof-notifications" id="notifications">
+        <!-- Notifications will be dynamically inserted here -->
+    </div>
+    
+    <!-- Viewing Indicator -->
+    <div class="viewing-indicator">
+        <div class="viewing-dot"></div>
+        <span id="viewingCount">247 people viewing this page now</span>
+    </div>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Join <span class="highlight">50,000+</span> Smart Investors Building Wealth with AI</h1>
+                    <p>Get exclusive early access to our revolutionary investment platform and earn $100 bonus + referral rewards. Limited spots available!</p>
+                    
+                    <div class="live-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="userCount">52,847</span>
+                            <span class="stat-label">Active Users</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="investmentCount">$12.4M</span>
+                            <span class="stat-label">Invested Today</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">847%</span>
+                            <span class="stat-label">Avg Returns</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cta-form">
+                    <h3>Get Early Access + $100 Bonus</h3>
+                    <form id="signupForm">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="referralCode">Referral Code (Optional)</label>
+                            <input type="text" id="referralCode" name="referralCode" placeholder="Enter referral code">
+                        </div>
+                        <button type="submit" class="cta-button">
+                            Join Bvester Now - Get $100 Bonus
+                        </button>
+                    </form>
+                    
+                    <div class="bonus-info">
+                        <div class="bonus-amount">$100 Welcome Bonus</div>
+                        <div>+ Up to $500 referral rewards</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Referral Section -->
+    <section class="section" id="referrals">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Earn Massive Referral Rewards</h2>
+                <p class="section-subtitle">Get paid for every friend you invite. Unlimited earning potential with our tier-based reward system.</p>
+            </div>
+            
+            <div class="referral-grid">
+                <div class="referral-card">
+                    <div class="referral-tier">
+                        <div class="tier-icon">🥉</div>
+                        <div class="tier-info">
+                            <h3>Bronze Tier</h3>
+                            <div class="tier-reward">$50 per referral</div>
+                            <div class="tier-requirements">1-10 successful referrals</div>
+                        </div>
+                    </div>
+                    <p>Start earning immediately with your first referral. Perfect for beginners looking to make extra income.</p>
+                </div>
+                
+                <div class="referral-card">
+                    <div class="referral-tier">
+                        <div class="tier-icon">🥈</div>
+                        <div class="tier-info">
+                            <h3>Silver Tier</h3>
+                            <div class="tier-reward">$100 per referral</div>
+                            <div class="tier-requirements">11-25 successful referrals</div>
+                        </div>
+                    </div>
+                    <p>Double your earnings! Silver members also get exclusive investment opportunities and priority support.</p>
+                </div>
+                
+                <div class="referral-card">
+                    <div class="referral-tier">
+                        <div class="tier-icon">🥇</div>
+                        <div class="tier-info">
+                            <h3>Gold Tier</h3>
+                            <div class="tier-reward">$200 per referral</div>
+                            <div class="tier-requirements">25+ successful referrals</div>
+                        </div>
+                    </div>
+                    <p>Maximum rewards! Gold tier includes monthly bonus payments and VIP investment access.</p>
+                </div>
+            </div>
+            
+            <div class="share-buttons">
+                <button class="share-button whatsapp" onclick="shareOnWhatsApp()">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+                <button class="share-button twitter" onclick="shareOnTwitter()">
+                    <i class="fab fa-twitter"></i>
+                </button>
+                <button class="share-button linkedin" onclick="shareOnLinkedIn()">
+                    <i class="fab fa-linkedin"></i>
+                </button>
+            </div>
+            
+            <div class="referral-code-generator">
+                <h3>Your Unique Referral Code</h3>
+                <div class="generated-code" id="generatedCode">BVEST-USER-2024</div>
+                <button class="copy-button" onclick="copyReferralCode()">Copy Code</button>
+                <p>Share this code and earn rewards for every successful referral!</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Live Leaderboard -->
+    <section class="section">
+        <div class="container">
+            <div class="leaderboard">
+                <div class="leaderboard-header">
+                    <h3 class="leaderboard-title">
+                        <i class="fas fa-trophy"></i>
+                        Top Referrers This Week
+                    </h3>
+                </div>
+                
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank">1</div>
+                    <div class="leaderboard-user">
+                        <div class="leaderboard-avatar">MJ</div>
+                        <div class="leaderboard-name">Michael Johnson</div>
+                    </div>
+                    <div class="leaderboard-referrals">127 referrals</div>
+                </div>
+                
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank">2</div>
+                    <div class="leaderboard-user">
+                        <div class="leaderboard-avatar">SL</div>
+                        <div class="leaderboard-name">Sarah Lee</div>
+                    </div>
+                    <div class="leaderboard-referrals">89 referrals</div>
+                </div>
+                
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank">3</div>
+                    <div class="leaderboard-user">
+                        <div class="leaderboard-avatar">DW</div>
+                        <div class="leaderboard-name">David Wilson</div>
+                    </div>
+                    <div class="leaderboard-referrals">73 referrals</div>
+                </div>
+                
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank">4</div>
+                    <div class="leaderboard-user">
+                        <div class="leaderboard-avatar">EK</div>
+                        <div class="leaderboard-name">Emma Kim</div>
+                    </div>
+                    <div class="leaderboard-referrals">61 referrals</div>
+                </div>
+                
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank">5</div>
+                    <div class="leaderboard-user">
+                        <div class="leaderboard-avatar">RC</div>
+                        <div class="leaderboard-name">Robert Chen</div>
+                    </div>
+                    <div class="leaderboard-referrals">54 referrals</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Social Proof Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Join Thousands of Successful Investors</h2>
+                <p class="section-subtitle">Real people, real profits, real success stories from our community.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+                <div class="activity-feed">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--primary-gold);">
+                        <i class="fas fa-pulse"></i> Live Activity Feed
+                    </h3>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <strong>Alex M.</strong> just made <span class="activity-amount">$2,847</span> profit
+                            </div>
+                            <div class="activity-time">2 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <strong>Sarah K.</strong> just joined with referral code
+                            </div>
+                            <div class="activity-time">4 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <strong>Mike R.</strong> invested <span class="activity-amount">$5,000</span>
+                            </div>
+                            <div class="activity-time">7 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <strong>Jennifer L.</strong> reached Gold tier status
+                            </div>
+                            <div class="activity-time">12 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <strong>David P.</strong> earned <span class="activity-amount">$500</span> referral bonus
+                            </div>
+                            <div class="activity-time">15 minutes ago</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel">
+                    <div class="carousel-container" id="carousel">
+                        <div class="carousel-slide">
+                            <div class="story-avatar">JM</div>
+                            <div class="story-quote">"I made $50,000 in my first month with Bvester. The AI recommendations are incredible!"</div>
+                            <div class="story-author">James Mitchell</div>
+                            <div class="story-profit">+$50,247 profit</div>
+                        </div>
+                        
+                        <div class="carousel-slide">
+                            <div class="story-avatar">LR</div>
+                            <div class="story-quote">"The referral program paid for my vacation. I've earned over $15,000 just by sharing!"</div>
+                            <div class="story-author">Lisa Rodriguez</div>
+                            <div class="story-profit">+$15,680 referrals</div>
+                        </div>
+                        
+                        <div class="carousel-slide">
+                            <div class="story-avatar">TK</div>
+                            <div class="story-quote">"Best investment platform I've ever used. The gamification makes investing fun and profitable!"</div>
+                            <div class="story-author">Tom Kim</div>
+                            <div class="story-profit">+$78,342 profit</div>
+                        </div>
+                    </div>
+                    
+                    <div class="carousel-controls">
+                        <button class="carousel-button" onclick="previousSlide()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="carousel-button" onclick="nextSlide()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Gamification Section -->
+    <section class="section" id="rewards">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Level Up Your Investment Game</h2>
+                <p class="section-subtitle">Earn XP, unlock achievements, and compete with friends while building wealth.</p>
+            </div>
+            
+            <div class="gamification-grid">
+                <div class="game-card">
+                    <div class="game-icon">
+                        <i class="fas fa-level-up-alt"></i>
+                    </div>
+                    <h3>Level Progression</h3>
+                    <p>Advance through 50 levels and unlock exclusive features with each milestone.</p>
+                    
+                    <div class="level-progress">
+                        <div class="level-bar">
+                            <div class="level-fill" style="width: 65%;"></div>
+                        </div>
+                        <div class="level-text">
+                            <span>Level 12</span>
+                            <span>65% to Level 13</span>
+                        </div>
+                    </div>
+                    
+                    <div class="achievement-badges">
+                        <div class="badge">🏆</div>
+                        <div class="badge">💎</div>
+                        <div class="badge">⚡</div>
+                        <div class="badge locked">🔒</div>
+                        <div class="badge locked">🔒</div>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h3>Achievement System</h3>
+                    <p>Unlock 100+ achievements and earn bonus rewards for various milestones.</p>
+                    
+                    <div style="margin: 1.5rem 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>First Investment</span>
+                            <span style="color: var(--success-green);">✓ Completed</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>5 Successful Trades</span>
+                            <span style="color: var(--success-green);">✓ Completed</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>First Referral</span>
+                            <span style="color: var(--primary-gold);">In Progress</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <h3>Weekly Challenges</h3>
+                    <p>Complete weekly challenges to earn bonus XP and exclusive rewards.</p>
+                    
+                    <div class="countdown-timer">
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="challengeDays">4</span>
+                            <span class="countdown-label">Days</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="challengeHours">12</span>
+                            <span class="countdown-label">Hours</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="challengeMinutes">34</span>
+                            <span class="countdown-label">Min</span>
+                        </div>
+                    </div>
+                    
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Current: Make 3 profitable trades</p>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3>Rewards Store</h3>
+                    <p>Spend your earned points on exclusive rewards, bonuses, and premium features.</p>
+                    
+                    <div style="margin: 1.5rem 0; text-align: left;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <span>$50 Cash Bonus</span>
+                            <span style="color: var(--primary-gold);">5,000 pts</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <span>Premium Analysis</span>
+                            <span style="color: var(--primary-gold);">2,500 pts</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>VIP Support</span>
+                            <span style="color: var(--primary-gold);">1,000 pts</span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; font-size: 1.2rem; font-weight: 700; color: var(--success-green);">
+                        Your Points: 3,420
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Community Section -->
+    <section class="section" id="community">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Join Our Thriving Community</h2>
+                <p class="section-subtitle">Connect with like-minded investors, join investment clubs, and learn from expert mentors.</p>
+            </div>
+            
+            <div class="community-grid">
+                <div class="community-card">
+                    <div class="community-header">
+                        <div class="community-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <h3>Tech Stocks Club</h3>
+                            <div class="community-meta">2,847 members • Very Active</div>
+                        </div>
+                    </div>
+                    <p>Focus on technology stocks and emerging trends. Share insights and analysis with fellow tech investors.</p>
+                    
+                    <div class="member-avatars">
+                        <div class="member-avatar">JD</div>
+                        <div class="member-avatar">SK</div>
+                        <div class="member-avatar">ML</div>
+                        <div class="member-avatar">AR</div>
+                        <div class="member-avatar">+</div>
+                    </div>
+                    
+                    <button class="cta-button" style="width: 100%; margin-top: 1rem;">Join Club</button>
+                </div>
+                
+                <div class="community-card">
+                    <div class="community-header">
+                        <div class="community-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h3>Day Trading Masters</h3>
+                            <div class="community-meta">1,523 members • Active</div>
+                        </div>
+                    </div>
+                    <p>Advanced strategies for day trading and short-term investments. Expert-led discussions and live trading sessions.</p>
+                    
+                    <div class="member-avatars">
+                        <div class="member-avatar">TP</div>
+                        <div class="member-avatar">LK</div>
+                        <div class="member-avatar">MW</div>
+                        <div class="member-avatar">CN</div>
+                        <div class="member-avatar">+</div>
+                    </div>
+                    
+                    <button class="cta-button" style="width: 100%; margin-top: 1rem;">Join Club</button>
+                </div>
+                
+                <div class="community-card">
+                    <div class="community-header">
+                        <div class="community-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h3>Beginner's Circle</h3>
+                            <div class="community-meta">5,691 members • Very Active</div>
+                        </div>
+                    </div>
+                    <p>Perfect for new investors! Learn the basics, ask questions, and get mentorship from experienced traders.</p>
+                    
+                    <div class="member-avatars">
+                        <div class="member-avatar">NB</div>
+                        <div class="member-avatar">HY</div>
+                        <div class="member-avatar">KP</div>
+                        <div class="member-avatar">GM</div>
+                        <div class="member-avatar">+</div>
+                    </div>
+                    
+                    <button class="cta-button" style="width: 100%; margin-top: 1rem;">Join Club</button>
+                </div>
+                
+                <div class="community-card">
+                    <div class="community-header">
+                        <div class="community-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div>
+                            <h3>VIP Mentorship</h3>
+                            <div class="community-meta">Limited • Premium</div>
+                        </div>
+                    </div>
+                    <p>Exclusive access to top-performing mentors. One-on-one guidance and personalized investment strategies.</p>
+                    
+                    <div style="background: rgba(255, 215, 0, 0.1); padding: 1rem; border-radius: 10px; margin: 1rem 0; text-align: center;">
+                        <div style="color: var(--primary-gold); font-weight: 700;">Next Session</div>
+                        <div style="color: var(--text-secondary);">Tomorrow 2:00 PM EST</div>
+                    </div>
+                    
+                    <button class="cta-button" style="width: 100%; margin-top: 1rem;">Apply Now</button>
+                </div>
+            </div>
+            
+            <div style="background: var(--card-bg); border-radius: 20px; padding: 2rem; margin-top: 3rem; text-align: center; border: 1px solid rgba(255, 215, 0, 0.2);">
+                <h3 style="margin-bottom: 1rem; color: var(--primary-gold);">Upcoming Community Events</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 0.5rem;">Weekly Market Analysis</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">Friday 6:00 PM EST</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 0.5rem;">AI Trading Workshop</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">Saturday 2:00 PM EST</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 0.5rem;">Q&A with Top Traders</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">Sunday 4:00 PM EST</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Final CTA Section -->
+    <section class="section" style="background: var(--card-bg); border-top: 1px solid rgba(255, 215, 0, 0.2);">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h2 style="font-size: 3rem; font-weight: 900; margin-bottom: 1rem; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Don't Miss Out on the Future of Investing
+                </h2>
+                <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem;">
+                    Join 50,000+ investors who are already building wealth with AI-powered strategies. Limited early access spots remaining.
+                </p>
+                
+                <div class="countdown-timer" style="margin-bottom: 2rem;">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="finalDays">2</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="finalHours">14</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="finalMinutes">27</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="finalSeconds">43</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
+                </div>
+                
+                <button class="cta-button" style="font-size: 1.5rem; padding: 1.5rem 3rem; margin-bottom: 1rem;">
+                    Secure Your Spot Now - Get $100 Bonus
+                </button>
+                
+                <div style="display: flex; justify-content: center; gap: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+                    <div>✓ $100 Welcome Bonus</div>
+                    <div>✓ No Hidden Fees</div>
+                    <div>✓ 30-Day Money Back</div>
+                    <div>✓ 24/7 Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">AI Trading</a></li>
+                        <li><a href="#">Mobile App</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="#">Investment Clubs</a></li>
+                        <li><a href="#">Referral Program</a></li>
+                        <li><a href="#">Leaderboard</a></li>
+                        <li><a href="#">Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">API Docs</a></li>
+                        <li><a href="#">Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Risk Disclosure</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Bvester. All rights reserved. Investment involves risk. Past performance does not guarantee future results.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Live Counter Updates
+        function updateCounters() {
+            const userCount = document.getElementById('userCount');
+            const investmentCount = document.getElementById('investmentCount');
+            const viewingCount = document.getElementById('viewingCount');
+            
+            // Simulate real-time updates
+            setInterval(() => {
+                const currentUsers = parseInt(userCount.textContent.replace(',', ''));
+                userCount.textContent = (currentUsers + Math.floor(Math.random() * 3) + 1).toLocaleString();
+            }, 3000);
+            
+            setInterval(() => {
+                const currentInvestment = parseFloat(investmentCount.textContent.replace('$', '').replace('M', ''));
+                const newAmount = (currentInvestment + (Math.random() * 0.1)).toFixed(1);
+                investmentCount.textContent = `$${newAmount}M`;
+            }, 5000);
+            
+            setInterval(() => {
+                const viewers = 200 + Math.floor(Math.random() * 100);
+                viewingCount.textContent = `${viewers} people viewing this page now`;
+            }, 8000);
+        }
+        
+        // Social Proof Notifications
+        const notifications = [
+            { name: 'Alex M', action: 'just made $2,847 profit', type: 'profit' },
+            { name: 'Sarah K', action: 'joined with referral code', type: 'signup' },
+            { name: 'Mike R', action: 'invested $5,000', type: 'investment' },
+            { name: 'Lisa P', action: 'earned $200 referral bonus', type: 'referral' },
+            { name: 'David W', action: 'reached Gold tier', type: 'achievement' },
+            { name: 'Emma T', action: 'made $1,234 profit', type: 'profit' },
+            { name: 'John D', action: 'completed weekly challenge', type: 'challenge' },
+            { name: 'Maria G', action: 'joined Tech Stocks Club', type: 'community' }
+        ];
+        
+        function showNotification() {
+            const notification = notifications[Math.floor(Math.random() * notifications.length)];
+            const container = document.getElementById('notifications');
+            
+            const notificationEl = document.createElement('div');
+            notificationEl.className = 'notification';
+            
+            const initials = notification.name.split(' ').map(n => n[0]).join('');
+            
+            notificationEl.innerHTML = `
+                <div class="notification-content">
+                    <div class="notification-avatar">${initials}</div>
+                    <div class="notification-text">
+                        <span class="notification-name">${notification.name}</span><br>
+                        <span class="notification-action">${notification.action}</span>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(notificationEl);
+            
+            setTimeout(() => {
+                notificationEl.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notificationEl.remove();
+            }, 8000);
+        }
+        
+        // Show notifications periodically
+        setInterval(showNotification, 4000);
+        
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const endTime = now + (2 * 24 * 60 * 60 * 1000) + (14 * 60 * 60 * 1000) + (27 * 60 * 1000) + (43 * 1000); // 2 days, 14 hours, 27 minutes, 43 seconds from now
+            
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Update main countdown
+                document.getElementById('finalDays').textContent = days;
+                document.getElementById('finalHours').textContent = hours;
+                document.getElementById('finalMinutes').textContent = minutes;
+                document.getElementById('finalSeconds').textContent = seconds;
+                
+                // Update challenge countdown (different timer)
+                const challengeDays = Math.floor(Math.random() * 6) + 1;
+                const challengeHours = Math.floor(Math.random() * 23) + 1;
+                const challengeMinutes = Math.floor(Math.random() * 59) + 1;
+                
+                if (document.getElementById('challengeDays')) {
+                    document.getElementById('challengeDays').textContent = challengeDays;
+                    document.getElementById('challengeHours').textContent = challengeHours;
+                    document.getElementById('challengeMinutes').textContent = challengeMinutes;
+                }
+            }, 1000);
+        }
+        
+        // Carousel functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const totalSlides = slides.length;
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+        
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+        
+        function updateCarousel() {
+            const carousel = document.getElementById('carousel');
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+        
+        // Auto-advance carousel
+        setInterval(nextSlide, 5000);
+        
+        // Referral code generation
+        function generateReferralCode() {
+            const codes = ['BVEST-GOLD-2024', 'BVEST-VIP-2024', 'BVEST-PRO-2024', 'BVEST-ELITE-2024'];
+            return codes[Math.floor(Math.random() * codes.length)];
+        }
+        
+        function copyReferralCode() {
+            const codeElement = document.getElementById('generatedCode');
+            const code = codeElement.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const button = document.querySelector('.copy-button');
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--success-green)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'var(--gradient-primary)';
+                }, 2000);
+            });
+        }
+        
+        // Social sharing functions
+        function shareOnWhatsApp() {
+            const text = "🚀 Join me on Bvester and get $100 bonus! Use my referral code: BVEST-USER-2024";
+            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+        
+        function shareOnTwitter() {
+            const text = "🚀 Just joined @Bvester and already making profits! Join me and get $100 bonus with code: BVEST-USER-2024 #Investment #AI #Profits";
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+        
+        function shareOnLinkedIn() {
+            const text = "I'm excited to share that I've joined Bvester, an AI-powered investment platform that's revolutionizing how we build wealth. Join me and get $100 bonus!";
+            const url = `https://linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&summary=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+        
+        // Form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const referralCode = document.getElementById('referralCode').value;
+            
+            // Simulate form submission
+            const button = document.querySelector('.cta-button');
+            const originalText = button.textContent;
+            button.textContent = 'Processing...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                alert('🎉 Congratulations! You\'ve successfully joined Bvester and earned your $100 bonus! Check your email for next steps.');
+                button.textContent = 'Welcome to Bvester!';
+                button.style.background = 'var(--success-green)';
+            }, 2000);
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add scroll effects
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.animated-bg');
+            const speed = scrolled * 0.5;
+            
+            parallax.style.transform = `translateY(${speed}px)`;
+        });
+        
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounters();
+            updateCountdown();
+            
+            // Generate initial referral code
+            document.getElementById('generatedCode').textContent = generateReferralCode();
+            
+            // Show first notification after a delay
+            setTimeout(showNotification, 2000);
+            
+            // Add loading animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            // Observe all cards and sections
+            document.querySelectorAll('.referral-card, .game-card, .community-card, .section').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+        
+        // Add some extra viral features
+        
+        // Random success popup
+        function showSuccessPopup() {
+            const successes = [
+                "🎉 Someone just made $5,000 profit!",
+                "💰 New record: $50,000 earned in referrals this week!",
+                "🚀 1,000 new members joined today!",
+                "⭐ Gold tier member just earned $10,000!"
+            ];
+            
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--success-green);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                font-weight: 700;
+                z-index: 10000;
+                animation: slideInRight 0.5s ease;
+                box-shadow: var(--shadow-dark);
+            `;
+            
+            popup.textContent = successes[Math.floor(Math.random() * successes.length)];
+            document.body.appendChild(popup);
+            
+            setTimeout(() => {
+                popup.remove();
+            }, 4000);
+        }
+        
+        // Show success popup occasionally
+        setInterval(showSuccessPopup, 15000);
+        
+        // Add CSS animation for popup
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
