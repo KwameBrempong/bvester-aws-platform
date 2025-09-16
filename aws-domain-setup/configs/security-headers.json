@@ -1,0 +1,96 @@
+{
+  "responseHeadersPolicyConfig": {
+    "name": "bvester-security-headers",
+    "comment": "Security headers policy for bvester.com",
+    "securityHeadersConfig": {
+      "strictTransportSecurity": {
+        "accessControlMaxAgeSec": 31536000,
+        "includeSubdomains": true,
+        "preload": true,
+        "override": true
+      },
+      "contentTypeOptions": {
+        "override": true
+      },
+      "frameOptions": {
+        "frameOption": "DENY",
+        "override": true
+      },
+      "referrerPolicy": {
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "override": true
+      }
+    },
+    "customHeadersConfig": {
+      "items": [
+        {
+          "header": "X-Powered-By",
+          "value": "AWS CloudFront",
+          "override": true
+        },
+        {
+          "header": "X-Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.bvester.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'",
+          "override": true
+        },
+        {
+          "header": "X-Permitted-Cross-Domain-Policies",
+          "value": "none",
+          "override": true
+        },
+        {
+          "header": "X-DNS-Prefetch-Control",
+          "value": "on",
+          "override": true
+        },
+        {
+          "header": "X-Download-Options",
+          "value": "noopen",
+          "override": true
+        },
+        {
+          "header": "Cache-Control",
+          "value": "public, max-age=31536000, immutable",
+          "override": false
+        }
+      ]
+    },
+    "corsConfig": {
+      "accessControlAllowCredentials": false,
+      "accessControlAllowHeaders": {
+        "items": [
+          "Content-Type",
+          "Authorization",
+          "X-Requested-With",
+          "Accept",
+          "Origin"
+        ]
+      },
+      "accessControlAllowMethods": {
+        "items": [
+          "GET",
+          "HEAD",
+          "POST",
+          "PUT",
+          "DELETE",
+          "OPTIONS"
+        ]
+      },
+      "accessControlAllowOrigins": {
+        "items": [
+          "https://bvester.com",
+          "https://www.bvester.com"
+        ]
+      },
+      "accessControlExposeHeaders": {
+        "items": [
+          "Content-Length",
+          "Content-Type",
+          "ETag"
+        ]
+      },
+      "accessControlMaxAgeSec": 86400,
+      "originOverride": true
+    }
+  }
+}

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Campaign Update - Bvester Business</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: #000000;
+            padding: 16px 24px;
+            border-bottom: 1px solid #ffd700;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #ffed4a;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #ffd700 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: #cccccc;
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 215, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        /* Form Styles */
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            padding-right: 48px;
+            cursor: pointer;
+        }
+
+        /* File Upload */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px dashed rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            color: #ffd700;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .file-upload-icon {
+            font-size: 24px;
+        }
+
+        /* Tags Input */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            min-height: 54px;
+            align-items: center;
+        }
+
+        .tag {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .tag-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .tag-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Update Types */
+        .update-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .update-type {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .update-type:hover,
+        .update-type.selected {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .update-type-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .update-type-title {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .update-type-desc {
+            font-size: 12px;
+            color: #cccccc;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .preview-title {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-content {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        .preview-meta {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            font-size: 14px;
+        }
+
+        .meta-item {
+            color: #888;
+        }
+
+        .meta-value {
+            color: #ffd700;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 24px 16px;
+            }
+            
+            .glass-card {
+                padding: 24px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+            
+            .update-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <a href="startup-dashboard.html" class="back-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">📝 Post Campaign Update</h1>
+            <p class="page-subtitle">
+                Keep your investors informed with regular updates about your progress, milestones, and achievements
+            </p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="glass-card">
+            <form id="campaign-update-form">
+                <!-- Update Type Selection -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        🎯 Update Type
+                    </h2>
+                    <div class="update-types">
+                        <div class="update-type" onclick="selectUpdateType('milestone', this)">
+                            <span class="update-type-icon">🏆</span>
+                            <div class="update-type-title">Milestone</div>
+                            <div class="update-type-desc">Major achievement or goal reached</div>
+                        </div>
+                        <div class="update-type" onclick="selectUpdateType('financial', this)">
+                            <span class="update-type-icon">💰</span>
+                            <div class="update-type-title">Financial</div>
+                            <div class="update-type-desc">Revenue, funding, or financial metrics</div>
+                        </div>
+                        <div class="update-type" onclick="selectUpdateType('product', this)">
+                            <span class="update-type-icon">🚀</span>
+                            <div class="update-type-title">Product</div>
+                            <div class="update-type-desc">Product updates or new features</div>
+                        </div>
+                        <div class="update-type" onclick="selectUpdateType('team', this)">
+                            <span class="update-type-icon">👥</span>
+                            <div class="update-type-title">Team</div>
+                            <div class="update-type-desc">Team growth or key hires</div>
+                        </div>
+                        <div class="update-type" onclick="selectUpdateType('partnership', this)">
+                            <span class="update-type-icon">🤝</span>
+                            <div class="update-type-title">Partnership</div>
+                            <div class="update-type-desc">New partnerships or collaborations</div>
+                        </div>
+                        <div class="update-type" onclick="selectUpdateType('general', this)">
+                            <span class="update-type-icon">📢</span>
+                            <div class="update-type-title">General</div>
+                            <div class="update-type-desc">General company news</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        📋 Basic Information
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="update-title">Update Title *</label>
+                        <input 
+                            type="text" 
+                            id="update-title" 
+                            name="title" 
+                            class="form-input" 
+                            placeholder="e.g., Q4 Revenue Milestone Achieved - $2M ARR"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="update-summary">Executive Summary *</label>
+                        <textarea 
+                            id="update-summary" 
+                            name="summary" 
+                            class="form-input form-textarea" 
+                            placeholder="Brief overview of the update (1-2 sentences)..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="update-content">Detailed Update *</label>
+                        <textarea 
+                            id="update-content" 
+                            name="content" 
+                            class="form-input form-textarea" 
+                            style="min-height: 200px;"
+                            placeholder="Provide detailed information about your update. Include specific metrics, achievements, challenges, and next steps..."
+                            required
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- Metrics & Data -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        📊 Key Metrics (Optional)
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label" for="revenue">Monthly Revenue</label>
+                            <input 
+                                type="number" 
+                                id="revenue" 
+                                name="revenue" 
+                                class="form-input" 
+                                placeholder="e.g., 45000"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="customers">Customer Count</label>
+                            <input 
+                                type="number" 
+                                id="customers" 
+                                name="customers" 
+                                class="form-input" 
+                                placeholder="e.g., 2500"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="growth-rate">Growth Rate %</label>
+                            <input 
+                                type="number" 
+                                id="growth-rate" 
+                                name="growthRate" 
+                                class="form-input" 
+                                placeholder="e.g., 15"
+                                step="0.1"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="burn-rate">Monthly Burn</label>
+                            <input 
+                                type="number" 
+                                id="burn-rate" 
+                                name="burnRate" 
+                                class="form-input" 
+                                placeholder="e.g., 28500"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media & Attachments -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        📎 Media & Documents
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Attachments</label>
+                        <div class="file-upload">
+                            <input type="file" id="attachments" name="attachments" class="file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif">
+                            <label for="attachments" class="file-upload-label">
+                                <span class="file-upload-icon">📁</span>
+                                <span>Upload documents, images, or presentations</span>
+                            </label>
+                        </div>
+                        <div id="file-list" style="margin-top: 12px;"></div>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        🏷️ Tags
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Add Tags</label>
+                        <div class="tags-container" id="tags-container">
+                            <input 
+                                type="text" 
+                                class="tag-input" 
+                                placeholder="Add tags (press Enter)..."
+                                id="tag-input"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="preview-panel" id="preview-panel" style="display: none;">
+                    <div class="preview-title">
+                        👁️ Preview
+                    </div>
+                    <div class="preview-content" id="preview-content"></div>
+                    <div class="preview-meta">
+                        <div class="meta-item">
+                            Type: <span class="meta-value" id="preview-type">-</span>
+                        </div>
+                        <div class="meta-item">
+                            Date: <span class="meta-value" id="preview-date">-</span>
+                        </div>
+                        <div class="meta-item">
+                            Author: <span class="meta-value">Sarah Entrepreneur</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="showPreview()">
+                        👁️ Preview
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+                        💾 Save Draft
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        📤 Publish Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedUpdateType = null;
+        let tags = [];
+
+        // Update type selection
+        function selectUpdateType(type, element) {
+            selectedUpdateType = type;
+            
+            // Update UI
+            document.querySelectorAll('.update-type').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        // Tag management
+        document.getElementById('tag-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tagText = this.value.trim();
+                if (tagText && !tags.includes(tagText)) {
+                    tags.push(tagText);
+                    updateTagsDisplay();
+                    this.value = '';
+                }
+            }
+        });
+
+        function updateTagsDisplay() {
+            const container = document.getElementById('tags-container');
+            const input = document.getElementById('tag-input');
+            
+            // Clear existing tags
+            const existingTags = container.querySelectorAll('.tag');
+            existingTags.forEach(tag => tag.remove());
+            
+            // Add tags before input
+            tags.forEach(tagText => {
+                const tagEl = document.createElement('div');
+                tagEl.className = 'tag';
+                tagEl.innerHTML = `
+                    ${tagText}
+                    <span class="tag-remove" onclick="removeTag('${tagText}')">×</span>
+                `;
+                container.insertBefore(tagEl, input);
+            });
+        }
+
+        function removeTag(tagText) {
+            tags = tags.filter(tag => tag !== tagText);
+            updateTagsDisplay();
+        }
+
+        // File upload handling
+        document.getElementById('attachments').addEventListener('change', function(e) {
+            const fileList = document.getElementById('file-list');
+            const files = Array.from(e.target.files);
+            
+            fileList.innerHTML = '';
+            
+            files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px 0; color: #cccccc; font-size: 14px;';
+                fileItem.innerHTML = `
+                    <span>📄</span>
+                    <span>${file.name}</span>
+                    <span style="color: #888;">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        });
+
+        // Preview functionality
+        function showPreview() {
+            const title = document.getElementById('update-title').value;
+            const summary = document.getElementById('update-summary').value;
+            const content = document.getElementById('update-content').value;
+            
+            if (!title || !summary || !content) {
+                alert('Please fill in at least the title, summary, and content to preview.');
+                return;
+            }
+            
+            const previewPanel = document.getElementById('preview-panel');
+            const previewContent = document.getElementById('preview-content');
+            const previewType = document.getElementById('preview-type');
+            const previewDate = document.getElementById('preview-date');
+            
+            previewContent.innerHTML = `
+                <h3 style="color: #ffd700; margin-bottom: 12px;">${title}</h3>
+                <p style="color: #ffffff; margin-bottom: 16px; font-weight: 500;">${summary}</p>
+                <div style="color: #cccccc; line-height: 1.6;">${content.replace(/\n/g, '<br>')}</div>
+                ${tags.length > 0 ? `
+                    <div style="margin-top: 16px;">
+                        ${tags.map(tag => `<span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px;">${tag}</span>`).join('')}
+                    </div>
+                ` : ''}
+            `;
+            
+            previewType.textContent = selectedUpdateType ? selectedUpdateType.charAt(0).toUpperCase() + selectedUpdateType.slice(1) : 'General';
+            previewDate.textContent = new Date().toLocaleDateString();
+            
+            previewPanel.style.display = 'block';
+            previewPanel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Save draft
+        function saveDraft() {
+            const formData = new FormData(document.getElementById('campaign-update-form'));
+            const data = {
+                type: selectedUpdateType,
+                tags: tags,
+                timestamp: new Date().toISOString(),
+                status: 'draft'
+            };
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Simulate saving to local storage
+            localStorage.setItem('campaignUpdateDraft', JSON.stringify(data));
+            
+            alert('✅ Draft saved successfully! You can continue editing later.');
+        }
+
+        // Form submission
+        document.getElementById('campaign-update-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!selectedUpdateType) {
+                alert('Please select an update type.');
+                return;
+            }
+            
+            const formData = new FormData(this);
+            const data = {
+                type: selectedUpdateType,
+                tags: tags,
+                timestamp: new Date().toISOString(),
+                status: 'published'
+            };
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Simulate publishing
+            setTimeout(() => {
+                alert('🎉 Campaign update published successfully!\n\nYour investors will be notified and the update will appear on your campaign page.');
+                
+                // Clear form
+                this.reset();
+                selectedUpdateType = null;
+                tags = [];
+                updateTagsDisplay();
+                document.querySelectorAll('.update-type').forEach(el => el.classList.remove('selected'));
+                document.getElementById('preview-panel').style.display = 'none';
+                document.getElementById('file-list').innerHTML = '';
+                
+                // Option to go back to dashboard
+                if (confirm('Would you like to return to your dashboard?')) {
+                    window.location.href = 'startup-dashboard.html';
+                }
+            }, 1500);
+        });
+
+        // Load draft on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const draft = localStorage.getItem('campaignUpdateDraft');
+            if (draft) {
+                const data = JSON.parse(draft);
+                
+                if (confirm('You have a saved draft. Would you like to load it?')) {
+                    // Load form data
+                    document.getElementById('update-title').value = data.title || '';
+                    document.getElementById('update-summary').value = data.summary || '';
+                    document.getElementById('update-content').value = data.content || '';
+                    document.getElementById('revenue').value = data.revenue || '';
+                    document.getElementById('customers').value = data.customers || '';
+                    document.getElementById('growth-rate').value = data.growthRate || '';
+                    document.getElementById('burn-rate').value = data.burnRate || '';
+                    
+                    // Load update type
+                    if (data.type) {
+                        selectedUpdateType = data.type;
+                        const typeElement = document.querySelector(`[onclick*="${data.type}"]`);
+                        if (typeElement) typeElement.classList.add('selected');
+                    }
+                    
+                    // Load tags
+                    tags = data.tags || [];
+                    updateTagsDisplay();
+                }
+            }
+        });
+
+        console.log('Bvester Campaign Update Publisher - Keep Investors Informed');
+    </script>
+</body>
+</html>

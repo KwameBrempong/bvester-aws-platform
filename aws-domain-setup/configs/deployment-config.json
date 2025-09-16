@@ -1,0 +1,129 @@
+{
+  "deploymentConfig": {
+    "environment": "production",
+    "domain": "bvester.com",
+    "region": "us-east-1",
+    "stackPrefix": "bvester",
+    "tags": {
+      "Environment": "Production",
+      "Project": "BVester",
+      "Owner": "DevOps",
+      "CostCenter": "Engineering",
+      "Backup": "Required"
+    }
+  },
+  "s3Config": {
+    "websiteBucket": "bvester.com",
+    "wwwBucket": "www.bvester.com",
+    "deploymentBucket": "bvester.com-deployment",
+    "logsBucket": "bvester.com-logs",
+    "versioning": true,
+    "encryption": "AES256",
+    "lifecycleRules": [
+      {
+        "id": "DeleteOldDeployments",
+        "status": "Enabled",
+        "expirationInDays": 30,
+        "noncurrentVersionExpirationInDays": 7
+      }
+    ],
+    "corsRules": [
+      {
+        "allowedHeaders": ["*"],
+        "allowedMethods": ["GET", "HEAD"],
+        "allowedOrigins": [
+          "https://bvester.com",
+          "https://www.bvester.com"
+        ],
+        "maxAgeSeconds": 3000
+      }
+    ]
+  },
+  "cloudFrontConfig": {
+    "priceClass": "PriceClass_100",
+    "httpVersion": "http2and3",
+    "ipv6Enabled": true,
+    "compress": true,
+    "cachingEnabled": true,
+    "loggingEnabled": true,
+    "wafEnabled": true,
+    "customErrorPages": [
+      {
+        "errorCode": 404,
+        "responseCode": 404,
+        "responsePage": "/404.html"
+      },
+      {
+        "errorCode": 403,
+        "responseCode": 404,
+        "responsePage": "/404.html"
+      },
+      {
+        "errorCode": 500,
+        "responseCode": 500,
+        "responsePage": "/error.html"
+      }
+    ]
+  },
+  "sslConfig": {
+    "certificateValidation": "DNS",
+    "minimumProtocolVersion": "TLSv1.2_2021",
+    "sslSupportMethod": "sni-only",
+    "subjectAlternativeNames": [
+      "www.bvester.com",
+      "*.bvester.com"
+    ]
+  },
+  "route53Config": {
+    "createHostedZone": true,
+    "healthCheckEnabled": true,
+    "healthCheckPath": "/",
+    "healthCheckInterval": 30,
+    "failureThreshold": 3
+  },
+  "wafConfig": {
+    "scope": "CLOUDFRONT",
+    "defaultAction": "ALLOW",
+    "rules": [
+      {
+        "name": "AWSManagedRulesCommonRuleSet",
+        "priority": 1,
+        "managedRuleGroup": "AWSManagedRulesCommonRuleSet"
+      },
+      {
+        "name": "AWSManagedRulesKnownBadInputsRuleSet",
+        "priority": 2,
+        "managedRuleGroup": "AWSManagedRulesKnownBadInputsRuleSet"
+      },
+      {
+        "name": "RateLimitRule",
+        "priority": 3,
+        "rateLimit": 2000,
+        "action": "BLOCK"
+      }
+    ]
+  },
+  "monitoringConfig": {
+    "cloudWatchEnabled": true,
+    "logRetentionDays": 30,
+    "metricsEnabled": true,
+    "alarmsEnabled": true,
+    "snsTopicArn": "arn:aws:sns:us-east-1:ACCOUNT_ID:bvester-alerts"
+  },
+  "backupConfig": {
+    "enabled": true,
+    "retentionPeriod": 30,
+    "backupFrequency": "daily",
+    "crossRegionReplication": false
+  },
+  "cicdConfig": {
+    "buildCommand": "npm run build",
+    "buildDirectory": "dist",
+    "sourceDirectory": "../web-app",
+    "deployOnPush": true,
+    "testCommand": "npm test",
+    "lintCommand": "npm run lint",
+    "invalidateCloudFront": true,
+    "notificationEndpoint": "webhook-url-here"
+  }
+}

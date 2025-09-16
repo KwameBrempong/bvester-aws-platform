@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://bvester-backend.vercel.app https://bizinvest-hub-prod.firebaseapp.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    
+    <title>Investor Profile - Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            visibility: hidden;
+        }
+
+        /* Sidebar Styles - Matching investor dashboard */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-right: 1px solid #ffd700;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            margin-bottom: 24px;
+        }
+
+        .sidebar-logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #ffd700;
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            padding: 0;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 24px 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            color: #cccccc;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            min-height: 44px;
+            box-sizing: border-box;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border-left-color: #ffd700;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            border-left-color: #ffd700;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-badge {
+            background: #ffd700;
+            color: #000000;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #000000;
+            border-bottom: 1px solid #ffd700;
+            padding: 16px 24px;
+            margin-left: 280px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .breadcrumb {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn:hover {
+            background: #ffd700;
+            color: #000000;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+            background: #000000;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #cccccc;
+            font-size: 16px;
+        }
+
+        /* Profile Form */
+        .profile-form {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 800px;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #cccccc;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #000000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .profile-picture-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .current-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: 700;
+            font-size: 32px;
+        }
+
+        .upload-btn {
+            background: transparent;
+            color: #ffd700;
+            border: 2px solid #ffd700;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: #ffd700;
+            color: #000000;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #333;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #ffd700;
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            background: #ffed4a;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ffd700;
+            border: 2px solid #ffd700;
+        }
+
+        .btn-secondary:hover {
+            background: #ffd700;
+            color: #000000;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 90%;
+                max-width: 300px;
+            }
+
+            .top-nav, .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-container {
+                padding: 20px 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-picture-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">Bvester</a>
+            <div class="user-info">
+                <div class="user-avatar">JI</div>
+                <div class="user-details">
+                    <div class="user-name">John Investor</div>
+                    <div class="user-role">Premium Investor</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="investor-dashboard.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span>Overview</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="portfolio-management.html" class="nav-link">
+                        <span class="nav-icon">💼</span>
+                        <span>Portfolio</span>
+                        <span class="nav-badge">0</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="ai-matchmaking.html" class="nav-link">
+                        <span class="nav-icon">🤖</span>
+                        <span>AI Matchmaking</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-title">Investments</div>
+                <div class="nav-item">
+                    <a href="opportunities.html" class="nav-link">
+                        <span class="nav-icon">🚀</span>
+                        <span>Opportunities</span>
+                        <span class="nav-badge">0</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="investor-performance.html" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        <span>Performance</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="esg-impact-scoring.html" class="nav-link">
+                        <span class="nav-icon">🌍</span>
+                        <span>ESG Impact</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-title">Communication</div>
+                <div class="nav-item">
+                    <a href="investor-messages.html" class="nav-link">
+                        <span class="nav-icon">💬</span>
+                        <span>Messages</span>
+                        <span class="nav-badge">0</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="investor-learning-hub.html" class="nav-link">
+                        <span class="nav-icon">📚</span>
+                        <span>Learning Hub</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-title">Account</div>
+                <div class="nav-item">
+                    <a href="investor-profile.html" class="nav-link active">
+                        <span class="nav-icon">👤</span>
+                        <span>Profile</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="investor-settings.html" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="nav-icon">🚪</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <a href="investor-dashboard.html">Dashboard</a> / <span>Profile</span>
+            </div>
+            <a href="index.html" class="logout-btn">Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dashboard-container">
+            <!-- Header -->
+            <div class="page-header">
+                <h1 class="page-title">Investor Profile</h1>
+                <p class="page-subtitle">Manage your personal information and investment preferences</p>
+            </div>
+
+            <!-- Profile Form -->
+            <form class="profile-form" id="profileForm">
+                <!-- Personal Information -->
+                <div class="form-section">
+                    <h2 class="section-header">Personal Information</h2>
+                    
+                    <div class="profile-picture-section">
+                        <div class="current-avatar" id="profileAvatar">JI</div>
+                        <div>
+                            <button type="button" class="upload-btn">Upload New Photo</button>
+                            <p style="color: #888; font-size: 12px; margin-top: 4px;">JPG, PNG or GIF. Max size 2MB</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="firstName">First Name</label>
+                            <input type="text" id="firstName" class="form-input" placeholder="Enter your first name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="lastName">Last Name</label>
+                            <input type="text" id="lastName" class="form-input" placeholder="Enter your last name">
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" id="email" class="form-input" placeholder="Enter your email" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-input" placeholder="Enter your phone number">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bio">Bio</label>
+                        <textarea id="bio" class="form-textarea" placeholder="Tell us about yourself and your investment interests..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Location Information -->
+                <div class="form-section">
+                    <h2 class="section-header">Location</h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="country">Country</label>
+                            <select id="country" class="form-select">
+                                <option value="">Select your country</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="NG">Nigeria</option>
+                                <option value="GH">Ghana</option>
+                                <option value="KE">Kenya</option>
+                                <option value="ZA">South Africa</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="city">City</label>
+                            <input type="text" id="city" class="form-input" placeholder="Enter your city">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Investment Preferences -->
+                <div class="form-section">
+                    <h2 class="section-header">Investment Preferences</h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="investmentExperience">Investment Experience</label>
+                            <select id="investmentExperience" class="form-select">
+                                <option value="">Select your experience level</option>
+                                <option value="beginner">Beginner (0-1 years)</option>
+                                <option value="intermediate">Intermediate (2-5 years)</option>
+                                <option value="advanced">Advanced (5+ years)</option>
+                                <option value="professional">Professional Investor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="riskTolerance">Risk Tolerance</label>
+                            <select id="riskTolerance" class="form-select">
+                                <option value="">Select your risk tolerance</option>
+                                <option value="conservative">Conservative</option>
+                                <option value="moderate">Moderate</option>
+                                <option value="aggressive">Aggressive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="preferredIndustries">Preferred Industries</label>
+                            <input type="text" id="preferredIndustries" class="form-input" placeholder="e.g., Fintech, Healthcare, Agriculture">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="investmentRange">Typical Investment Range</label>
+                            <select id="investmentRange" class="form-select">
+                                <option value="">Select investment range</option>
+                                <option value="under-1k">Under $1,000</option>
+                                <option value="1k-5k">$1,000 - $5,000</option>
+                                <option value="5k-10k">$5,000 - $10,000</option>
+                                <option value="10k-25k">$10,000 - $25,000</option>
+                                <option value="25k-50k">$25,000 - $50,000</option>
+                                <option value="50k-plus">$50,000+</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Bvester API Client -->
+    <script src="js/api-client.js"></script>
+    
+    <!-- Authentication Guard -->
+    <script src="js/auth-guard.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            projectId: "bizinvest-hub-prod",
+            appId: "1:19849690024:web:134ceb9fc20fec428a3b9d",
+            storageBucket: "bizinvest-hub-prod.firebasestorage.app",
+            apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+            authDomain: "bizinvest-hub-prod.firebaseapp.com",
+            messagingSenderId: "19849690024",
+            measurementId: "G-3M77VNP2YC"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        let currentUser = null;
+
+        // Initialize profile page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Show content
+                document.body.style.visibility = 'visible';
+                
+                // Initialize auth and load data
+                await bvesterAPI.initializeAuth();
+                
+                if (bvesterAPI.currentUser) {
+                    currentUser = bvesterAPI.currentUser;
+                    updateUserInfo(currentUser);
+                    loadProfileData();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Error initializing profile page:', error);
+                document.body.style.visibility = 'visible';
+            }
+        });
+
+        function updateUserInfo(user) {
+            if (user && user.bvesterData) {
+                const displayName = user.bvesterData.profile?.displayName || 
+                                  `${user.bvesterData.firstName || ''} ${user.bvesterData.lastName || ''}`.trim() ||
+                                  user.email.split('@')[0];
+                
+                document.querySelector('.user-name').textContent = displayName;
+                document.querySelector('.user-avatar').textContent = displayName.charAt(0).toUpperCase();
+                document.getElementById('profileAvatar').textContent = displayName.charAt(0).toUpperCase();
+            }
+        }
+
+        function loadProfileData() {
+            if (!currentUser || !currentUser.bvesterData) return;
+
+            const profile = currentUser.bvesterData.profile || {};
+            const preferences = currentUser.bvesterData.investmentPreferences || {};
+
+            // Personal Information
+            document.getElementById('firstName').value = currentUser.bvesterData.firstName || '';
+            document.getElementById('lastName').value = currentUser.bvesterData.lastName || '';
+            document.getElementById('email').value = currentUser.email || '';
+            document.getElementById('phone').value = profile.phone || '';
+            document.getElementById('bio').value = profile.bio || '';
+
+            // Location
+            document.getElementById('country').value = profile.country || '';
+            document.getElementById('city').value = profile.city || '';
+
+            // Investment Preferences
+            document.getElementById('investmentExperience').value = preferences.experience || '';
+            document.getElementById('riskTolerance').value = preferences.riskTolerance || '';
+            document.getElementById('preferredIndustries').value = preferences.preferredIndustries?.join(', ') || '';
+            document.getElementById('investmentRange').value = preferences.investmentRange || '';
+        }
+
+        // Handle form submission
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const formData = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    profile: {
+                        phone: document.getElementById('phone').value,
+                        bio: document.getElementById('bio').value,
+                        country: document.getElementById('country').value,
+                        city: document.getElementById('city').value,
+                        displayName: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`.trim()
+                    },
+                    investmentPreferences: {
+                        experience: document.getElementById('investmentExperience').value,
+                        riskTolerance: document.getElementById('riskTolerance').value,
+                        preferredIndustries: document.getElementById('preferredIndustries').value.split(',').map(s => s.trim()).filter(s => s),
+                        investmentRange: document.getElementById('investmentRange').value
+                    }
+                };
+
+                // Update profile via API
+                const response = await bvesterAPI.updateUserProfile(formData);
+                
+                if (response.success) {
+                    alert('Profile updated successfully!');
+                    updateUserInfo({ bvesterData: formData });
+                } else {
+                    alert('Error updating profile. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                alert('Error saving profile. Please try again.');
+            }
+        });
+
+        function resetForm() {
+            if (confirm('Are you sure you want to reset all changes?')) {
+                loadProfileData();
+            }
+        }
+    </script>
+</body>
+</html>

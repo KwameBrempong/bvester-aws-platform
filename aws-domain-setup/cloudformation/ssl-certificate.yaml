@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SSL/TLS Certificate setup with AWS Certificate Manager for bvester.com'
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: bvester.com
+    Description: The primary domain name for the certificate
+    
+  HostedZoneId:
+    Type: String
+    Description: Route 53 Hosted Zone ID for DNS validation
+
+Resources:
+  # SSL Certificate with DNS validation
+  SSLCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      SubjectAlternativeNames:
+        - !Sub 'www.${DomainName}'
+        - !Sub '*.${DomainName}'
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZoneId
+        - DomainName: !Sub 'www.${DomainName}'
+          HostedZoneId: !Ref HostedZoneId
+        - DomainName: !Sub '*.${DomainName}'
+          HostedZoneId: !Ref HostedZoneId
+      CertificateTransparencyLoggingPreference: ENABLED
+      Tags:
+        - Key: Name
+          Value: !Sub '${DomainName}-ssl-certificate'
+        - Key: Environment
+          Value: Production
+        - Key: Project
+          Value: BVester
+
+Outputs:
+  CertificateArn:
+    Description: 'ARN of the SSL Certificate'
+    Value: !Ref SSLCertificate
+    Export:
+      Name: !Sub '${AWS::StackName}-CertificateArn'
+      
+  CertificateDomainName:
+    Description: 'Primary domain name of the certificate'
+    Value: !Ref DomainName
+    Export:
+      Name: !Sub '${AWS::StackName}-CertificateDomainName'

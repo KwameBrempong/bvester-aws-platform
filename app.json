@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "Bvester",
+    "slug": "bizinvest-hub",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#2E7D8F"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bizinvesthub.app",
+      "buildNumber": "1",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.bizinvesthub.app",
+      "versionCode": 2,
+      "permissions": [
+        "INTERNET"
+      ]
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1d4e506f-b75e-47ea-a691-7ab42ac6afcd"
+      }
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
+  }
+}

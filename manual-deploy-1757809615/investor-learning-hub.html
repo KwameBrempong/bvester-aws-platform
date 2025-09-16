@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://bvester-backend.vercel.app https://bizinvest-hub-prod.firebaseapp.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    
+    <title>Learning Hub - Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            visibility: hidden;
+        }
+
+        /* Sidebar Styles - Matching investor dashboard */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-right: 1px solid #ffd700;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            margin-bottom: 24px;
+        }
+
+        .sidebar-logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #ffd700;
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            padding: 0;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 24px 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            color: #cccccc;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            min-height: 44px;
+            box-sizing: border-box;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border-left-color: #ffd700;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            border-left-color: #ffd700;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-badge {
+            background: #ffd700;
+            color: #000000;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #000000;
+            border-bottom: 1px solid #ffd700;
+            padding: 16px 24px;
+            margin-left: 280px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .breadcrumb {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn:hover {
+            background: #ffd700;
+            color: #000000;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+            background: #000000;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #cccccc;
+            font-size: 16px;
+        }
+
+        /* Learning Categories */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .category-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+
+        .category-description {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .category-count {
+            color: #888;
+            font-size: 12px;
+        }
+
+        /* Resources Section */
+        .resources-section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .view-all-btn {
+            color: #ffd700;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .view-all-btn:hover {
+            color: #ffed4a;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .resource-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .resource-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-2px);
+        }
+
+        .resource-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .resource-icon {
+            font-size: 20px;
+            padding: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .resource-meta {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .resource-description {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .resource-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .resource-tag {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-message {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .empty-description {
+            font-size: 14px;
+            opacity: 0.7;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 90%;
+                max-width: 300px;
+            }
+
+            .top-nav, .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-container {
+                padding: 20px 16px;
+            }
+
+            .categories-grid,
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">Bvester</a>
+            <div class="user-info">
+                <div class="user-avatar">JI</div>
+                <div class="user-details">
+                    <div class="user-name">John Investor</div>
+                    <div class="user-role">Premium Investor</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="investor-dashboard.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span>Overview</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="portfolio-management.html" class="nav-link">
+                        <span class="nav-icon">💼</span>
+                        <span>Portfolio</span>
+                        <span class="nav-badge">0</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="ai-matchmaking.html" class="nav-link">
+                        <span class="nav-icon">🤖</span>
+                        <span>AI Matchmaking</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-title">Investments</div>
+                <div class="nav-item">
+                    <a href="opportunities.html" class="nav-link">
+                        <span class="nav-icon">🚀</span>
+                        <span>Opportunities</span>
+                        <span class="nav-badge">0</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="investor-performance.html" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        <span>Performance</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="esg-impact-scoring.html" class="nav-link">
+                        <span class="nav-icon">🌍</span>
+                        <span>ESG Impact</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-title">Communication</div>
+                <div class="nav-item">
+                    <a href="investor-messages.html" class="nav-link">
+                        <span class="nav-icon">💬</span>
+                        <span>Messages</span>
+                        <span class="nav-badge">0</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="investor-learning-hub.html" class="nav-link active">
+                        <span class="nav-icon">📚</span>
+                        <span>Learning Hub</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-title">Account</div>
+                <div class="nav-item">
+                    <a href="investor-profile.html" class="nav-link">
+                        <span class="nav-icon">👤</span>
+                        <span>Profile</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="investor-settings.html" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="nav-icon">🚪</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <a href="investor-dashboard.html">Dashboard</a> / <span>Learning Hub</span>
+            </div>
+            <a href="index.html" class="logout-btn">Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dashboard-container">
+            <!-- Header -->
+            <div class="page-header">
+                <h1 class="page-title">Investor Learning Hub</h1>
+                <p class="page-subtitle">Enhance your investment knowledge with curated resources for investors</p>
+            </div>
+
+            <!-- Learning Categories -->
+            <div class="categories-grid">
+                <div class="category-card">
+                    <span class="category-icon">📊</span>
+                    <h3 class="category-title">Investment Fundamentals</h3>
+                    <p class="category-description">Learn the basics of investing, risk management, and portfolio diversification</p>
+                    <p class="category-count">0 resources available</p>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">🌍</span>
+                    <h3 class="category-title">African Markets</h3>
+                    <p class="category-description">Understand African economies, market opportunities, and investment landscape</p>
+                    <p class="category-count">0 resources available</p>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">💡</span>
+                    <h3 class="category-title">Startup Evaluation</h3>
+                    <p class="category-description">Learn how to evaluate startups, analyze business models, and assess potential</p>
+                    <p class="category-count">0 resources available</p>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">⚖️</span>
+                    <h3 class="category-title">Legal & Compliance</h3>
+                    <p class="category-description">Understand investment regulations, tax implications, and legal frameworks</p>
+                    <p class="category-count">0 resources available</p>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">🎯</span>
+                    <h3 class="category-title">Investment Strategies</h3>
+                    <p class="category-description">Explore different investment approaches and advanced strategies</p>
+                    <p class="category-count">0 resources available</p>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">🌱</span>
+                    <h3 class="category-title">ESG & Impact Investing</h3>
+                    <p class="category-description">Learn about sustainable investing and measuring social impact</p>
+                    <p class="category-count">0 resources available</p>
+                </div>
+            </div>
+
+            <!-- Featured Resources -->
+            <div class="resources-section">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Resources</h2>
+                    <a href="#" class="view-all-btn">View All →</a>
+                </div>
+
+                <div class="empty-state">
+                    <div class="empty-icon">📚</div>
+                    <div class="empty-message">No Learning Resources Yet</div>
+                    <div class="empty-description">Educational content, courses, and resources for investors will be available here. Administrators can upload materials through the admin panel.</div>
+                </div>
+            </div>
+
+            <!-- Latest Courses -->
+            <div class="resources-section">
+                <div class="section-header">
+                    <h2 class="section-title">Investment Courses</h2>
+                    <a href="#" class="view-all-btn">View All →</a>
+                </div>
+
+                <div class="empty-state">
+                    <div class="empty-icon">🎓</div>
+                    <div class="empty-message">No Courses Available</div>
+                    <div class="empty-description">Interactive courses and educational programs tailored for investors will appear here once uploaded by administrators.</div>
+                </div>
+            </div>
+
+            <!-- Market Insights -->
+            <div class="resources-section">
+                <div class="section-header">
+                    <h2 class="section-title">Market Insights</h2>
+                    <a href="#" class="view-all-btn">View All →</a>
+                </div>
+
+                <div class="empty-state">
+                    <div class="empty-icon">📈</div>
+                    <div class="empty-message">No Market Insights</div>
+                    <div class="empty-description">Market analysis, trends, and investment insights will be shared here to help inform your investment decisions.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Bvester API Client -->
+    <script src="js/api-client.js"></script>
+    
+    <!-- Authentication Guard -->
+    <script src="js/auth-guard.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            projectId: "bizinvest-hub-prod",
+            appId: "1:19849690024:web:134ceb9fc20fec428a3b9d",
+            storageBucket: "bizinvest-hub-prod.firebasestorage.app",
+            apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+            authDomain: "bizinvest-hub-prod.firebaseapp.com",
+            messagingSenderId: "19849690024",
+            measurementId: "G-3M77VNP2YC"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        let currentUser = null;
+
+        // Initialize learning hub page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Show content
+                document.body.style.visibility = 'visible';
+                
+                // Initialize auth and load data
+                await bvesterAPI.initializeAuth();
+                
+                if (bvesterAPI.currentUser) {
+                    currentUser = bvesterAPI.currentUser;
+                    updateUserInfo(currentUser);
+                    loadLearningResources();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Error initializing learning hub:', error);
+                document.body.style.visibility = 'visible';
+            }
+        });
+
+        function updateUserInfo(user) {
+            if (user && user.bvesterData) {
+                const displayName = user.bvesterData.profile?.displayName || 
+                                  `${user.bvesterData.firstName || ''} ${user.bvesterData.lastName || ''}`.trim() ||
+                                  user.email.split('@')[0];
+                
+                document.querySelector('.user-name').textContent = displayName;
+                document.querySelector('.user-avatar').textContent = displayName.charAt(0).toUpperCase();
+            }
+        }
+
+        async function loadLearningResources() {
+            try {
+                // Load learning resources from API
+                const resourcesResponse = await bvesterAPI.getLearningResources('investor');
+                if (resourcesResponse && resourcesResponse.success && resourcesResponse.data.length > 0) {
+                    displayLearningResources(resourcesResponse.data);
+                    updateCategoryCounts(resourcesResponse.data);
+                }
+            } catch (error) {
+                console.error('Error loading learning resources:', error);
+                // Keep empty states visible
+            }
+        }
+
+        function displayLearningResources(resources) {
+            // Implementation for displaying resources when they're available
+            // For now, keep empty states until admin uploads content
+        }
+
+        function updateCategoryCounts(resources) {
+            // Update category counts based on available resources
+            const categories = {
+                'fundamentals': 0,
+                'african-markets': 0,
+                'startup-evaluation': 0,
+                'legal-compliance': 0,
+                'investment-strategies': 0,
+                'esg-impact': 0
+            };
+
+            resources.forEach(resource => {
+                if (resource.category && categories.hasOwnProperty(resource.category)) {
+                    categories[resource.category]++;
+                }
+            });
+
+            // Update category cards with actual counts
+            const categoryCards = document.querySelectorAll('.category-card');
+            const categoryKeys = Object.keys(categories);
+            
+            categoryCards.forEach((card, index) => {
+                if (index < categoryKeys.length) {
+                    const count = categories[categoryKeys[index]];
+                    const countElement = card.querySelector('.category-count');
+                    countElement.textContent = `${count} resource${count !== 1 ? 's' : ''} available`;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "Comment": "Create CNAME record for api.bvester.com",
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "api.bvester.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "bvester-backend-env.eba-iym3cqmz.eu-west-2.elasticbeanstalk.com"
+          }
+        ]
+      }
+    }
+  ]
+}

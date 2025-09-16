@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com https://*.firebaseapp.com https://*.googleapis.com https://us-central1-bizinvest-hub-prod.cloudfunctions.net; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://bvester-backend.vercel.app https://bizinvest-hub-prod.firebaseapp.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://us-central1-bizinvest-hub-prod.cloudfunctions.net https://*.googleapis.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    
+    <title>Login - Bvester</title>
+    
+    <!-- Expo redirect prevention script -->
+    <script>
+        // Prevent any Expo redirects
+        (function() {
+            const currentUrl = window.location.href;
+            if (currentUrl.includes('exp://') || currentUrl.includes('exp.host')) {
+                console.error('Expo URL detected in login, redirecting to web version');
+                window.location.replace(window.location.origin + '/login.html?v=20250128&web=true&t=' + Date.now());
+                return;
+            }
+        })();
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+            /* Remove opacity: 0 to prevent black screen */
+            opacity: 1;
+            transition: opacity 0.3s ease-in;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Hide body only while loading scripts, but show fallback content */
+        body.initializing {
+            opacity: 0.8;
+        }
+
+        /* Loading overlay for better UX - but don't block content */
+        .page-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: #ffd700;
+            /* Hide by default to prevent black screen */
+            display: none;
+        }
+
+        .page-loading.show {
+            display: flex;
+        }
+
+        .loading-spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #ffd700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: #000000;
+            padding: 16px 24px;
+            border-bottom: 1px solid #ffd700;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            color: #ffed4a;
+        }
+
+        /* Main content */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 80px);
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            background: #1a1a1a;
+            border: 1px solid #ffd700;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #cccccc;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #000000;
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
+            min-height: 44px;
+            box-sizing: border-box;
+            /* Mobile optimizations */
+            -webkit-appearance: none;
+            -webkit-border-radius: 8px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #ffd700;
+            color: #000000;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-btn:hover {
+            background: #ffed4a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .login-btn:disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #333;
+        }
+
+        .divider span {
+            margin: 0 16px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 14px 12px;
+            background: #333;
+            border: 1px solid #555;
+            border-radius: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-btn:hover {
+            background: #444;
+            border-color: #ffd700;
+        }
+
+        .login-links {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .login-links a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .login-links a:hover {
+            color: #ffed4a;
+            text-decoration: underline;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .forgot-password a {
+            color: #ffd700;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background: #ff4444;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message {
+            background: #10b981;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        /* COMPREHENSIVE MOBILE UI IMPROVEMENTS */
+        
+        /* Small Mobile: up to 480px */
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 12px 16px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .back-btn {
+                font-size: 14px;
+                gap: 6px;
+            }
+            
+            .login-container {
+                padding: 20px 16px;
+                min-height: calc(100vh - 70px);
+            }
+            
+            .login-card {
+                padding: 20px 16px;
+                margin: 0;
+                max-width: 100%;
+                border-radius: 16px;
+                box-shadow: 0 12px 30px rgba(255, 215, 0, 0.15);
+            }
+            
+            .login-header {
+                margin-bottom: 24px;
+                text-align: center;
+            }
+
+            .login-title {
+                font-size: 24px;
+                line-height: 28px;
+                margin-bottom: 6px;
+            }
+
+            .login-subtitle {
+                font-size: 14px;
+                line-height: 20px;
+                padding: 0 8px;
+            }
+            
+            .form-group {
+                margin-bottom: 20px;
+            }
+            
+            .form-label {
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+            
+            .form-input {
+                padding: 16px 16px;
+                font-size: 16px;
+                min-height: 50px;
+                border-radius: 12px;
+                border-width: 2px;
+                /* Prevent zoom on focus */
+                transform: none;
+                -webkit-appearance: none;
+            }
+            
+            .form-input:focus {
+                outline: none;
+                border-color: #ffd700;
+                box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+                transform: none;
+            }
+            
+            .login-btn {
+                width: 100%;
+                padding: 16px 20px;
+                font-size: 16px;
+                font-weight: 600;
+                min-height: 52px;
+                border-radius: 12px;
+                margin-bottom: 16px;
+                /* Improve touch response */
+                touch-action: manipulation;
+                user-select: none;
+            }
+            
+            .login-btn:hover,
+            .login-btn:active {
+                transform: translateY(-1px);
+            }
+            
+            .login-btn:disabled {
+                transform: none;
+            }
+            
+            .forgot-password {
+                margin-bottom: 20px;
+            }
+            
+            .forgot-password a {
+                font-size: 14px;
+                padding: 8px 4px;
+                display: inline-block;
+            }
+            
+            .divider {
+                margin: 20px 0;
+                font-size: 13px;
+            }
+
+            .social-login {
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            
+            .social-btn {
+                width: 100%;
+                padding: 14px 16px;
+                font-size: 14px;
+                font-weight: 500;
+                min-height: 48px;
+                border-radius: 10px;
+                touch-action: manipulation;
+                user-select: none;
+            }
+            
+            .social-btn:hover,
+            .social-btn:active {
+                background: #444;
+                transform: translateY(-1px);
+            }
+            
+            .login-links {
+                font-size: 14px;
+                line-height: 20px;
+                text-align: center;
+                padding: 12px 8px;
+            }
+            
+            .login-links a {
+                padding: 8px 4px;
+                display: inline-block;
+            }
+            
+            .error-message,
+            .success-message {
+                font-size: 14px;
+                line-height: 18px;
+                padding: 12px 16px;
+                border-radius: 10px;
+                margin-bottom: 16px;
+            }
+        }
+
+        /* Medium Mobile: 481px - 768px */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .nav-container {
+                padding: 14px 20px;
+            }
+            
+            .login-container {
+                padding: 30px 24px;
+            }
+            
+            .login-card {
+                padding: 32px 28px;
+                margin: 0 20px;
+                max-width: 450px;
+                border-radius: 16px;
+            }
+            
+            .login-title {
+                font-size: 26px;
+            }
+
+            .login-subtitle {
+                font-size: 15px;
+            }
+            
+            .form-input {
+                padding: 15px 18px;
+                min-height: 48px;
+                font-size: 16px;
+            }
+            
+            .login-btn {
+                padding: 15px 24px;
+                font-size: 16px;
+                min-height: 50px;
+            }
+            
+            .social-login {
+                flex-direction: row;
+                gap: 12px;
+            }
+            
+            .social-btn {
+                flex: 1;
+                padding: 14px 12px;
+                min-height: 46px;
+            }
+        }
+        
+        /* Tablet: 769px - 1024px */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .login-card {
+                max-width: 420px;
+                padding: 40px 36px;
+            }
+        }
+        
+        /* Touch-friendly improvements for all mobile devices */
+        @media (max-width: 768px) {
+            /* Ensure all interactive elements meet WCAG 2.1 AA minimum 44px touch target */
+            .form-input,
+            .login-btn,
+            .social-btn,
+            .back-btn,
+            .forgot-password a,
+            .login-links a {
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+            
+            /* Better focus styles for mobile */
+            .form-input:focus,
+            .login-btn:focus,
+            .social-btn:focus,
+            .back-btn:focus {
+                outline: 3px solid #ffd700;
+                outline-offset: 2px;
+            }
+            
+            /* Prevent text selection on buttons */
+            .login-btn,
+            .social-btn,
+            .back-btn {
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+            }
+            
+            /* Improve visual feedback */
+            .login-btn:active,
+            .social-btn:active {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
+            
+            /* Better error message visibility */
+            .error-message {
+                border: 2px solid #ff4444;
+                box-shadow: 0 4px 12px rgba(255, 68, 68, 0.2);
+            }
+            
+            .success-message {
+                border: 2px solid #10b981;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            }
+            
+            /* Improve page loading experience */
+            .page-loading {
+                font-size: 16px;
+                background: rgba(0, 0, 0, 0.9);
+            }
+            
+            .loading-spinner {
+                width: 50px;
+                height: 50px;
+                border-width: 4px;
+            }
+        }
+        
+        /* iOS specific improvements */
+        @supports (-webkit-touch-callout: none) {
+            @media (max-width: 768px) {
+                .form-input {
+                    /* Prevent zoom on iOS */
+                    font-size: 16px !important;
+                }
+                
+                .login-container {
+                    /* Account for iOS keyboard */
+                    min-height: calc(100vh - 120px);
+                }
+            }
+        }
+        
+        /* Android specific improvements */
+        @media (max-width: 768px) and (orientation: portrait) {
+            .login-container {
+                /* Better spacing for portrait mode */
+                padding-top: 10vh;
+                padding-bottom: 10vh;
+            }
+        }
+        
+        /* Landscape mode adjustments */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .login-container {
+                padding: 20px 16px;
+                min-height: calc(100vh - 60px);
+            }
+            
+            .login-card {
+                max-height: calc(100vh - 80px);
+                overflow-y: auto;
+            }
+            
+            .login-header {
+                margin-bottom: 16px;
+            }
+            
+            .login-title {
+                font-size: 20px;
+            }
+            
+            .login-subtitle {
+                font-size: 13px;
+            }
+        }
+
+        /* Emergency styles for better fallback */
+        .emergency-message {
+            background: #ff4444;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* Ensure form is always visible */
+        .login-container, .login-card {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Emergency fallback for users without JavaScript -->
+    <noscript>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; background: #ff4444; color: white; padding: 16px; text-align: center; z-index: 10000; font-weight: bold;">
+            JavaScript is required for Bvester to function properly. Please enable JavaScript in your browser settings and refresh the page.
+        </div>
+    </noscript>
+    <!-- Loading overlay - hidden by default -->
+    <div class="page-loading" id="page-loading">
+        <div>
+            <div class="loading-spinner"></div>
+            <div style="margin-top: 20px; font-size: 16px;">Loading Bvester Login...</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <a href="index.html" class="back-btn">
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Emergency message for critical issues -->
+    <div id="emergency-message" class="emergency-message">
+        Service temporarily unavailable. Please try again later or contact support at support@bvester.com
+    </div>
+
+    <!-- Main content -->
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Sign in to your Bvester account</p>
+            </div>
+
+            <div class="error-message" id="error-message"></div>
+            <div class="success-message" id="success-message"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="Enter your email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Enter your password"
+                        required
+                    >
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#" onclick="handleForgotPassword()">Forgot your password?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="login-btn">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-login">
+                <a href="#" class="social-btn" onclick="socialLogin('google')">
+                    Google
+                </a>
+                <a href="#" class="social-btn" onclick="socialLogin('linkedin')">
+                    LinkedIn
+                </a>
+            </div>
+
+            <div class="login-links">
+                Don't have an account? <a href="signup.html">Sign up here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Bvester API Client with error handling -->
+    <script>
+        // Enhanced API client loading with better fallbacks
+        function loadAPIClient() {
+            return new Promise((resolve) => {
+                const apiScript = document.createElement('script');
+                apiScript.src = 'js/api-client.js';
+                
+                apiScript.onload = function() {
+                    console.log('✅ API client loaded successfully');
+                    resolve(true);
+                };
+                
+                apiScript.onerror = function() {
+                    console.warn('⚠️ API client failed to load, creating fallback');
+                    createFallbackAPI();
+                    resolve(false);
+                };
+                
+                document.head.appendChild(apiScript);
+                
+                // Timeout fallback
+                setTimeout(() => {
+                    if (typeof bvesterAPI === 'undefined') {
+                        console.warn('⚠️ API client load timeout, creating fallback');
+                        createFallbackAPI();
+                        resolve(false);
+                    }
+                }, 5000);
+            });
+        }
+
+        function createFallbackAPI() {
+            window.bvesterAPI = {
+                login: async function(email, password) {
+                    throw new Error('Service temporarily unavailable. Please try again in a few minutes or contact support.');
+                },
+                initializeAuth: async function() {
+                    console.warn('Auth service unavailable in fallback mode');
+                    return null;
+                },
+                currentUser: null
+            };
+        }
+
+        function addFallbackFunctionality() {
+            // Add basic form validation even without API
+            const loginForm = document.getElementById('login-form');
+            if (loginForm && !loginForm.hasAttribute('data-fallback-added')) {
+                loginForm.setAttribute('data-fallback-added', 'true');
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    showError('Service temporarily unavailable. Please try again later or contact support at support@bvester.com');
+                });
+            }
+        }
+
+        // Load API client asynchronously
+        loadAPIClient();
+    </script>
+    
+    <script>
+        // IMMEDIATE PAGE VISIBILITY FIX - Run first
+        (function() {
+            // Force page to be visible immediately
+            document.documentElement.style.visibility = 'visible';
+            document.documentElement.style.opacity = '1';
+            
+            // Add emergency styles inline if needed
+            const emergencyStyle = document.createElement('style');
+            emergencyStyle.textContent = `
+                body { opacity: 1 !important; visibility: visible !important; }
+                .login-container, .login-card { display: block !important; }
+                .page-loading { display: none !important; }
+            `;
+            document.head.appendChild(emergencyStyle);
+        })();
+
+        // Enhanced error handling to prevent black screen
+        window.addEventListener('error', function(e) {
+            console.error('Login page error:', e.error);
+            // Ensure page stays visible on any error
+            document.body.style.opacity = '1';
+            document.body.style.visibility = 'visible';
+            
+            // Show emergency message if critical error
+            const emergencyMsg = document.getElementById('emergency-message');
+            if (emergencyMsg && (e.error.message.includes('Firebase') || e.error.message.includes('API'))) {
+                emergencyMsg.style.display = 'block';
+            }
+        });
+
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            // Don't let promise rejections break the page
+            document.body.style.opacity = '1';
+            document.body.style.visibility = 'visible';
+        });
+
+        // Enhanced page loading with fallback
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Login page DOM loaded successfully');
+            
+            // Ensure page is visible even if scripts fail
+            document.body.classList.add('loaded');
+            document.body.classList.remove('initializing');
+            
+            // Hide loading overlay immediately
+            const loadingOverlay = document.getElementById('page-loading');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+            
+            // Add basic functionality even without API
+            if (typeof bvesterAPI === 'undefined') {
+                console.warn('API client not loaded, adding fallback functionality');
+                addFallbackFunctionality();
+            }
+        });
+
+        // Show loading only when actually processing
+        function showPageLoading() {
+            const loadingOverlay = document.getElementById('page-loading');
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('show');
+            }
+        }
+
+        function hidePageLoading() {
+            const loadingOverlay = document.getElementById('page-loading');
+            if (loadingOverlay) {
+                loadingOverlay.classList.remove('show');
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        // Enhanced Firebase initialization with timeout protection
+        setTimeout(function() {
+            try {
+                // Firebase configuration
+                const firebaseConfig = {
+                    projectId: "bizinvest-hub-prod",
+                    appId: "1:19849690024:web:134ceb9fc20fec428a3b9d",
+                    storageBucket: "bizinvest-hub-prod.firebasestorage.app",
+                    apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+                    authDomain: "bizinvest-hub-prod.firebaseapp.com",
+                    messagingSenderId: "19849690024",
+                    measurementId: "G-3M77VNP2YC"
+                };
+
+                // Check if Firebase is available with timeout
+                let firebaseCheckAttempts = 0;
+                const maxFirebaseAttempts = 20; // 10 seconds total
+                
+                const initFirebase = () => {
+                    if (typeof firebase !== 'undefined' && firebase.app) {
+                        try {
+                            firebase.initializeApp(firebaseConfig);
+                            console.log('\u2705 Firebase initialized successfully');
+                        } catch (initError) {
+                            if (initError.code === 'app/duplicate-app') {
+                                console.log('\u2705 Firebase already initialized');
+                            } else {
+                                console.error('\u274c Firebase initialization error:', initError);
+                            }
+                        }
+                    } else {
+                        firebaseCheckAttempts++;
+                        if (firebaseCheckAttempts < maxFirebaseAttempts) {
+                            setTimeout(initFirebase, 500);
+                        } else {
+                            console.warn('\u26a0\ufe0f Firebase SDK not available after timeout');
+                            const emergencyMsg = document.getElementById('emergency-message');
+                            if (emergencyMsg) {
+                                emergencyMsg.textContent = 'Authentication service temporarily unavailable. Please try again later.';
+                                emergencyMsg.style.display = 'block';
+                            }
+                        }
+                    }
+                };
+                
+                initFirebase();
+                
+            } catch (error) {
+                console.error('\u274c Firebase setup error:', error);
+                // Don't let Firebase errors break the page
+                document.body.style.opacity = '1';
+                document.body.style.visibility = 'visible';
+            }
+        }, 1000); // Wait 1 second for page to stabilize
+
+        // Form handling with real authentication
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const loginForm = document.getElementById('login-form');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        await handleLogin();
+                    });
+                } else {
+                    console.error('Login form not found');
+                }
+            } catch (error) {
+                console.error('Error setting up form listener:', error);
+            }
+        });
+
+        async function handleLogin() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('login-btn');
+
+            // Validation
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
+
+            try {
+                // Show loading state
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Signing In...';
+                hideMessages();
+
+                // Authenticate with Firebase and backend
+                const userData = await bvesterAPI.login(email, password);
+
+                showSuccess('Login successful! Redirecting to dashboard...');
+
+                // Redirect based on user type after successful login
+                setTimeout(() => {
+                    const userType = userData.data?.userType || 'investor';
+                    console.log('🔄 Redirecting user with type:', userType);
+                    if (userType === 'investor') {
+                        console.log('➡️ Redirecting to investor dashboard');
+                        window.location.href = 'investor-dashboard.html';
+                    } else if (userType === 'business' || userType === 'startup') {
+                        console.log('➡️ Redirecting to business/startup dashboard');
+                        window.location.href = 'startup-dashboard.html';
+                    } else {
+                        console.log('➡️ Redirecting to homepage (unknown user type)');
+                        // Default redirect to main app
+                        window.location.href = 'index.html';
+                    }
+                }, 1500);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                // Enhanced error handling with specific user-friendly messages
+                let errorMessage = 'Login failed. Please try again.';
+                let showPasswordReset = false;
+                let showContactSupport = false;
+                
+                // Specific Firebase Auth error codes
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email address. Please check your email or sign up for a new account.';
+                        break;
+                        
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password. Please check your password and try again.';
+                        showPasswordReset = true;
+                        break;
+                        
+                    case 'auth/invalid-email':
+                        errorMessage = 'Please enter a valid email address.';
+                        break;
+                        
+                    case 'auth/user-disabled':
+                        errorMessage = 'Your account has been disabled for security reasons. Please contact our support team for assistance.';
+                        showContactSupport = true;
+                        break;
+                        
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed login attempts. Please wait a few minutes before trying again or reset your password.';
+                        showPasswordReset = true;
+                        break;
+                        
+                    case 'auth/network-request-failed':
+                        errorMessage = 'Network connection failed. Please check your internet connection and try again.';
+                        break;
+                        
+                    case 'auth/internal-error':
+                        errorMessage = 'An internal error occurred. Please try again in a few moments.';
+                        break;
+                        
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Invalid login credentials. Please check your email and password.';
+                        showPasswordReset = true;
+                        break;
+                        
+                    default:
+                        // Check for custom error messages
+                        if (error.message.includes('user-not-found')) {
+                            errorMessage = 'No account found with this email address.';
+                        } else if (error.message.includes('wrong-password')) {
+                            errorMessage = 'Incorrect password. Please try again.';
+                            showPasswordReset = true;
+                        } else if (error.message.includes('network')) {
+                            errorMessage = 'Network connection issue. Please check your internet and try again.';
+                        }
+                        break;
+                }
+                
+                // Show enhanced error message with helpful actions
+                showEnhancedError(errorMessage, showPasswordReset, showContactSupport);
+                
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
+            }
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        async function socialLogin(provider) {
+            try {
+                let authProvider;
+                if (provider === 'google') {
+                    authProvider = new firebase.auth.GoogleAuthProvider();
+                } else if (provider === 'linkedin') {
+                    // LinkedIn provider setup would go here
+                    showError('LinkedIn login not yet implemented. Please use email/password.');
+                    return;
+                }
+
+                const result = await firebase.auth().signInWithPopup(authProvider);
+                showSuccess('Login successful! Setting up your account...');
+                
+                // Create user profile in backend if needed
+                setTimeout(() => {
+                    window.location.href = 'investor-dashboard.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Social login error:', error);
+                showError('Social login failed. Please try email/password login.');
+            }
+        }
+
+        function handleForgotPassword() {
+            const email = document.getElementById('email').value.trim();
+            
+            // If email is provided, redirect with it as parameter
+            if (email && isValidEmail(email)) {
+                window.location.href = `password-reset.html?email=${encodeURIComponent(email)}`;
+            } else {
+                // Redirect to password reset page without email
+                window.location.href = 'password-reset.html';
+            }
+        }
+
+        // Legacy function for backwards compatibility (kept for any existing references)
+        async function showForgotPassword() {
+            handleForgotPassword();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            
+            // Auto-hide after 7 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 7000);
+        }
+
+        function showEnhancedError(message, showPasswordReset = false, showContactSupport = false) {
+            const errorDiv = document.getElementById('error-message');
+            
+            let enhancedMessage = message;
+            
+            // Add helpful action buttons
+            if (showPasswordReset || showContactSupport) {
+                enhancedMessage += '<br><br>';
+                
+                if (showPasswordReset) {
+                    enhancedMessage += `
+                        <button onclick="handleForgotPassword()" style="
+                            background: #ffd700;
+                            color: #000;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-weight: 600;
+                            margin-right: 8px;
+                            font-size: 12px;
+                        ">Reset Password</button>
+                    `;
+                }
+                
+                if (showContactSupport) {
+                    enhancedMessage += `
+                        <button onclick="contactSupport()" style="
+                            background: transparent;
+                            color: #ffd700;
+                            border: 1px solid #ffd700;
+                            padding: 8px 16px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-weight: 600;
+                            font-size: 12px;
+                        ">Contact Support</button>
+                    `;
+                }
+            }
+            
+            errorDiv.innerHTML = enhancedMessage;
+            errorDiv.style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            
+            // Auto-hide after 10 seconds (longer for enhanced messages)
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 10000);
+        }
+
+        function contactSupport() {
+            // For now, open email client
+            const email = 'support@bvester.com';
+            const subject = 'Account Access Issue';
+            const body = 'Hello Bvester Support,\n\nI am having trouble accessing my account. Please help me resolve this issue.\n\nEmail: ' + document.getElementById('email').value + '\n\nThank you.';
+            
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        // Enhanced initialization with proper error handling
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Check for URL parameters first
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('session_expired') === 'true') {
+                    showError('Your session has expired. Please sign in again to continue.');
+                } else if (urlParams.get('reset_success') === 'true') {
+                    showSuccess('Password reset email sent! Check your inbox for instructions. You can sign in with your new password once you reset it.');
+                }
+                
+                // Wait for API client to be ready
+                let apiReady = false;
+                let attempts = 0;
+                const maxAttempts = 10;
+                
+                while (!apiReady && attempts < maxAttempts) {
+                    if (typeof bvesterAPI !== 'undefined') {
+                        apiReady = true;
+                        break;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    attempts++;
+                }
+                
+                if (apiReady) {
+                    try {
+                        await bvesterAPI.initializeAuth();
+                        
+                        // If user is already logged in, redirect to dashboard
+                        if (bvesterAPI.currentUser) {
+                            const userType = bvesterAPI.currentUser.bvesterData?.userType || 'investor';
+                            console.log('👤 User already logged in with type:', userType);
+                            if (userType === 'investor') {
+                                console.log('➡️ Redirecting already-logged-in user to investor dashboard');
+                                window.location.href = 'investor-dashboard.html';
+                            } else if (userType === 'business' || userType === 'startup') {
+                                console.log('➡️ Redirecting already-logged-in user to business/startup dashboard');
+                                window.location.href = 'startup-dashboard.html';
+                            }
+                        }
+                        
+                        console.log('✅ Bvester Login - Authentication Ready');
+                    } catch (authError) {
+                        console.warn('⚠️ Auth initialization failed:', authError);
+                        // Page is still functional without auth
+                    }
+                } else {
+                    console.warn('⚠️ API client not available, login will show error message');
+                    addFallbackFunctionality();
+                }
+                
+            } catch (error) {
+                console.error('❌ Page initialization error:', error);
+                // Don't let errors break the page
+            }
+        });
+
+        // Add real-time form validation
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        emailInput.addEventListener('blur', function() {
+            if (this.value && !isValidEmail(this.value)) {
+                this.style.borderColor = '#ff4444';
+            } else {
+                this.style.borderColor = '#333';
+            }
+        });
+
+        passwordInput.addEventListener('input', function() {
+            if (this.value.length > 0 && this.value.length < 6) {
+                this.style.borderColor = '#ff4444';
+            } else {
+                this.style.borderColor = '#333';
+            }
+        });
+    </script>
+</body>
+</html>

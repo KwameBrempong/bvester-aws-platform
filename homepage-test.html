@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester - Where African Innovation Meets Global Investment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+        
+        /* Navigation Header */
+        .nav-container {
+            background: #ffffff;
+            padding: 16px 24px;
+            border-bottom: 1px solid #f3f4f6;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 8px;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000000;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .nav-item {
+            padding: 8px 16px;
+            margin: 0 8px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .nav-item:hover {
+            color: #2E7D8F;
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .login-button {
+            padding: 8px 16px;
+            margin-right: 12px;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .login-button:hover {
+            color: #2E7D8F;
+        }
+        
+        .signup-button {
+            background: #000000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .signup-button:hover {
+            background: #333333;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 24px;
+            min-height: 500px;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 16px;
+            max-width: 800px;
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .hero-button {
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            min-width: 250px;
+        }
+        
+        .hero-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .investor-button {
+            background: #2E7D8F;
+            color: #ffffff;
+            border: none;
+        }
+        
+        .investor-button:hover {
+            background: #266b7a;
+        }
+        
+        .funding-button {
+            background: transparent;
+            color: #2E7D8F;
+            border: 2px solid #2E7D8F;
+        }
+        
+        .funding-button:hover {
+            background: #2E7D8F;
+            color: #ffffff;
+        }
+        
+        /* Footer */
+        .footer-container {
+            background: #111827;
+            padding: 80px 24px;
+            color: #ffffff;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+        
+        .footer-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+        
+        .footer-link {
+            display: block;
+            padding: 6px 0;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+        
+        .footer-link:hover {
+            color: #ffffff;
+        }
+        
+        .footer-bottom {
+            padding-top: 32px;
+            border-top: 1px solid #374151;
+            text-align: center;
+        }
+        
+        .footer-copyright {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 32px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+                padding: 0 16px;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .hero-button {
+                min-width: 100%;
+            }
+            
+            .nav-actions {
+                gap: 8px;
+            }
+            
+            .login-button {
+                padding: 6px 12px;
+                margin-right: 8px;
+            }
+            
+            .signup-button {
+                padding: 8px 16px;
+            }
+        }
+        
+        .message {
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .success {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+        
+        .info {
+            background: rgba(46, 125, 143, 0.1);
+            color: #2E7D8F;
+            border: 1px solid rgba(46, 125, 143, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="logo-icon">💎</span>
+                <span class="logo-text">Bvester</span>
+            </a>
+            
+            <div class="nav-menu">
+                <a href="#" class="nav-item" onclick="showMessage('Discover page coming soon!', 'info')">Discover</a>
+                <a href="#" class="nav-item" onclick="showMessage('Investor portal coming soon!', 'info')">For Investors ▼</a>
+            </div>
+
+            <div class="nav-actions">
+                <button class="login-button" onclick="openLogin()">Sign In</button>
+                <button class="signup-button" onclick="openRegister()">Sign up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <h1 class="hero-title">
+            Where African Innovation Meets Global Investment
+        </h1>
+        <p class="hero-subtitle">
+            Connect with opportunities, grow your business, and invest in Africa's future.
+        </p>
+        
+        <div class="hero-buttons">
+            <button class="hero-button investor-button" onclick="handleInvestorClick()">
+                I Want to Invest in Africa
+            </button>
+            
+            <button class="hero-button funding-button" onclick="handleFundingClick()">
+                I Need Funding for My Business
+            </button>
+        </div>
+    </div>
+
+    <!-- Message Area -->
+    <div id="messageArea"></div>
+
+    <!-- Footer Section -->
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>For Investors</h3>
+                    <a href="#" class="footer-link" onclick="openRegister()">Investment Opportunities</a>
+                    <a href="#" class="footer-link" onclick="openLogin()">Portfolio Management</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>For Startups</h3>
+                    <a href="#" class="footer-link" onclick="openRegister()">Raise Funding</a>
+                    <a href="#" class="footer-link" onclick="showMessage('Business valuation tools coming soon!', 'info')">Business Valuation</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="footer-copyright">
+                    © 2024 Bvester. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showMessage(text, type) {
+            const messageArea = document.getElementById('messageArea');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            
+            messageArea.innerHTML = '';
+            messageArea.appendChild(message);
+            
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+        
+        function openLogin() {
+            console.log('Sign In button clicked');
+            showMessage('✅ Sign In button is working! Opening login page...', 'success');
+            // In the real app, this would navigate to login
+            setTimeout(() => {
+                window.open('quick-test.html', '_blank');
+            }, 1000);
+        }
+        
+        function openRegister() {
+            console.log('Sign up button clicked');
+            showMessage('✅ Sign up button is working! Opening registration...', 'success');
+            // In the real app, this would navigate to register
+            setTimeout(() => {
+                window.open('quick-test.html', '_blank');
+            }, 1000);
+        }
+        
+        function handleInvestorClick() {
+            console.log('I Want to Invest in Africa button clicked');
+            showMessage('✅ "I Want to Invest in Africa" button is working! Redirecting to investor registration...', 'success');
+            setTimeout(() => {
+                window.open('quick-test.html', '_blank');
+            }, 1000);
+        }
+        
+        function handleFundingClick() {
+            console.log('I Need Funding for My Business button clicked');
+            showMessage('✅ "I Need Funding for My Business" button is working! Redirecting to SME registration...', 'success');
+            setTimeout(() => {
+                window.open('quick-test.html', '_blank');
+            }, 1000);
+        }
+
+        // Show initial success message
+        window.onload = function() {
+            showMessage('🎉 Homepage fixed! Logo updated to "💎 Bvester" and all buttons are now working!', 'success');
+        };
+    </script>
+</body>
+</html>

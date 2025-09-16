@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Mobile Optimized - Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated background particles */
+        .particle {
+            position: absolute;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            z-index: 10;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .device-info {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #ffd700;
+        }
+        
+        .status {
+            color: #10b981;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-top: 3px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px 0;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+        
+        .info-text {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .timestamp {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particle" style="top: 10%; left: 10%; width: 4px; height: 4px; animation-delay: 0s;"></div>
+    <div class="particle" style="top: 20%; right: 20%; width: 6px; height: 6px; animation-delay: 2s;"></div>
+    <div class="particle" style="bottom: 30%; left: 30%; width: 3px; height: 3px; animation-delay: 4s;"></div>
+    <div class="particle" style="bottom: 10%; right: 10%; width: 5px; height: 5px; animation-delay: 1s;"></div>
+    
+    <div class="container">
+        <div class="logo">Bvester</div>
+        
+        <div class="device-info" id="deviceInfo">
+            🔍 Detecting your device...
+        </div>
+        
+        <div class="status" id="status">
+            ✅ Mobile Optimization Active
+        </div>
+        
+        <div class="loading" id="loading"></div>
+        
+        <div class="info-text">
+            Optimizing experience for your device...<br>
+            Latest version with cache bypass enabled.
+        </div>
+        
+        <a href="index.html?mobile=true&v=20250128&t=20250128&cache=clear" class="btn" id="continueBtn">
+            🚀 Continue to Platform
+        </a>
+        
+        <div class="timestamp">
+            Deployed: 2025-01-28 | v6.0
+        </div>
+    </div>
+
+    <script>
+        // Device detection
+        function detectDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const deviceInfo = document.getElementById('deviceInfo');
+            const loading = document.getElementById('loading');
+            const continueBtn = document.getElementById('continueBtn');
+            
+            let deviceType = '🖥️ Desktop';
+            let browserType = 'Unknown';
+            
+            // Detect mobile devices
+            if (/android/.test(userAgent)) {
+                deviceType = '📱 Android';
+            } else if (/iphone|ipad|ipod/.test(userAgent)) {
+                deviceType = '📱 iOS';
+            } else if (/mobile/.test(userAgent)) {
+                deviceType = '📱 Mobile';
+            }
+            
+            // Detect browser
+            if (/chrome/.test(userAgent)) {
+                browserType = 'Chrome';
+            } else if (/safari/.test(userAgent) && !/chrome/.test(userAgent)) {
+                browserType = 'Safari';
+            } else if (/firefox/.test(userAgent)) {
+                browserType = 'Firefox';
+            } else if (/edge/.test(userAgent)) {
+                browserType = 'Edge';
+            }
+            
+            deviceInfo.innerHTML = `${deviceType} • ${browserType}`;
+            
+            // Auto redirect after 3 seconds
+            setTimeout(() => {
+                loading.style.display = 'none';
+                continueBtn.style.display = 'inline-block';
+                
+                // Auto redirect with aggressive cache busting
+                setTimeout(() => {
+                    window.location.replace('index.html?mobile=true&v=20250128&t=' + Date.now() + '&cache=clear');
+                }, 2000);
+            }, 1000);
+        }
+        
+        // Clear any existing cache
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                names.forEach(function(name) {
+                    caches.delete(name);
+                });
+            });
+        }
+        
+        // Initialize
+        detectDevice();
+        
+        console.log('Mobile redirect page loaded - Bvester v6.0');
+    </script>
+</body>
+</html>

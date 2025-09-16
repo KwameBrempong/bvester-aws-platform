@@ -4,5 +4,42 @@ node_modules/
 *.zip
 archive/
 logs/
+
+# Environment variables
 .env
-.env.production
+.env.*
+!.env.example
+!.env.template
+
+# Security files
+*.key
+*.pem
+*.cert
+*.crt
+*.pfx
+*.p12
+secrets/
+private/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Build outputs
+dist/
+build/
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+test-report.json
+
+# Temporary files
+tmp/
+temp/
+*.tmp

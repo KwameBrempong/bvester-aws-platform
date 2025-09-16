@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://bvester-backend.vercel.app https://bizinvest-hub-prod.firebaseapp.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    
+    <title>Sign Up - Bvester</title>
+    
+    <!-- Expo redirect prevention script -->
+    <script>
+        // Prevent any Expo redirects
+        (function() {
+            const currentUrl = window.location.href;
+            if (currentUrl.includes('exp://') || currentUrl.includes('exp.host')) {
+                console.error('Expo URL detected in signup, redirecting to web version');
+                window.location.replace(window.location.origin + '/signup.html?v=20250128&web=true&t=' + Date.now());
+                return;
+            }
+        })();
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: #000000;
+            padding: 16px 24px;
+            border-bottom: 1px solid #ffd700;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            color: #ffed4a;
+        }
+
+        /* Main content */
+        .signup-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 80px);
+            padding: 40px 20px;
+        }
+
+        .signup-card {
+            background: #1a1a1a;
+            border: 1px solid #ffd700;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .signup-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .signup-subtitle {
+            color: #cccccc;
+            font-size: 16px;
+        }
+
+        .user-type-selection {
+            margin-bottom: 32px;
+        }
+
+        .user-type-label {
+            display: block;
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .user-type-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .user-type-option {
+            padding: 24px;
+            background: #000000;
+            border: 2px solid #333;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
+            min-height: 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-type-option:hover {
+            border-color: #ffd700;
+        }
+
+        .user-type-option.selected {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .user-type-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .user-type-title {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .user-type-desc {
+            font-size: 12px;
+            color: #cccccc;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #000000;
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
+            min-height: 44px;
+            box-sizing: border-box;
+            /* Mobile optimizations */
+            -webkit-appearance: none;
+            -webkit-border-radius: 8px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            background: #000000;
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
+            min-height: 44px;
+            box-sizing: border-box;
+            /* Mobile optimizations */
+            -webkit-appearance: none;
+            -webkit-border-radius: 8px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            margin-top: 2px;
+            /* WCAG 2.1 AA Compliance: Larger touch target for accessibility */
+            min-width: 24px;
+            min-height: 24px;
+        }
+
+        .checkbox-label {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .checkbox-label a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .signup-btn {
+            width: 100%;
+            background: #ffd700;
+            color: #000000;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+            /* WCAG 2.1 AA Compliance: Minimum 44px touch target */
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signup-btn:hover {
+            background: #ffed4a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .signup-btn:disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .signup-links {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .signup-links a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .signup-links a:hover {
+            color: #ffed4a;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #ff4444;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message {
+            background: #10b981;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        /* STANDARDIZED MOBILE BREAKPOINTS */
+        /* Small Mobile: up to 480px */
+        @media (max-width: 480px) {
+            .signup-card {
+                padding: 20px;
+                margin: 16px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-type-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                padding: 12px 16px;
+            }
+
+            .signup-title {
+                font-size: 24px;
+            }
+
+            .signup-subtitle {
+                font-size: 14px;
+            }
+        }
+
+        /* Tablets: 481px - 768px */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .signup-card {
+                padding: 24px;
+                margin: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-type-options {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .nav-container {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <a href="index.html" class="back-btn">
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="signup-container">
+        <div class="signup-card">
+            <div class="signup-header">
+                <h1 class="signup-title">Join Bvester</h1>
+                <p class="signup-subtitle">Start connecting with African investment opportunities</p>
+            </div>
+
+            <div class="error-message" id="error-message"></div>
+            <div class="success-message" id="success-message"></div>
+
+            <!-- User Type Selection -->
+            <div class="user-type-selection">
+                <label class="user-type-label">I want to...</label>
+                <div class="user-type-options">
+                    <div class="user-type-option" onclick="selectUserType('investor')" id="investor-option">
+                        <span class="user-type-icon">💰</span>
+                        <div class="user-type-title">Invest</div>
+                        <div class="user-type-desc">Find investment opportunities</div>
+                    </div>
+                    <div class="user-type-option" onclick="selectUserType('startup')" id="startup-option">
+                        <span class="user-type-icon">🚀</span>
+                        <div class="user-type-title">Raise Funds</div>
+                        <div class="user-type-desc">Get funding for my business</div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="signup-form">
+                <input type="hidden" id="user-type" name="userType" value="">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">First Name</label>
+                        <input 
+                            type="text" 
+                            id="firstName" 
+                            name="firstName" 
+                            class="form-input" 
+                            placeholder="Enter first name"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="lastName">Last Name</label>
+                        <input 
+                            type="text" 
+                            id="lastName" 
+                            name="lastName" 
+                            class="form-input" 
+                            placeholder="Enter last name"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="Enter your email"
+                        required
+                    >
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Create password"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Confirm Password</label>
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            class="form-input" 
+                            placeholder="Confirm password"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="country">Country</label>
+                        <select id="country" name="country" class="form-select" required>
+                            <option value="">Select Country</option>
+                            <option value="nigeria">Nigeria</option>
+                            <option value="kenya">Kenya</option>
+                            <option value="south-africa">South Africa</option>
+                            <option value="ghana">Ghana</option>
+                            <option value="egypt">Egypt</option>
+                            <option value="morocco">Morocco</option>
+                            <option value="ethiopia">Ethiopia</option>
+                            <option value="uganda">Uganda</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number</label>
+                        <input 
+                            type="tel" 
+                            id="phone" 
+                            name="phone" 
+                            class="form-input" 
+                            placeholder="+234 XXX XXX XXXX"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Additional fields for startups -->
+                <div id="startup-fields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="companyName">Company Name</label>
+                        <input 
+                            type="text" 
+                            id="companyName" 
+                            name="companyName" 
+                            class="form-input" 
+                            placeholder="Enter company name"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="industry">Industry</label>
+                        <select id="industry" name="industry" class="form-select">
+                            <option value="">Select Industry</option>
+                            <option value="fintech">Fintech</option>
+                            <option value="ecommerce">E-commerce</option>
+                            <option value="healthtech">HealthTech</option>
+                            <option value="agritech">AgriTech</option>
+                            <option value="edtech">EdTech</option>
+                            <option value="logistics">Logistics</option>
+                            <option value="renewable-energy">Renewable Energy</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Additional fields for investors -->
+                <div id="investor-fields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="investorType">Investor Type</label>
+                        <select id="investorType" name="investorType" class="form-select">
+                            <option value="">Select Type</option>
+                            <option value="individual">Individual Investor</option>
+                            <option value="angel">Angel Investor</option>
+                            <option value="vc">Venture Capital</option>
+                            <option value="pe">Private Equity</option>
+                            <option value="institutional">Institutional</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="investmentRange">Investment Range (USD)</label>
+                        <select id="investmentRange" name="investmentRange" class="form-select">
+                            <option value="">Select Range</option>
+                            <option value="1k-10k">$1,000 - $10,000</option>
+                            <option value="10k-50k">$10,000 - $50,000</option>
+                            <option value="50k-100k">$50,000 - $100,000</option>
+                            <option value="100k-500k">$100,000 - $500,000</option>
+                            <option value="500k+">$500,000+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" class="checkbox" required>
+                    <label for="terms" class="checkbox-label">
+                        I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> and 
+                        <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter" class="checkbox">
+                    <label for="newsletter" class="checkbox-label">
+                        Send me updates about new investment opportunities and platform features
+                    </label>
+                </div>
+
+                <button type="submit" class="signup-btn" id="signup-btn">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="signup-links">
+                Already have an account? <a href="login.html">Sign in here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK with mobile fallback -->
+    <script>
+        // Security Helper Functions - XSS Prevention
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            return input
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;')
+                .replace(/\//g, '&#x2F;');
+        }
+        
+        function safeSetTextContent(element, content) {
+            if (element) {
+                element.textContent = sanitizeInput(content);
+            }
+        }
+        
+        function safeSetHtml(element, htmlContent) {
+            if (element) {
+                // Create a temporary div to parse HTML safely
+                const temp = document.createElement('div');
+                temp.innerHTML = htmlContent;
+                element.textContent = '';
+                element.appendChild(temp);
+            }
+        }
+
+        // Pre-load Firebase detection for mobile
+        console.log('📱 MOBILE FIREBASE DEBUG: Starting Firebase SDK load');
+        console.log('🌐 Loading from:', window.location.hostname);
+        
+        // Track Firebase SDK loading
+        window.firebaseSDKLoaded = false;
+        window.firebaseAuthLoaded = false;
+        
+        function markFirebaseAppLoaded() {
+            window.firebaseSDKLoaded = true;
+            console.log('✅ Firebase App SDK loaded');
+        }
+        
+        function markFirebaseAuthLoaded() {
+            window.firebaseAuthLoaded = true;
+            console.log('✅ Firebase Auth SDK loaded');
+        }
+    </script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js" onload="markFirebaseAppLoaded()" onerror="loadFirebaseAppFallback()"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js" onload="markFirebaseAuthLoaded()" onerror="loadFirebaseAuthFallback()"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js" onload="console.log('✅ Firestore SDK loaded')" onerror="console.error('❌ Failed to load Firestore SDK')"></script>
+    
+    <script>
+        // Fallback Firebase SDK loading for mobile networks
+        function loadFirebaseAppFallback() {
+            console.warn('🔄 Primary Firebase App SDK failed, trying fallback...');
+            const script = document.createElement('script');
+            script.src = 'https://firebase.googleapis.com/firebasejs/9.0.0/firebase-app-compat.js';
+            script.onload = () => {
+                console.log('✅ Firebase App SDK loaded via fallback');
+                markFirebaseAppLoaded();
+            };
+            script.onerror = () => {
+                console.error('❌ Both Firebase App SDK sources failed');
+            };
+            document.head.appendChild(script);
+        }
+        
+        function loadFirebaseAuthFallback() {
+            console.warn('🔄 Primary Firebase Auth SDK failed, trying fallback...');
+            const script = document.createElement('script');
+            script.src = 'https://firebase.googleapis.com/firebasejs/9.0.0/firebase-auth-compat.js';
+            script.onload = () => {
+                console.log('✅ Firebase Auth SDK loaded via fallback');
+                markFirebaseAuthLoaded();
+            };
+            script.onerror = () => {
+                console.error('❌ Both Firebase Auth SDK sources failed');
+            };
+            document.head.appendChild(script);
+        }
+    </script>
+    
+    <!-- Bvester API Client -->
+    <script src="js/api-client.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            projectId: "bizinvest-hub-prod",
+            appId: "1:19849690024:web:134ceb9fc20fec428a3b9d",
+            storageBucket: "bizinvest-hub-prod.firebasestorage.app",
+            apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+            authDomain: "bizinvest-hub-prod.firebaseapp.com",
+            messagingSenderId: "19849690024",
+            measurementId: "G-3M77VNP2YC"
+        };
+
+        // Initialize Firebase with mobile-specific error handling
+        try {
+            console.log('🔥 Initializing Firebase with config:', {
+                projectId: firebaseConfig.projectId,
+                apiKey: firebaseConfig.apiKey ? 'PROVIDED' : 'MISSING',
+                authDomain: firebaseConfig.authDomain
+            });
+            
+            firebase.initializeApp(firebaseConfig);
+            console.log('✅ Firebase initialized successfully');
+            
+            // Test Firebase Auth availability immediately
+            const auth = firebase.auth();
+            console.log('🔐 Firebase Auth service:', auth ? 'AVAILABLE' : 'NOT_AVAILABLE');
+            
+        } catch (firebaseError) {
+            console.error('❌ Firebase initialization failed:', {
+                error: firebaseError.message,
+                code: firebaseError.code,
+                stack: firebaseError.stack
+            });
+            
+            // Show user-friendly error for mobile
+            showError('App initialization failed. Please refresh the page and try again.');
+        }
+
+        let selectedUserType = null;
+
+        function selectUserType(type) {
+            selectedUserType = type;
+            
+            // Update UI
+            document.querySelectorAll('.user-type-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.getElementById(type + '-option').classList.add('selected');
+            document.getElementById('user-type').value = type;
+            
+            // Show/hide relevant fields
+            document.getElementById('startup-fields').style.display = type === 'startup' ? 'block' : 'none';
+            document.getElementById('investor-fields').style.display = type === 'investor' ? 'block' : 'none';
+        }
+
+        // Real form handling with Firebase authentication
+        document.getElementById('signup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await handleSignup();
+        });
+
+        async function handleSignup() {
+            // Enhanced logging for mobile debugging
+            console.log('🚀 BVESTER SIGNUP: Starting registration process');
+            console.log('📱 User Agent:', navigator.userAgent);
+            console.log('🌐 Location:', window.location.href);
+            
+            if (!selectedUserType) {
+                showError('Please select whether you want to invest or raise funds');
+                return;
+            }
+
+            const formData = new FormData(document.getElementById('signup-form'));
+            const email = formData.get('email').trim();
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+            const firstName = formData.get('firstName').trim();
+            const lastName = formData.get('lastName').trim();
+            const country = formData.get('country');
+            const phone = formData.get('phone').trim();
+
+            console.log('📝 Form Data Collected:', {
+                email: email ? 'PROVIDED' : 'MISSING',
+                password: password ? 'PROVIDED' : 'MISSING',
+                firstName: firstName ? 'PROVIDED' : 'MISSING',
+                lastName: lastName ? 'PROVIDED' : 'MISSING',
+                country: country ? 'PROVIDED' : 'MISSING',
+                phone: phone ? 'PROVIDED' : 'MISSING',
+                userType: selectedUserType
+            });
+
+            // Validation
+            if (!email || !password || !firstName || !lastName || !country || !phone) {
+                console.error('❌ VALIDATION ERROR: Missing required fields');
+                showError('Please fill in all required fields');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                console.error('❌ VALIDATION ERROR: Invalid email format');
+                showError('Please enter a valid email address');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                console.error('❌ VALIDATION ERROR: Passwords do not match');
+                showError('Passwords do not match');
+                return;
+            }
+
+            // Security: Strengthen password policy for financial platform
+            if (!validatePasswordSecurity(password)) {
+                return;
+            }
+
+            if (!document.getElementById('terms').checked) {
+                console.error('❌ VALIDATION ERROR: Terms not accepted');
+                showError('Please accept the Terms of Service and Privacy Policy');
+                return;
+            }
+
+            const signupBtn = document.getElementById('signup-btn');
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Creating Account...';
+            hideMessages();
+
+            console.log('✅ All validations passed, starting registration...');
+
+            try {
+                // Check if bvesterAPI is available
+                if (typeof bvesterAPI === 'undefined') {
+                    throw new Error('BVESTER_API_NOT_LOADED: API client not available');
+                }
+
+                // Prepare user data for registration
+                const userData = {
+                    email: email,
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName,
+                    userType: selectedUserType,
+                    country: country,
+                    phone: phone
+                };
+
+                // Add additional fields based on user type
+                if (selectedUserType === 'startup') {
+                    userData.companyName = formData.get('companyName');
+                    userData.industry = formData.get('industry');
+                } else if (selectedUserType === 'investor') {
+                    userData.investorType = formData.get('investorType');
+                    userData.investmentRange = formData.get('investmentRange');
+                }
+
+                // Newsletter preference
+                userData.newsletter = document.getElementById('newsletter').checked;
+
+                console.log('📤 Calling bvesterAPI.register...');
+
+                // Register user with enhanced error handling
+                const registrationResult = await bvesterAPI.register(userData);
+
+                console.log('✅ Registration successful:', registrationResult);
+
+                // Handle both new users and existing users who were logged in
+                if (registrationResult.isExistingUser) {
+                    // Existing user who was successfully logged in
+                    showSuccess(`${registrationResult.message} Welcome back!`);
+                    
+                    // Redirect immediately for existing users
+                    setTimeout(() => {
+                        const userType = registrationResult.data?.userType || 'investor';
+                        console.log('🔄 Redirecting existing user type:', userType);
+                        if (userType === 'investor') {
+                            window.location.href = 'investor-dashboard.html';
+                        } else if (userType === 'startup' || userType === 'business') {
+                            window.location.href = 'startup-dashboard.html';
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    }, 1000);
+                } else {
+                    // New user registration
+                    showSuccess(`Welcome ${firstName}! ${registrationResult.message} Redirecting to your dashboard...`);
+                    
+                    // Clear form for new users
+                    document.getElementById('signup-form').reset();
+                    selectedUserType = null;
+                    document.querySelectorAll('.user-type-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    document.getElementById('startup-fields').style.display = 'none';
+                    document.getElementById('investor-fields').style.display = 'none';
+
+                    // Redirect to appropriate dashboard after successful registration
+                    setTimeout(() => {
+                        const userType = registrationResult.data?.userType || selectedUserType;
+                        console.log('🔄 Redirecting new user type:', userType);
+                        if (userType === 'investor') {
+                            window.location.href = 'investor-dashboard.html';
+                        } else if (userType === 'startup' || userType === 'business') {
+                            window.location.href = 'startup-dashboard.html';
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    }, 1500);
+                }
+
+            } catch (error) {
+                console.error('❌ REGISTRATION ERROR Details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name,
+                    code: error.code
+                });
+                
+                // Show user-friendly error messages
+                let errorMessage = 'Registration failed. Please try again.';
+                
+                if (error.message.includes('BVESTER_API_NOT_LOADED')) {
+                    errorMessage = 'App is loading. Please wait a moment and try again.';
+                } else if (error.message.includes('already exists')) {
+                    // This is our custom error message - show it as is
+                    errorMessage = error.message;
+                    
+                    // Show a link to login page for convenience
+                    setTimeout(() => {
+                        const errorDiv = document.getElementById('error-message');
+                        if (errorDiv) {
+                            // XSS Prevention: Use safe DOM manipulation instead of innerHTML
+                            const container = document.createElement('div');
+                            container.style.textAlign = 'center';
+                            
+                            const errorText = document.createElement('div');
+                            errorText.textContent = sanitizeInput(errorMessage);
+                            errorText.style.marginBottom = '16px';
+                            container.appendChild(errorText);
+                            
+                            const actionsDiv = document.createElement('div');
+                            actionsDiv.style.display = 'flex';
+                            actionsDiv.style.gap = '12px';
+                            actionsDiv.style.justifyContent = 'center';
+                            actionsDiv.style.flexWrap = 'wrap';
+                            
+                            const loginLink = document.createElement('a');
+                            loginLink.href = 'login.html';
+                            loginLink.textContent = 'Sign In';
+                            loginLink.style.cssText = `
+                                background: #ffd700;
+                                color: #000;
+                                padding: 8px 16px;
+                                border-radius: 4px;
+                                text-decoration: none;
+                                font-weight: 600;
+                                display: inline-block;
+                                font-size: 14px;
+                            `;
+                            actionsDiv.appendChild(loginLink);
+                            
+                            const resetLink = document.createElement('a');
+                            resetLink.href = 'password-reset.html';
+                            resetLink.textContent = 'Forgot Password?';
+                            resetLink.style.cssText = `
+                                background: transparent;
+                                color: #ffd700;
+                                border: 1px solid #ffd700;
+                                padding: 8px 16px;
+                                border-radius: 4px;
+                                text-decoration: none;
+                                font-weight: 600;
+                                display: inline-block;
+                                font-size: 14px;
+                            `;
+                            actionsDiv.appendChild(resetLink);
+                            
+                            container.appendChild(actionsDiv);
+                            
+                            // Clear and set new content safely
+                            errorDiv.textContent = '';
+                            errorDiv.appendChild(container);
+                        }
+                    }, 100);
+                } else if (error.message.includes('weak-password') || error.code === 'auth/weak-password') {
+                    errorMessage = 'Password is too weak. Please choose a stronger password with at least 8 characters.';
+                } else if (error.message.includes('invalid-email') || error.code === 'auth/invalid-email') {
+                    errorMessage = 'Please enter a valid email address.';
+                } else if (error.message.includes('network-request-failed') || error.code === 'auth/network-request-failed') {
+                    errorMessage = 'Network error. Please check your connection and try again.';
+                } else if (error.message.includes('Firebase')) {
+                    errorMessage = 'Authentication service unavailable. Please try again in a few minutes.';
+                } else {
+                    // Show the actual error message if it's user-friendly
+                    if (error.message && error.message.length < 200 && !error.message.includes('auth/')) {
+                        errorMessage = error.message;
+                    }
+                }
+                
+                // Only add debug info in development
+                if (window.location.hostname === 'localhost') {
+                    errorMessage += ` (Debug: ${error.message})`;
+                }
+                
+                showError(errorMessage);
+                
+                // Re-enable form
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Create Account';
+            }
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showTerms() {
+            showError('Terms of Service will be displayed in a proper modal. For now, you agree to use Bvester responsibly and comply with all applicable laws.');
+        }
+
+        function showPrivacy() {
+            showError('Privacy Policy will be displayed in a proper modal. We protect your data with encryption and never share without consent.');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            
+            // Auto-hide after 7 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 7000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        // Initialize API and check if user is already logged in
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('📱 MOBILE DEBUG: DOM Content Loaded');
+            console.log('🌐 Current URL:', window.location.href);
+            console.log('📱 User Agent:', navigator.userAgent);
+            console.log('🔧 Checking API availability...');
+            
+            // Enhanced mobile debugging
+            console.log('🔍 Mobile Detection:', {
+                isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+                isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
+                isAndroid: /Android/.test(navigator.userAgent),
+                isChrome: /Chrome/.test(navigator.userAgent),
+                isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
+                isFirefox: /Firefox/.test(navigator.userAgent)
+            });
+            
+            // Check if running on Firebase Hosting domain
+            const isFirebaseHosting = window.location.hostname.includes('firebase') || 
+                                     window.location.hostname.includes('web.app') ||
+                                     window.location.hostname === 'bvester.com' ||
+                                     window.location.hostname === 'www.bvester.com';
+            
+            console.log('🌍 Hosting Environment:', {
+                hostname: window.location.hostname,
+                isFirebaseHosting: isFirebaseHosting,
+                protocol: window.location.protocol,
+                port: window.location.port
+            });
+            
+            try {
+                // Enhanced mobile resource loading with retry mechanism
+                console.log('⏳ Waiting for resources to load...');
+                
+                // Wait for Firebase SDKs with retry logic
+                let retries = 0;
+                const maxRetries = 5;
+                
+                while (retries < maxRetries) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    retries++;
+                    
+                    console.log(`🔄 Resource check attempt ${retries}/${maxRetries}`);
+                    console.log('📦 SDK Status:', {
+                        firebaseApp: window.firebaseSDKLoaded,
+                        firebaseAuth: window.firebaseAuthLoaded,
+                        firebaseGlobal: typeof firebase !== 'undefined',
+                        bvesterAPI: typeof bvesterAPI !== 'undefined'
+                    });
+                    
+                    // Check if Firebase is loaded
+                    if (typeof firebase === 'undefined') {
+                        console.warn(`❌ Firebase SDK not loaded (attempt ${retries})`);
+                        if (retries === maxRetries) {
+                            showError('Firebase SDK failed to load. Please check your internet connection and refresh the page.');
+                            return;
+                        }
+                        continue;
+                    }
+                    
+                    // Check if Firebase Auth is available
+                    try {
+                        const authTest = firebase.auth();
+                        if (!authTest) {
+                            console.warn(`❌ Firebase Auth not available (attempt ${retries})`);
+                            if (retries === maxRetries) {
+                                showError('Firebase Authentication service unavailable. Please refresh the page.');
+                                return;
+                            }
+                            continue;
+                        }
+                    } catch (authCheckError) {
+                        console.warn(`❌ Firebase Auth check failed (attempt ${retries}):`, authCheckError);
+                        if (retries === maxRetries) {
+                            showError('Firebase Authentication service failed to initialize. Please refresh the page.');
+                            return;
+                        }
+                        continue;
+                    }
+                    
+                    // Check if bvesterAPI is loaded
+                    if (typeof bvesterAPI === 'undefined') {
+                        console.warn(`❌ bvesterAPI not loaded (attempt ${retries})`);
+                        if (retries === maxRetries) {
+                            showError('App API client failed to load. Please refresh the page.');
+                            return;
+                        }
+                        continue;
+                    }
+                    
+                    // If we get here, everything is loaded successfully
+                    console.log('✅ All resources loaded successfully');
+                    break;
+                }
+                
+                console.log('✅ Firebase and bvesterAPI loaded successfully');
+                
+                // Initialize Firebase Auth with additional error handling
+                try {
+                    await bvesterAPI.initializeAuth();
+                    console.log('✅ Firebase Auth initialized');
+                } catch (authError) {
+                    console.error('❌ Firebase Auth initialization failed:', authError);
+                    showError('Authentication service failed to initialize. Please check your connection.');
+                    return;
+                }
+                
+                // If user is already logged in, redirect to dashboard
+                if (bvesterAPI.currentUser) {
+                    const userType = bvesterAPI.currentUser.bvesterData?.userType || 'investor';
+                    console.log('👤 User already logged in as:', userType);
+                    if (userType === 'investor') {
+                        window.location.href = 'investor-dashboard.html';
+                    } else if (userType === 'business') {
+                        window.location.href = 'startup-dashboard.html';
+                    }
+                }
+                
+                console.log('✅ Bvester Signup - Real Registration Ready');
+                
+                // Pre-fill user type from URL parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const userType = urlParams.get('type');
+                if (userType && (userType === 'investor' || userType === 'startup')) {
+                    console.log('🔗 Pre-selecting user type from URL:', userType);
+                    selectUserType(userType);
+                }
+                
+            } catch (error) {
+                console.error('❌ Initialization error:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
+                showError('Failed to initialize app. Please refresh the page and try again.');
+            }
+        });
+
+        // Security: Strong password validation for financial platform
+        function validatePasswordSecurity(password) {
+            const minLength = 12;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSymbols = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            const hasNoCommonPatterns = !/123|abc|password|qwerty|admin/i.test(password);
+            
+            if (password.length < minLength) {
+                console.error('❌ VALIDATION ERROR: Password too short');
+                showError(`Password must be at least ${minLength} characters long for security`);
+                return false;
+            }
+            
+            if (!hasUpperCase) {
+                console.error('❌ VALIDATION ERROR: Password missing uppercase');
+                showError('Password must contain at least one uppercase letter (A-Z)');
+                return false;
+            }
+            
+            if (!hasLowerCase) {
+                console.error('❌ VALIDATION ERROR: Password missing lowercase');
+                showError('Password must contain at least one lowercase letter (a-z)');
+                return false;
+            }
+            
+            if (!hasNumbers) {
+                console.error('❌ VALIDATION ERROR: Password missing numbers');
+                showError('Password must contain at least one number (0-9)');
+                return false;
+            }
+            
+            if (!hasSymbols) {
+                console.error('❌ VALIDATION ERROR: Password missing symbols');
+                showError('Password must contain at least one special character (!@#$%^&*)');
+                return false;
+            }
+            
+            if (!hasNoCommonPatterns) {
+                console.error('❌ VALIDATION ERROR: Password contains common patterns');
+                showError('Password cannot contain common patterns like "123", "password", etc.');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Add real-time form validation
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        emailInput.addEventListener('blur', function() {
+            if (this.value && !isValidEmail(this.value)) {
+                this.style.borderColor = '#ff4444';
+            } else {
+                this.style.borderColor = '#333';
+            }
+        });
+
+        passwordInput.addEventListener('input', function() {
+            if (this.value.length > 0 && this.value.length < 6) {
+                this.style.borderColor = '#ff4444';
+            } else {
+                this.style.borderColor = '#333';
+            }
+            
+            // Check confirm password match
+            const confirmPassword = confirmPasswordInput.value;
+            if (confirmPassword && this.value !== confirmPassword) {
+                confirmPasswordInput.style.borderColor = '#ff4444';
+            } else if (confirmPassword) {
+                confirmPasswordInput.style.borderColor = '#ffd700';
+            }
+        });
+
+        confirmPasswordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            if (this.value && password !== this.value) {
+                this.style.borderColor = '#ff4444';
+            } else if (this.value) {
+                this.style.borderColor = '#ffd700';
+            } else {
+                this.style.borderColor = '#333';
+            }
+        });
+    </script>
+</body>
+</html>

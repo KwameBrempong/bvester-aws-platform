@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Route 53 Hosted Zone setup for bvester.com domain'
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: bvester.com
+    Description: The domain name for the hosted zone
+    
+  CreateHostedZone:
+    Type: String
+    Default: 'true'
+    AllowedValues: ['true', 'false']
+    Description: Whether to create a new hosted zone (set to false if domain is already managed in Route 53)
+
+Conditions:
+  ShouldCreateHostedZone: !Equals [!Ref CreateHostedZone, 'true']
+
+Resources:
+  # Route 53 Hosted Zone
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Condition: ShouldCreateHostedZone
+    Properties:
+      Name: !Ref DomainName
+      HostedZoneConfig:
+        Comment: !Sub 'Hosted zone for ${DomainName}'
+      HostedZoneTags:
+        - Key: Name
+          Value: !Sub '${DomainName}-hosted-zone'
+        - Key: Environment
+          Value: Production
+        - Key: Project
+          Value: BVester
+
+  # Health Check for main domain (optional but recommended)
+  HealthCheck:
+    Type: AWS::Route53::HealthCheck
+    Properties:
+      HealthCheckConfig:
+        Type: HTTPS
+        ResourcePath: '/'
+        FullyQualifiedDomainName: !Ref DomainName
+        Port: 443
+        RequestInterval: 30
+        FailureThreshold: 3
+      HealthCheckTags:
+        - Key: Name
+          Value: !Sub '${DomainName}-health-check'
+        - Key: Environment
+          Value: Production
+
+Outputs:
+  HostedZoneId:
+    Description: 'Route 53 Hosted Zone ID'
+    Value: !If [ShouldCreateHostedZone, !Ref HostedZone, !Ref 'AWS::NoValue']
+    Export:
+      Name: !Sub '${AWS::StackName}-HostedZoneId'
+      
+  NameServers:
+    Description: 'Name servers for the domain'
+    Value: !If 
+      - ShouldCreateHostedZone
+      - !Join [', ', !GetAtt HostedZone.NameServers]
+      - !Ref 'AWS::NoValue'
+    Export:
+      Name: !Sub '${AWS::StackName}-NameServers'
+      
+  DomainName:
+    Description: 'Domain name'
+    Value: !Ref DomainName
+    Export:
+      Name: !Sub '${AWS::StackName}-DomainName'
+      
+  HealthCheckId:
+    Description: 'Health Check ID'
+    Value: !Ref HealthCheck
+    Export:
+      Name: !Sub '${AWS::StackName}-HealthCheckId'

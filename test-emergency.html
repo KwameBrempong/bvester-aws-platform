@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester Emergency Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            color: #ffd700;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+        .status {
+            font-size: 1.5rem;
+            color: #00ff00;
+            margin-bottom: 1rem;
+        }
+        .timestamp {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        .nav-links {
+            margin-top: 2rem;
+        }
+        .nav-links a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background: #ffd700;
+            color: #000;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .nav-links a:hover {
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">BVESTER</div>
+        <div class="status">✅ Firebase Hosting is ACTIVE</div>
+        <p>This is an emergency test page to verify Firebase hosting functionality.</p>
+        <p>If you can see this page, Firebase hosting is working correctly.</p>
+        <div class="nav-links">
+            <a href="/index.html">Main Site</a>
+            <a href="/login.html">Login</a>
+            <a href="/signup.html">Sign Up</a>
+            <a href="/opportunities.html">Opportunities</a>
+        </div>
+        <div class="timestamp">
+            Emergency Test Deployed: <span id="timestamp"></span>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+    </script>
+</body>
+</html>

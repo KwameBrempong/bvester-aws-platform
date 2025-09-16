@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester API Connectivity Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #log {
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bvester API Connectivity Test</h1>
+    
+    <div class="test-container">
+        <h2>Firebase Configuration Test</h2>
+        <button onclick="testFirebaseConfig()">Test Firebase Connection</button>
+        <div id="firebase-result"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Backend API Test</h2>
+        <button onclick="testBackendAPI()">Test Backend Connectivity</button>
+        <div id="backend-result"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Investment Opportunities Test</h2>
+        <button onclick="testInvestmentOpportunities()">Load Opportunities</button>
+        <div id="opportunities-result"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Sample Data Seeding</h2>
+        <button onclick="seedData()">Seed Sample Data</button>
+        <div id="seed-result"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Debug Log</h2>
+        <div id="log"></div>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            projectId: "bizinvest-hub-prod",
+            appId: "1:19849690024:web:134ceb9fc20fec428a3b9d",
+            storageBucket: "bizinvest-hub-prod.firebasestorage.app",
+            apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+            authDomain: "bizinvest-hub-prod.firebaseapp.com",
+            messagingSenderId: "19849690024",
+            measurementId: "G-3M77VNP2YC"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Security Helper Functions
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            return input
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;')
+                .replace(/\//g, '&#x2F;');
+        }
+
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            // XSS Prevention: Use safe DOM manipulation
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${sanitizeInput(message)}`;
+            logElement.appendChild(logEntry);
+            
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLog() {
+            const logElement = document.getElementById('log');
+            logElement.textContent = '';
+        }
+
+        function showResult(containerId, message, type = 'success') {
+            const container = document.getElementById(containerId);
+            
+            // XSS Prevention: Safe DOM manipulation
+            container.textContent = '';
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.textContent = sanitizeInput(message);
+            container.appendChild(resultDiv);
+        }
+
+        async function testFirebaseConfig() {
+            try {
+                log('Testing Firebase configuration...');
+                const auth = firebase.auth();
+                const db = firebase.firestore();
+                
+                // Test Firestore connection
+                const testDoc = await db.collection('test').doc('connectivity').get();
+                log('Firestore connection successful');
+                
+                showResult('firebase-result', 'Firebase configuration working correctly!', 'success');
+            } catch (error) {
+                log(`Firebase error: ${error.message}`);
+                showResult('firebase-result', `Firebase error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testBackendAPI() {
+            try {
+                log('Testing backend API...');
+                const response = await fetch('https://bvester-backend.railway.app/api');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('Backend API responding successfully');
+                    showResult('backend-result', 'Backend API is available and responding', 'success');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                log(`Backend API error: ${error.message}`);
+                showResult('backend-result', `Backend API unavailable: ${error.message}. Using Firestore-only mode.`, 'warning');
+            }
+        }
+
+        async function testInvestmentOpportunities() {
+            try {
+                log('Loading investment opportunities from Firestore...');
+                const db = firebase.firestore();
+                
+                const snapshot = await db.collection('opportunities')
+                    .where('timeline.status', '==', 'active')
+                    .limit(5)
+                    .get();
+                
+                const opportunities = [];
+                snapshot.forEach(doc => {
+                    opportunities.push({ id: doc.id, ...doc.data() });
+                });
+                
+                log(`Found ${opportunities.length} investment opportunities`);
+                
+                if (opportunities.length > 0) {
+                    const opportunityList = opportunities.map(opp => 
+                        `• ${opp.businessName} (${opp.industry}) - Goal: $${opp.funding.goalAmount.toLocaleString()}`
+                    ).join('<br>');
+                    
+                    showResult('opportunities-result', 
+                        `Successfully loaded ${opportunities.length} opportunities:<br>${opportunityList}`, 
+                        'success'
+                    );
+                } else {
+                    showResult('opportunities-result', 
+                        'No opportunities found. Database may be empty.', 
+                        'warning'
+                    );
+                }
+                
+            } catch (error) {
+                log(`Opportunities loading error: ${error.message}`);
+                showResult('opportunities-result', `Error loading opportunities: ${error.message}`, 'error');
+            }
+        }
+
+        async function seedData() {
+            try {
+                log('Seeding sample data...');
+                const db = firebase.firestore();
+                
+                // Check if data already exists
+                const existingSnapshot = await db.collection('opportunities').limit(1).get();
+                if (!existingSnapshot.empty) {
+                    showResult('seed-result', 'Sample data already exists in database', 'warning');
+                    return;
+                }
+                
+                // Sample opportunities
+                const sampleOpportunities = [
+                    {
+                        businessName: "EcoAfrica Solar",
+                        industry: "renewable-energy",
+                        description: "Solar energy solutions for rural African communities",
+                        funding: {
+                            goalAmount: 500000,
+                            raisedAmount: 150000,
+                            minimumInvestment: 1000,
+                            investorCount: 25
+                        },
+                        returns: {
+                            expectedReturn: 15,
+                            projectedROI: 18,
+                            paybackPeriod: 36
+                        },
+                        risk: {
+                            level: "medium",
+                            score: 6.5
+                        },
+                        location: {
+                            city: "Lagos",
+                            country: "Nigeria",
+                            region: "West Africa"
+                        },
+                        timeline: {
+                            status: "active",
+                            fundingDeadline: "2025-12-31",
+                            expectedLaunch: "2026-03-01"
+                        },
+                        featured: true,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        businessName: "AgriTech Kenya",
+                        industry: "agriculture",
+                        description: "Digital farming solutions for smallholder farmers",
+                        funding: {
+                            goalAmount: 250000,
+                            raisedAmount: 75000,
+                            minimumInvestment: 500,
+                            investorCount: 15
+                        },
+                        returns: {
+                            expectedReturn: 22,
+                            projectedROI: 25,
+                            paybackPeriod: 24
+                        },
+                        risk: {
+                            level: "medium-high",
+                            score: 7.2
+                        },
+                        location: {
+                            city: "Nairobi",
+                            country: "Kenya",
+                            region: "East Africa"
+                        },
+                        timeline: {
+                            status: "active",
+                            fundingDeadline: "2025-10-31",
+                            expectedLaunch: "2026-01-15"
+                        },
+                        featured: true,
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                
+                // Add to Firestore
+                for (const opportunity of sampleOpportunities) {
+                    await db.collection('opportunities').add(opportunity);
+                    log(`Added opportunity: ${opportunity.businessName}`);
+                }
+                
+                showResult('seed-result', 'Sample data seeded successfully!', 'success');
+                
+            } catch (error) {
+                log(`Seeding error: ${error.message}`);
+                showResult('seed-result', `Error seeding data: ${error.message}`, 'error');
+            }
+        }
+
+        // Run initial tests
+        window.addEventListener('load', () => {
+            log('Page loaded, running initial connectivity tests...');
+            testFirebaseConfig();
+            testBackendAPI();
+        });
+    </script>
+</body>
+</html>

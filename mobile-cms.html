@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester Mobile CMS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f6fa;
+            color: #333;
+            max-width: 414px;
+            margin: 0 auto;
+            min-height: 100vh;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            position: relative;
+        }
+        
+        /* Mobile App Header */
+        .mobile-header {
+            background: linear-gradient(135deg, #2E7D8F, #4A9EAF);
+            color: white;
+            padding: 50px 20px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .mobile-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .mobile-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 414px;
+            background: white;
+            border-top: 1px solid #e1e5e9;
+            display: flex;
+            padding: 10px 0 30px;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #2E7D8F;
+        }
+        
+        .nav-item .icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+            display: block;
+        }
+        
+        .nav-item .label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .mobile-content {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        /* Profile Screen */
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2E7D8F, #4A9EAF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 15px;
+            color: white;
+        }
+        
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .profile-email {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .mobile-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #2E7D8F, #4A9EAF);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: white;
+            color: #2E7D8F;
+            border: 2px solid #2E7D8F;
+        }
+        
+        .mobile-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Dashboard Screen */
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .dashboard-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2E7D8F;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* Recent Content */
+        .content-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #2E7D8F;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .content-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .content-meta {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .content-description {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.4;
+        }
+        
+        .content-badges {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-published {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+        
+        .badge-draft {
+            background: #ffeaa7;
+            color: #f39c12;
+        }
+        
+        .badge-featured {
+            background: #74b9ff;
+            color: white;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .message.success {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+        
+        .message.error {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        /* Records Screen - Simple placeholder */
+        .records-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .records-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .placeholder-text {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <h1>💎 Bvester</h1>
+        <p>Mobile CMS Access</p>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="mobile-content">
+        <!-- Dashboard Screen -->
+        <div id="dashboard" class="screen active">
+            <div class="dashboard-card">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">Content Overview</div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalContentMobile">-</div>
+                        <div class="stat-label">Total Content</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="publishedContentMobile">-</div>
+                        <div class="stat-label">Published</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">Recent Content</div>
+                    <button class="mobile-btn btn-primary" onclick="openCMSWeb()" style="width: auto; padding: 8px 16px; font-size: 14px;">
+                        ⚡ Full CMS
+                    </button>
+                </div>
+                <div id="recentContent">
+                    <div class="loading">Loading content...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Records Screen -->
+        <div id="records" class="screen">
+            <div class="records-card">
+                <div class="records-icon">📊</div>
+                <h3>Business Records</h3>
+                <p class="placeholder-text">Track your business transactions, revenue, and expenses.</p>
+                <button class="mobile-btn btn-outline">Add Transaction</button>
+            </div>
+        </div>
+
+        <!-- Analysis Screen -->
+        <div id="analysis" class="screen">
+            <div class="records-card">
+                <div class="records-icon">📈</div>
+                <h3>Business Analysis</h3>
+                <p class="placeholder-text">Get insights into your business performance and investment readiness.</p>
+                <button class="mobile-btn btn-outline">Run Analysis</button>
+            </div>
+        </div>
+
+        <!-- Messages Screen -->
+        <div id="messages" class="screen">
+            <div class="records-card">
+                <div class="records-icon">💬</div>
+                <h3>Messages</h3>
+                <p class="placeholder-text">Connect with potential investors and business partners.</p>
+                <button class="mobile-btn btn-outline">View Messages</button>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profile" class="screen">
+            <div class="profile-card">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <div class="profile-name" id="profileName">Admin User</div>
+                <div class="profile-email" id="profileEmailMobile">admin@bvester.com</div>
+                
+                <button class="mobile-btn btn-primary" onclick="openCMSWeb()">
+                    🎛️ Access CMS Admin
+                </button>
+                
+                <button class="mobile-btn btn-success" onclick="grantAdminRole()" id="adminBtn">
+                    ⚡ Grant Admin Access
+                </button>
+                
+                <button class="mobile-btn btn-outline" onclick="openFirebaseConsole()">
+                    🔥 Firebase Console
+                </button>
+                
+                <button class="mobile-btn btn-outline" onclick="logout()">
+                    🚪 Logout
+                </button>
+            </div>
+            
+            <div id="mobileMessage"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchScreen('dashboard')">
+            <span class="icon">🏠</span>
+            <span class="label">Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="switchScreen('records')">
+            <span class="icon">📊</span>
+            <span class="label">Records</span>
+        </div>
+        <div class="nav-item" onclick="switchScreen('analysis')">
+            <span class="icon">📈</span>
+            <span class="label">Analysis</span>
+        </div>
+        <div class="nav-item" onclick="switchScreen('messages')">
+            <span class="icon">💬</span>
+            <span class="label">Messages</span>
+        </div>
+        <div class="nav-item" onclick="switchScreen('profile')">
+            <span class="icon">👤</span>
+            <span class="label">Profile</span>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js';
+        import { getFirestore, collection, getDocs, doc, setDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore.js';
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+            authDomain: "bizinvest-hub-prod.firebaseapp.com",
+            projectId: "bizinvest-hub-prod",
+            storageBucket: "bizinvest-hub-prod.firebasestorage.app",
+            messagingSenderId: "19849690024",
+            appId: "1:19849690024:web:134ceb9fc20fec428a3b9d"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUser = null;
+        let contentList = [];
+        
+        // Check authentication
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('profileEmailMobile').textContent = user.email;
+                document.getElementById('profileName').textContent = user.email.split('@')[0];
+                document.getElementById('profileAvatar').textContent = user.email.charAt(0).toUpperCase();
+                loadMobileContent();
+            } else {
+                window.location.href = 'quick-test.html';
+            }
+        });
+        
+        // Global functions
+        window.switchScreen = (screenName) => {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        };
+        
+        window.openCMSWeb = () => {
+            window.open('web-cms.html', '_blank');
+        };
+        
+        window.openFirebaseConsole = () => {
+            window.open('https://console.firebase.google.com/project/bizinvest-hub-prod/firestore', '_blank');
+        };
+        
+        window.grantAdminRole = async () => {
+            if (!currentUser) {
+                showMobileMessage('Please login first', 'error');
+                return;
+            }
+            
+            try {
+                await setDoc(doc(db, 'users', currentUser.uid), {
+                    role: 'admin'
+                }, { merge: true });
+                
+                showMobileMessage('Admin role granted! You can now access the full CMS.', 'success');
+                document.getElementById('adminBtn').textContent = '✅ Admin Access Granted';
+                document.getElementById('adminBtn').disabled = true;
+            } catch (error) {
+                showMobileMessage(`Failed to grant admin role: ${error.message}`, 'error');
+            }
+        };
+        
+        window.logout = async () => {
+            await signOut(auth);
+            window.location.href = 'quick-test.html';
+        };
+        
+        // Load content for mobile view
+        async function loadMobileContent() {
+            try {
+                const q = query(collection(db, 'cms_content'), orderBy('updatedAt', 'desc'), limit(3));
+                const querySnapshot = await getDocs(q);
+                
+                contentList = [];
+                querySnapshot.forEach((doc) => {
+                    contentList.push({ id: doc.id, ...doc.data() });
+                });
+                
+                renderMobileContent();
+                updateMobileStats();
+                
+            } catch (error) {
+                console.error('Error loading content:', error);
+                document.getElementById('recentContent').innerHTML = 
+                    '<div class="message error">Failed to load content</div>';
+            }
+        }
+        
+        // Render content for mobile
+        function renderMobileContent() {
+            const contentDiv = document.getElementById('recentContent');
+            
+            if (contentList.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #666;">
+                        <p>No content yet</p>
+                        <button class="mobile-btn btn-primary" onclick="openCMSWeb()" style="margin-top: 10px;">
+                            Create Content
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            contentDiv.innerHTML = contentList.map(item => `
+                <div class="content-item">
+                    <div class="content-title">${item.title}</div>
+                    <div class="content-meta">
+                        ${formatType(item.type)} • ${formatCategory(item.category)}
+                    </div>
+                    <div class="content-description">${item.description.substring(0, 80)}...</div>
+                    <div class="content-badges">
+                        <span class="badge badge-${item.status}">${item.status}</span>
+                        ${item.isFeatured ? '<span class="badge badge-featured">Featured</span>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Update mobile stats
+        async function updateMobileStats() {
+            try {
+                const allContentQuery = query(collection(db, 'cms_content'));
+                const allContent = await getDocs(allContentQuery);
+                
+                let total = 0;
+                let published = 0;
+                
+                allContent.forEach((doc) => {
+                    total++;
+                    if (doc.data().status === 'published') published++;
+                });
+                
+                document.getElementById('totalContentMobile').textContent = total;
+                document.getElementById('publishedContentMobile').textContent = published;
+                
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+        
+        // Utility functions
+        function formatType(type) {
+            return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+        
+        function formatCategory(category) {
+            return category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+        
+        function showMobileMessage(text, type) {
+            const existing = document.querySelector('#mobileMessage .message');
+            if (existing) existing.remove();
+            
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            document.getElementById('mobileMessage').appendChild(message);
+            
+            setTimeout(() => message.remove(), 5000);
+        }
+    </script>
+</body>
+</html>

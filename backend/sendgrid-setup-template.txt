@@ -1,0 +1,29 @@
+# 📧 SENDGRID PRODUCTION CREDENTIALS
+# Get these from SendGrid dashboard
+
+SENDGRID_API_KEY=SG.your_actual_api_key_here
+EMAIL_FROM=noreply@yourdomain.com
+
+# Instructions:
+# 1. Create SendGrid account
+# 2. Go to Settings → API Keys
+# 3. Create API Key with "Full Access"
+# 4. Copy the key (starts with SG.)
+# 5. Set up domain authentication
+
+# Domain Authentication (Recommended):
+# 1. Settings → Sender Authentication
+# 2. Authenticate Your Domain
+# 3. Add DNS records to your domain
+# 4. Wait 24-48 hours for verification
+
+# Single Sender (Quick Setup):
+# 1. Settings → Sender Authentication  
+# 2. Create a Single Sender
+# 3. Use your verified email address
+# 4. Can send emails immediately
+
+# Email Limits:
+# - Free: 100 emails/day
+# - Essentials ($15/month): 40,000 emails/month
+# - Pro ($90/month): 1.5M emails/month

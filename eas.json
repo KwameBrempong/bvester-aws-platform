@@ -1,0 +1,82 @@
+{
+  "cli": {
+    "version": ">= 5.0.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "development": {
+      "distribution": "internal",
+      "developmentClient": false,
+      "env": {
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "bizinvest-hub-prod.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "bizinvest-hub-prod",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "bizinvest-hub-prod.firebasestorage.app",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "19849690024",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:19849690024:web:68c283f4b0d7cbbb8a3b9d",
+        "EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID": "G-BBVBFHWCB2"
+      },
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "ios": {
+        "simulator": false
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "developmentClient": false,
+      "env": {
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "bizinvest-hub-prod.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "bizinvest-hub-prod",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "bizinvest-hub-prod.firebasestorage.app",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "19849690024",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:19849690024:web:68c283f4b0d7cbbb8a3b9d",
+        "EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID": "G-BBVBFHWCB2"
+      },
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "ios": {
+        "simulator": false
+      }
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "bizinvest-hub-prod.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "bizinvest-hub-prod",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "bizinvest-hub-prod.firebasestorage.app",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "19849690024",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:19849690024:web:68c283f4b0d7cbbb8a3b9d",
+        "EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID": "G-BBVBFHWCB2"
+      },
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "ios": {
+        "simulator": false
+      }
+    },
+    "apk": {
+      "distribution": "internal",
+      "developmentClient": false,
+      "env": {
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "bizinvest-hub-prod.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "bizinvest-hub-prod",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "bizinvest-hub-prod.firebasestorage.app",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "19849690024",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:19849690024:web:68c283f4b0d7cbbb8a3b9d",
+        "EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID": "G-BBVBFHWCB2"
+      },
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      }
+    }
+  }
+}

@@ -1,0 +1,151 @@
+# 🚀 BVESTER PLATFORM - VERCEL ARCHITECTURE DOCKER COMPOSE
+# Updated for Vercel frontend deployment with containerized backend
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # BACKEND API SERVICE (Dockerized)
+  # ============================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bvester-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - FLUTTERWAVE_SECRET_KEY=${FLUTTERWAVE_SECRET_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+    networks:
+      - bvester-network
+    volumes:
+      - backend-logs:/app/logs
+      - backend-uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - redis
+    labels:
+      - "com.bvester.service=backend-api"
+      - "com.bvester.deployment=vercel-architecture"
+
+  # ============================================================================
+  # WEB APPLICATION (Local Docker - Optional for Development)
+  # ============================================================================
+  web-local:
+    build:
+      context: .
+      dockerfile: Dockerfile.web.vercel
+    container_name: bvester-web-local
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - bvester-network
+    volumes:
+      - web-logs:/var/log/nginx
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles:
+      - local-web
+    labels:
+      - "com.bvester.service=web-app-local"
+      - "com.bvester.deployment=docker-local"
+      - "com.bvester.note=frontend-deployed-on-vercel"
+
+  # ============================================================================
+  # REDIS CACHE SERVICE
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: bvester-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-bvestersecure}
+    networks:
+      - bvester-network
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "com.bvester.service=redis-cache"
+      - "com.bvester.deployment=vercel-architecture"
+
+  # ============================================================================
+  # DATABASE ADMIN INTERFACE (Optional)
+  # ============================================================================
+  redis-admin:
+    image: rediscommander/redis-commander:latest
+    container_name: bvester-redis-admin
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-bvestersecure}
+    networks:
+      - bvester-network
+    depends_on:
+      - redis
+    profiles:
+      - admin
+    labels:
+      - "com.bvester.service=redis-admin"
+      - "com.bvester.deployment=development-tools"
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+networks:
+  bvester-network:
+    driver: bridge
+    labels:
+      - "com.bvester.network=vercel-architecture"
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+volumes:
+  backend-logs:
+    driver: local
+    labels:
+      - "com.bvester.volume=backend-logs"
+  
+  backend-uploads:
+    driver: local
+    labels:
+      - "com.bvester.volume=backend-uploads"
+  
+  web-logs:
+    driver: local
+    labels:
+      - "com.bvester.volume=web-logs"
+  
+  redis-data:
+    driver: local
+    labels:
+      - "com.bvester.volume=redis-data"

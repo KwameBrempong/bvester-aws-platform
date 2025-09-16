@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BizInvest Hub - Professional Investment Platform (Local Development)</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Development Mode Banner */
+        .dev-banner {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+            text-align: center;
+            padding: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dev-banner i {
+            margin-right: 8px;
+        }
+
+        /* Professional Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.5rem 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Emulator Status */
+        .emulator-status {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .emulator-services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .service-card {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .service-card h4 {
+            color: #4c51bf;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-card .port {
+            font-family: monospace;
+            color: #718096;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .card-metric {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        /* Professional Button */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #4c51bf;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        /* Profile Sidebar */
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .profile-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 auto 1.5rem;
+        }
+
+        .profile-stats {
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        /* Content Area */
+        .profile-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 1rem 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(226, 232, 240, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        /* Auth Forms */
+        .auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Investment Cards */
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .investment-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .investment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .investment-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .company-info h3 {
+            color: #2d3748;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .company-info .industry {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .investment-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #4c51bf;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+
+        .mt-0 { margin-top: 0; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .investment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .emulator-services {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Development Mode Banner -->
+    <div class="dev-banner">
+        <i class="fas fa-code"></i>
+        LOCAL DEVELOPMENT MODE - Connected to Firebase Emulators
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                BizInvest Hub
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">Dashboard</a>
+                <a href="#" class="nav-item" onclick="showSection('profile')">Profile</a>
+                <a href="#" class="nav-item" onclick="showSection('investments')">Investments</a>
+                <a href="#" class="nav-item" onclick="showSection('network')">Network</a>
+                <a href="#" class="nav-item" onclick="showSection('analytics')">Analytics</a>
+            </nav>
+            <div class="user-profile" id="userProfile" style="display: none;">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">User</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div id="authButtons">
+                <button class="btn-primary" onclick="showSection('login')">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Emulator Status Section -->
+        <div class="emulator-status">
+            <div class="status-header">
+                <div class="status-indicator"></div>
+                <h3><i class="fas fa-server"></i> Firebase Emulators Active</h3>
+                <span style="margin-left: auto; background: rgba(16, 185, 129, 0.1); color: #059669; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600;">Local Development</span>
+            </div>
+            <p style="color: #718096; margin-bottom: 1rem;">All Firebase services are running locally for safe development and testing.</p>
+            
+            <div class="emulator-services">
+                <div class="service-card">
+                    <h4><i class="fas fa-user-shield"></i> Authentication</h4>
+                    <div class="port">Port: 9199</div>
+                </div>
+                <div class="service-card">
+                    <h4><i class="fas fa-database"></i> Firestore</h4>
+                    <div class="port">Port: 8180</div>
+                </div>
+                <div class="service-card">
+                    <h4><i class="fas fa-globe"></i> Hosting</h4>
+                    <div class="port">Port: 5100</div>
+                </div>
+                <div class="service-card">
+                    <h4><i class="fas fa-tools"></i> Firebase UI</h4>
+                    <div class="port">Port: 4100</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(226, 232, 240, 0.5);">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <a href="http://127.0.0.1:4100/" target="_blank" class="btn-secondary">
+                        <i class="fas fa-external-link-alt"></i>
+                        Open Firebase UI
+                    </a>
+                    <span style="color: #718096; font-size: 0.875rem;">
+                        <i class="fas fa-info-circle"></i>
+                        Monitor and manage your local Firebase data
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section">
+            <h2 style="color: white; text-align: center; margin-bottom: 2rem; font-size: 2rem;">
+                <i class="fas fa-tachometer-alt"></i>
+                Professional Investment Dashboard
+            </h2>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Total Funding Sought</div>
+                        <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="card-metric" id="totalFunding">$0</div>
+                    <div class="card-description">Active funding campaigns across platform</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Investor Interest</div>
+                        <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="card-metric" id="investorInterest">0</div>
+                    <div class="card-description">Active investors viewing opportunities</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Profile Completion</div>
+                        <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                    </div>
+                    <div class="card-metric" id="profileCompletion">0%</div>
+                    <div class="card-description">Complete your profile to attract investors</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Platform Activity</div>
+                        <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="fas fa-activity"></i>
+                        </div>
+                    </div>
+                    <div class="card-metric" id="platformActivity">0</div>
+                    <div class="card-description">Recent actions and updates</div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-clock"></i>
+                        Recent Activity
+                    </div>
+                </div>
+                <div id="recentActivity">
+                    <div style="text-align: center; color: #718096; padding: 2rem;">
+                        <i class="fas fa-history" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>Complete your profile to see recent activity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="login-section" class="hidden">
+            <div class="auth-container">
+                <div class="text-center mb-4">
+                    <div class="logo" style="justify-content: center; margin-bottom: 1rem;">
+                        <i class="fas fa-chart-line"></i>
+                        BizInvest Hub
+                    </div>
+                    <h2 style="color: #2d3748; margin-bottom: 0.5rem;">Welcome Back</h2>
+                    <p style="color: #718096;">Sign in to your professional investment platform</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(226, 232, 240, 0.5);">
+                    <p style="color: #718096;">Don't have an account?</p>
+                    <button class="btn-secondary mt-1" onclick="showSection('register')" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Section -->
+        <div id="register-section" class="hidden">
+            <div class="auth-container">
+                <div class="text-center mb-4">
+                    <div class="logo" style="justify-content: center; margin-bottom: 1rem;">
+                        <i class="fas fa-chart-line"></i>
+                        BizInvest Hub
+                    </div>
+                    <h2 style="color: #2d3748; margin-bottom: 0.5rem;">Join BizInvest Hub</h2>
+                    <p style="color: #718096;">Create your professional investment account</p>
+                </div>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="registerPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Account Type</label>
+                        <select class="form-input" id="accountType" required>
+                            <option value="">Select account type</option>
+                            <option value="business">Business Owner (Seeking Investment)</option>
+                            <option value="investor">Investor (Looking for Opportunities)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(226, 232, 240, 0.5);">
+                    <p style="color: #718096;">Already have an account?</p>
+                    <button class="btn-secondary mt-1" onclick="showSection('login')" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile-section" class="hidden">
+            <h2 style="color: white; text-align: center; margin-bottom: 2rem; font-size: 2rem;">
+                <i class="fas fa-user-circle"></i>
+                Professional Business Profile
+            </h2>
+            
+            <div class="profile-layout">
+                <div class="profile-sidebar">
+                    <div class="profile-avatar-large" id="profileAvatarLarge">
+                        U
+                    </div>
+                    <div class="text-center">
+                        <h3 style="color: #2d3748; margin-bottom: 0.5rem;" id="profileDisplayName">Complete Your Profile</h3>
+                        <p style="color: #718096; font-size: 0.875rem;" id="profileUserType">Business Profile</p>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span style="font-weight: 600; color: #2d3748;">Profile Completion</span>
+                            <span style="font-weight: 600; color: #4c51bf;" id="profileProgressText">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="profileProgress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Profile Views</span>
+                            <span class="stat-value" id="profileViews">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Investor Interest</span>
+                            <span class="stat-value" id="investorInterestProfile">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Network Connections</span>
+                            <span class="stat-value" id="networkConnections">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Platform Score</span>
+                            <span class="stat-value" id="platformScore">0</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary mt-3" onclick="completeProfile()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-edit"></i>
+                        Complete Profile
+                    </button>
+                </div>
+
+                <div class="profile-content">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <i class="fas fa-building"></i>
+                            Business Information
+                        </div>
+                    </div>
+                    <div id="business-info-content">
+                        <div style="text-align: center; color: #718096; padding: 3rem;">
+                            <i class="fas fa-building" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            <h3 style="margin-bottom: 1rem;">Complete Your Business Profile</h3>
+                            <p style="margin-bottom: 2rem;">Add your business information to attract investors and build trust</p>
+                            <button class="btn-primary" onclick="completeProfile()">
+                                <i class="fas fa-plus"></i>
+                                Add Business Information
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investment Opportunities Section -->
+        <div id="investments-section" class="hidden">
+            <h2 style="color: white; text-align: center; margin-bottom: 2rem; font-size: 2rem;">
+                <i class="fas fa-chart-growth"></i>
+                Investment Opportunities
+            </h2>
+            
+            <div class="investment-grid">
+                <!-- Investment opportunities will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Network Section -->
+        <div id="network-section" class="hidden">
+            <div class="dashboard-card">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-users"></i>
+                        Professional Network
+                    </div>
+                </div>
+                <div style="text-align: center; color: #718096; padding: 3rem;">
+                    <i class="fas fa-network-wired" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <h3 style="margin-bottom: 1rem;">Build Your Network</h3>
+                    <p style="margin-bottom: 2rem;">Connect with investors, mentors, and other entrepreneurs</p>
+                    <button class="btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Find Connections
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics-section" class="hidden">
+            <div class="dashboard-card">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Advanced Analytics
+                    </div>
+                </div>
+                <div style="text-align: center; color: #718096; padding: 3rem;">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <h3 style="margin-bottom: 1rem;">Coming Soon</h3>
+                    <p style="margin-bottom: 2rem;">Advanced analytics and insights for your business performance</p>
+                    <button class="btn-secondary">
+                        <i class="fas fa-bell"></i>
+                        Notify Me
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK with Emulator Configuration -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, connectAuthEmulator } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, connectFirestoreEmulator } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+        // Firebase configuration for emulators
+        const firebaseConfig = {
+            apiKey: "demo-key",
+            authDomain: "demo-project.firebaseapp.com",
+            projectId: "demo-project",
+            storageBucket: "demo-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "demo-app-id"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Connect to emulators (only in development)
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            connectAuthEmulator(auth, "http://127.0.0.1:9199");
+            connectFirestoreEmulator(db, '127.0.0.1', 8180);
+            console.log('🔥 Connected to Firebase Emulators');
+            console.log('📊 Auth Emulator: http://127.0.0.1:9199');
+            console.log('📄 Firestore Emulator: http://127.0.0.1:8180');
+            console.log('🎛️ Firebase UI: http://127.0.0.1:4100');
+        }
+
+        // Make Firebase available globally
+        window.auth = auth;
+        window.db = db;
+        window.firebaseServices = {
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut,
+            doc,
+            setDoc,
+            getDoc,
+            updateDoc
+        };
+
+        // Application State
+        window.appState = {
+            currentUser: null,
+            userProfile: null,
+            currentSection: 'dashboard'
+        };
+
+        // Initialize the application
+        initializeApp();
+    </script>
+
+    <script>
+        // Initialize the application
+        function initializeApp() {
+            console.log('🚀 Initializing BizInvest Hub with Firebase Emulators');
+            
+            // Set up authentication state listener
+            window.firebaseServices.onAuthStateChanged(window.auth, (user) => {
+                if (user) {
+                    window.appState.currentUser = user;
+                    handleUserSignedIn(user);
+                } else {
+                    window.appState.currentUser = null;
+                    handleUserSignedOut();
+                }
+            });
+
+            // Load investment opportunities
+            loadInvestmentOpportunities();
+            
+            // Set up form handlers
+            setupFormHandlers();
+            
+            // Update dashboard metrics
+            updateDashboardMetrics();
+        }
+
+        // Handle user signed in
+        async function handleUserSignedIn(user) {
+            console.log('✅ User signed in:', user.email);
+            
+            // Update UI to show user is signed in
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
+            document.getElementById('userAvatar').textContent = (user.displayName || user.email).charAt(0).toUpperCase();
+
+            // Load user profile
+            await loadUserProfile(user.uid);
+            
+            // Show dashboard
+            showSection('dashboard');
+        }
+
+        // Handle user signed out
+        function handleUserSignedOut() {
+            console.log('👋 User signed out');
+            
+            // Update UI to show user is signed out
+            document.getElementById('authButtons').style.display = 'block';
+            document.getElementById('userProfile').style.display = 'none';
+            
+            // Clear user data
+            window.appState.userProfile = null;
+            
+            // Show login
+            showSection('login');
+        }
+
+        // Load user profile from Firestore
+        async function loadUserProfile(userId) {
+            try {
+                const userDoc = await window.firebaseServices.getDoc(window.firebaseServices.doc(window.db, 'users', userId));
+                
+                if (userDoc.exists()) {
+                    window.appState.userProfile = userDoc.data();
+                    updateProfileDisplay();
+                    console.log('📊 User profile loaded:', window.appState.userProfile);
+                } else {
+                    console.log('👤 No user profile found, creating default profile');
+                    // Create default profile
+                    const defaultProfile = {
+                        email: window.appState.currentUser.email,
+                        createdAt: new Date().toISOString(),
+                        profileCompletion: 0,
+                        accountType: 'business',
+                        stats: {
+                            profileViews: 0,
+                            investorInterest: 0,
+                            networkConnections: 0,
+                            platformScore: 0
+                        }
+                    };
+                    
+                    await window.firebaseServices.setDoc(window.firebaseServices.doc(window.db, 'users', userId), defaultProfile);
+                    window.appState.userProfile = defaultProfile;
+                    updateProfileDisplay();
+                }
+            } catch (error) {
+                console.error('❌ Error loading user profile:', error);
+            }
+        }
+
+        // Update profile display
+        function updateProfileDisplay() {
+            const profile = window.appState.userProfile;
+            if (!profile) return;
+
+            // Update profile sidebar
+            document.getElementById('profileDisplayName').textContent = profile.businessName || profile.fullName || 'Complete Your Profile';
+            document.getElementById('profileUserType').textContent = profile.accountType === 'business' ? 'Business Profile' : 'Investor Profile';
+            
+            // Update progress bar
+            const completion = profile.profileCompletion || 0;
+            document.getElementById('profileProgress').style.width = completion + '%';
+            document.getElementById('profileProgressText').textContent = completion + '%';
+            document.getElementById('profileCompletion').textContent = completion + '%';
+            
+            // Update stats
+            if (profile.stats) {
+                document.getElementById('profileViews').textContent = profile.stats.profileViews || 0;
+                document.getElementById('investorInterestProfile').textContent = profile.stats.investorInterest || 0;
+                document.getElementById('networkConnections').textContent = profile.stats.networkConnections || 0;
+                document.getElementById('platformScore').textContent = profile.stats.platformScore || 0;
+            }
+
+            // Update business information display
+            if (profile.businessInfo) {
+                updateBusinessInfoDisplay(profile.businessInfo);
+            }
+        }
+
+        // Update business information display
+        function updateBusinessInfoDisplay(businessInfo) {
+            const businessContent = document.getElementById('business-info-content');
+            businessContent.innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-info-circle"></i>
+                        Basic Information
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Business Name</div>
+                            <div class="detail-value">${businessInfo.businessName || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Industry</div>
+                            <div class="detail-value">${businessInfo.industry || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Business Stage</div>
+                            <div class="detail-value">${businessInfo.stage || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Location</div>
+                            <div class="detail-value">${businessInfo.location || 'Not provided'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Financial Overview
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Annual Revenue</div>
+                            <div class="detail-value">${businessInfo.annualRevenue || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Team Size</div>
+                            <div class="detail-value">${businessInfo.teamSize || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Years in Business</div>
+                            <div class="detail-value">${businessInfo.yearsInBusiness || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Growth Rate</div>
+                            <div class="detail-value">${businessInfo.growthRate || 'Not provided'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-dollar-sign"></i>
+                        Funding Information
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Amount Sought</div>
+                            <div class="detail-value">${businessInfo.fundingAmount || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Investment Type</div>
+                            <div class="detail-value">${businessInfo.investmentType || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Use of Funds</div>
+                            <div class="detail-value">${businessInfo.useOfFunds || 'Not provided'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Expected Return</div>
+                            <div class="detail-value">${businessInfo.expectedReturn || 'Not provided'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(226, 232, 240, 0.5);">
+                    <button class="btn-primary" onclick="completeProfile()">
+                        <i class="fas fa-edit"></i>
+                        Update Profile
+                    </button>
+                </div>
+            `;
+
+            // Add CSS for detail sections
+            if (!document.getElementById('detail-styles')) {
+                const detailStyles = document.createElement('style');
+                detailStyles.id = 'detail-styles';
+                detailStyles.textContent = `
+                    .detail-section {
+                        margin-bottom: 2rem;
+                        padding-bottom: 1.5rem;
+                        border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+                    }
+                    .detail-section:last-child {
+                        border-bottom: none;
+                    }
+                    .detail-title {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        font-size: 1.125rem;
+                        font-weight: 600;
+                        color: #2d3748;
+                        margin-bottom: 1rem;
+                    }
+                    .detail-grid {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                        gap: 1rem;
+                    }
+                    .detail-item {
+                        background: rgba(102, 126, 234, 0.05);
+                        padding: 1rem;
+                        border-radius: 8px;
+                        border: 1px solid rgba(102, 126, 234, 0.1);
+                    }
+                    .detail-label {
+                        font-size: 0.875rem;
+                        color: #718096;
+                        margin-bottom: 0.25rem;
+                        font-weight: 500;
+                    }
+                    .detail-value {
+                        font-weight: 600;
+                        color: #2d3748;
+                    }
+                `;
+                document.head.appendChild(detailStyles);
+            }
+        }
+
+        // Setup form handlers
+        function setupFormHandlers() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                try {
+                    await window.firebaseServices.signInWithEmailAndPassword(window.auth, email, password);
+                    console.log('✅ User signed in successfully');
+                } catch (error) {
+                    console.error('❌ Login error:', error);
+                    alert('Login failed: ' + error.message);
+                }
+            });
+
+            // Registration form
+            document.getElementById('registerForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const accountType = document.getElementById('accountType').value;
+
+                try {
+                    const userCredential = await window.firebaseServices.createUserWithEmailAndPassword(window.auth, email, password);
+                    
+                    // Create user profile
+                    const userProfile = {
+                        fullName: name,
+                        email: email,
+                        accountType: accountType,
+                        createdAt: new Date().toISOString(),
+                        profileCompletion: 25,
+                        stats: {
+                            profileViews: 0,
+                            investorInterest: 0,
+                            networkConnections: 0,
+                            platformScore: 100
+                        }
+                    };
+
+                    await window.firebaseServices.setDoc(window.firebaseServices.doc(window.db, 'users', userCredential.user.uid), userProfile);
+                    
+                    console.log('✅ User registered successfully');
+                } catch (error) {
+                    console.error('❌ Registration error:', error);
+                    alert('Registration failed: ' + error.message);
+                }
+            });
+        }
+
+        // Show section
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = ['dashboard', 'login', 'register', 'profile', 'investments', 'network', 'analytics'];
+            sections.forEach(section => {
+                document.getElementById(section + '-section').classList.add('hidden');
+            });
+
+            // Show requested section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeNavItem = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+
+            window.appState.currentSection = sectionName;
+        }
+
+        // Complete profile function
+        function completeProfile() {
+            const businessName = prompt('Enter your business name:');
+            if (!businessName) return;
+
+            const industry = prompt('Enter your industry:');
+            if (!industry) return;
+
+            const fundingAmount = prompt('Enter funding amount sought (e.g., $50,000):');
+            if (!fundingAmount) return;
+
+            // Update profile with basic information
+            updateUserProfile({
+                businessInfo: {
+                    businessName: businessName,
+                    industry: industry,
+                    fundingAmount: fundingAmount,
+                    stage: 'Early Stage',
+                    location: 'Africa',
+                    annualRevenue: '$10,000 - $50,000',
+                    teamSize: '1-5 employees',
+                    yearsInBusiness: '1-2 years',
+                    growthRate: '15% monthly',
+                    investmentType: 'Equity Investment',
+                    useOfFunds: 'Business expansion and equipment',
+                    expectedReturn: '20-25% annually'
+                },
+                businessName: businessName,
+                profileCompletion: 75
+            });
+        }
+
+        // Update user profile
+        async function updateUserProfile(updates) {
+            if (!window.appState.currentUser) return;
+
+            try {
+                const userId = window.appState.currentUser.uid;
+                await window.firebaseServices.updateDoc(window.firebaseServices.doc(window.db, 'users', userId), updates);
+                
+                // Update local state
+                window.appState.userProfile = { ...window.appState.userProfile, ...updates };
+                updateProfileDisplay();
+                updateDashboardMetrics();
+                
+                console.log('✅ Profile updated successfully');
+            } catch (error) {
+                console.error('❌ Error updating profile:', error);
+            }
+        }
+
+        // Update dashboard metrics
+        function updateDashboardMetrics() {
+            const profile = window.appState.userProfile;
+            
+            if (profile && profile.businessInfo) {
+                document.getElementById('totalFunding').textContent = profile.businessInfo.fundingAmount || '$0';
+                document.getElementById('platformActivity').textContent = '5';
+                
+                // Add recent activity
+                const activityHTML = `
+                    <div style="padding: 1rem; border-left: 3px solid #667eea; margin-bottom: 1rem; background: rgba(102, 126, 234, 0.05);">
+                        <div style="font-weight: 600; color: #2d3748; margin-bottom: 0.25rem;">Profile Updated</div>
+                        <div style="color: #718096; font-size: 0.875rem;">Business information completed</div>
+                        <div style="color: #9ca3af; font-size: 0.75rem; margin-top: 0.5rem;">Just now</div>
+                    </div>
+                    <div style="padding: 1rem; border-left: 3px solid #10b981; margin-bottom: 1rem; background: rgba(16, 185, 129, 0.05);">
+                        <div style="font-weight: 600; color: #2d3748; margin-bottom: 0.25rem;">Account Created</div>
+                        <div style="color: #718096; font-size: 0.875rem;">Welcome to BizInvest Hub</div>
+                        <div style="color: #9ca3af; font-size: 0.75rem; margin-top: 0.5rem;">Today</div>
+                    </div>
+                `;
+                document.getElementById('recentActivity').innerHTML = activityHTML;
+            }
+            
+            document.getElementById('investorInterest').textContent = Math.floor(Math.random() * 15) + 5;
+        }
+
+        // Load investment opportunities
+        function loadInvestmentOpportunities() {
+            const opportunities = [
+                {
+                    companyName: "GreenTech Solutions",
+                    industry: "Clean Technology",
+                    fundingGoal: "$75,000",
+                    annualRevenue: "$120,000",
+                    growthRate: "25%",
+                    teamSize: "8",
+                    stage: "Growth",
+                    description: "Innovative solar energy solutions for rural African communities"
+                },
+                {
+                    companyName: "AgriConnect",
+                    industry: "Agriculture Technology",
+                    fundingGoal: "$50,000",
+                    annualRevenue: "$85,000",
+                    growthRate: "30%",
+                    teamSize: "5",
+                    stage: "Early Stage",
+                    description: "Mobile platform connecting farmers with buyers and suppliers"
+                },
+                {
+                    companyName: "EduTech Africa",
+                    industry: "Education Technology",
+                    fundingGoal: "$100,000",
+                    annualRevenue: "$200,000",
+                    growthRate: "40%",
+                    teamSize: "12",
+                    stage: "Expansion",
+                    description: "Digital learning platform for African students and professionals"
+                }
+            ];
+
+            const investmentGrid = document.querySelector('#investments-section .investment-grid');
+            investmentGrid.innerHTML = opportunities.map(opportunity => `
+                <div class="investment-card">
+                    <div class="investment-header">
+                        <div class="company-logo">
+                            ${opportunity.companyName.charAt(0)}
+                        </div>
+                        <div class="company-info">
+                            <h3>${opportunity.companyName}</h3>
+                            <div class="industry">${opportunity.industry}</div>
+                        </div>
+                    </div>
+                    
+                    <p style="color: #718096; margin-bottom: 1.5rem; line-height: 1.5;">
+                        ${opportunity.description}
+                    </p>
+                    
+                    <div class="investment-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value">${opportunity.fundingGoal}</div>
+                            <div class="metric-label">Funding Goal</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${opportunity.annualRevenue}</div>
+                            <div class="metric-label">Annual Revenue</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${opportunity.growthRate}</div>
+                            <div class="metric-label">Growth Rate</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${opportunity.teamSize}</div>
+                            <div class="metric-label">Team Size</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <button class="btn-primary" style="flex: 1;">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </button>
+                        <button class="btn-secondary" style="flex: 1;">
+                            <i class="fas fa-heart"></i>
+                            Express Interest
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Sign out function
+        async function signOut() {
+            try {
+                await window.firebaseServices.signOut(window.auth);
+                console.log('👋 User signed out successfully');
+            } catch (error) {
+                console.error('❌ Sign out error:', error);
+            }
+        }
+
+        // Make functions available globally
+        window.showSection = showSection;
+        window.completeProfile = completeProfile;
+        window.signOut = signOut;
+    </script>
+</body>
+</html>

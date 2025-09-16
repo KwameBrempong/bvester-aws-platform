@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BizInvest Hub - Investment Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Screen Container */
+        .screen-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        /* Welcome Screen */
+        .welcome-carousel {
+            text-align: center;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide p {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .slide-emoji {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* User Type Selection */
+        .user-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .user-type-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-type-card h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .user-type-card ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .user-type-card li {
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+
+        .user-type-card li:before {
+            content: "✓ ";
+            margin-right: 10px;
+        }
+
+        /* Forms */
+        .onboarding-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-step {
+            display: none;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .checkbox-item input {
+            margin-right: 10px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            background: #e1e5e9;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        /* Achievement System */
+        .achievement-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.5s ease;
+            z-index: 2000;
+            max-width: 300px;
+        }
+
+        .achievement-notification.show {
+            transform: translateX(0);
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .achievement-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-top: 4px solid #667eea;
+        }
+
+        .dashboard-card h3 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Investment Cards */
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .investment-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s;
+        }
+
+        .investment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        .investment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .investment-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .investment-amount {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .slide h1 {
+                font-size: 2rem;
+            }
+            
+            .user-type-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 10px;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🌍 BizInvest Hub</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showScreen('welcome')">Home</a></li>
+                <li><a href="#" onclick="showScreen('dashboard')">Dashboard</a></li>
+                <li><a href="#" onclick="showScreen('investments')">Investments</a></li>
+                <li><a href="#" onclick="showScreen('profile')">Profile</a></li>
+            </ul>
+            <div class="user-menu">
+                <span id="user-email">Guest</span>
+                <button class="btn btn-secondary" onclick="signOut()" id="signout-btn" style="display: none;">Sign Out</button>
+                <button class="btn" onclick="showAuthModal()" id="signin-btn">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen-container">
+            <div class="welcome-carousel">
+                <!-- Slide 1 -->
+                <div class="slide active" data-slide="0">
+                    <div class="slide-emoji">🌍</div>
+                    <h1>Welcome to BizInvest Hub</h1>
+                    <p>Connecting African Innovation with Global Investment</p>
+                    <button class="btn" onclick="nextSlide()">Get Started</button>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="slide" data-slide="1">
+                    <div class="slide-emoji">🚀</div>
+                    <h1>Empower African Entrepreneurs</h1>
+                    <p>Discover investment-ready SMEs across Africa with transparent business analytics and growth potential</p>
+                    <button class="btn" onclick="nextSlide()">Continue</button>
+                    <button class="btn btn-secondary" onclick="prevSlide()">Back</button>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="slide" data-slide="2">
+                    <div class="slide-emoji">💰</div>
+                    <h1>Global Investment Opportunities</h1>
+                    <p>Access diverse investment options: equity, loans, and revenue-sharing with built-in risk assessment</p>
+                    <button class="btn" onclick="nextSlide()">Explore</button>
+                    <button class="btn btn-secondary" onclick="prevSlide()">Back</button>
+                </div>
+
+                <!-- Slide 4 -->
+                <div class="slide" data-slide="3">
+                    <div class="slide-emoji">🎯</div>
+                    <h1>Start Your Journey</h1>
+                    <p>Join thousands of entrepreneurs and investors building the future of African business</p>
+                    <button class="btn" onclick="showUserTypeSelection()">Join Now</button>
+                    <button class="btn btn-secondary" onclick="showScreen('investments')">Explore First</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Type Selection -->
+        <div id="user-type-screen" class="screen-container hidden">
+            <h2 class="text-center mb-20">Choose Your Path</h2>
+            <div class="user-type-grid">
+                <div class="user-type-card" onclick="startOnboarding('business')">
+                    <h3>🏢 Business Owner</h3>
+                    <p>Looking for investment to grow your SME</p>
+                    <ul>
+                        <li>List your business opportunity</li>
+                        <li>Access investment readiness tools</li>
+                        <li>Connect with global investors</li>
+                        <li>Get business growth analytics</li>
+                        <li>Secure funding for expansion</li>
+                    </ul>
+                    <div class="btn" style="margin-top: 20px;">Get Started</div>
+                </div>
+
+                <div class="user-type-card" onclick="startOnboarding('investor')">
+                    <h3>💎 Investor</h3>
+                    <p>Ready to invest in African innovation</p>
+                    <ul>
+                        <li>Discover vetted opportunities</li>
+                        <li>Access detailed business analytics</li>
+                        <li>Build diversified portfolio</li>
+                        <li>Make impact investments</li>
+                        <li>Connect directly with entrepreneurs</li>
+                    </ul>
+                    <div class="btn" style="margin-top: 20px;">Start Investing</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onboarding Screen -->
+        <div id="onboarding-screen" class="screen-container hidden">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 16.67%"></div>
+                </div>
+                <div class="progress-text" id="progress-text">Step 1 of 6</div>
+            </div>
+
+            <div class="onboarding-form">
+                <div id="onboarding-content">
+                    <!-- Content will be dynamically loaded here -->
+                </div>
+
+                <div class="text-center mt-20">
+                    <button class="btn btn-secondary" onclick="prevOnboardingStep()" id="prev-btn" style="display: none;">Previous</button>
+                    <button class="btn" onclick="nextOnboardingStep()" id="next-btn">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboard-screen" class="screen-container hidden">
+            <h2 class="mb-20">Welcome to Your Dashboard</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>📊 Your Progress</h3>
+                    <div id="user-progress">
+                        <p>Profile completion: <strong>85%</strong></p>
+                        <p>Achievements unlocked: <strong>3 of 8</strong></p>
+                        <p>Platform engagement: <strong>High</strong></p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>🏆 Recent Achievements</h3>
+                    <div id="recent-achievements">
+                        <p>🎯 Profile Master - Completed your profile</p>
+                        <p>🌟 Welcome Warrior - Finished onboarding</p>
+                        <p>📱 Platform Explorer - Used 5+ features</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>📈 Quick Stats</h3>
+                    <div id="quick-stats">
+                        <p>Active investments: <strong>0</strong></p>
+                        <p>Profile views: <strong>12</strong></p>
+                        <p>Messages: <strong>2 new</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investments Screen -->
+        <div id="investments-screen" class="screen-container hidden">
+            <h2 class="mb-20">Investment Opportunities</h2>
+            <div class="investment-grid" id="investment-grid">
+                <!-- Investment cards will be dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profile-screen" class="screen-container hidden">
+            <h2 class="mb-20">Your Profile</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>👤 Personal Information</h3>
+                    <div id="profile-info">
+                        <p><strong>Email:</strong> <span id="profile-email">Not signed in</span></p>
+                        <p><strong>User Type:</strong> <span id="profile-type">Not selected</span></p>
+                        <p><strong>Member Since:</strong> <span id="profile-date">Today</span></p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>⚙️ Settings</h3>
+                    <button class="btn" onclick="showUserTypeSelection()">Change User Type</button>
+                    <button class="btn btn-secondary" onclick="resetProfile()">Reset Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievement Notification -->
+    <div id="achievement-notification" class="achievement-notification">
+        <div class="achievement-title" id="achievement-title">Achievement Unlocked!</div>
+        <div class="achievement-description" id="achievement-description">You've completed your profile!</div>
+    </div>
+
+    <!-- Firebase SDK and App Logic -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+            authDomain: "bizinvest-hub-prod.firebaseapp.com",
+            projectId: "bizinvest-hub-prod",
+            storageBucket: "bizinvest-hub-prod.firebasestorage.app",
+            messagingSenderId: "19849690024",
+            appId: "1:19849690024:web:134ceb9fc20fec428a3b9d",
+            measurementId: "G-3M77VNP2YC"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global app state
+        window.appState = {
+            currentUser: null,
+            currentScreen: 'welcome',
+            currentSlide: 0,
+            userType: null,
+            onboardingStep: 0,
+            onboardingData: {},
+            achievements: []
+        };
+
+        // Make Firebase available globally
+        window.auth = auth;
+        window.db = db;
+
+        // App continues in next part...
+    </script>
+
+    <script>
+        // App Logic (continued from Firebase initialization)
+        
+        // Screen Management
+        function showScreen(screenName) {
+            // Hide all screens
+            document.querySelectorAll('.screen-container').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenName + '-screen').classList.remove('hidden');
+            window.appState.currentScreen = screenName;
+            
+            // Load screen-specific content
+            loadScreenContent(screenName);
+        }
+
+        function loadScreenContent(screenName) {
+            switch(screenName) {
+                case 'investments':
+                    loadInvestmentOpportunities();
+                    break;
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'profile':
+                    loadProfileData();
+                    break;
+            }
+        }
+
+        // Welcome Carousel
+        function nextSlide() {
+            const slides = document.querySelectorAll('.slide');
+            slides[window.appState.currentSlide].classList.remove('active');
+            
+            window.appState.currentSlide = (window.appState.currentSlide + 1) % slides.length;
+            slides[window.appState.currentSlide].classList.add('active');
+        }
+
+        function prevSlide() {
+            const slides = document.querySelectorAll('.slide');
+            slides[window.appState.currentSlide].classList.remove('active');
+            
+            window.appState.currentSlide = window.appState.currentSlide === 0 ? slides.length - 1 : window.appState.currentSlide - 1;
+            slides[window.appState.currentSlide].classList.add('active');
+        }
+
+        // User Type Selection
+        function showUserTypeSelection() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('user-type-screen').classList.remove('hidden');
+        }
+
+        function startOnboarding(userType) {
+            window.appState.userType = userType;
+            showOnboardingScreen();
+            showAchievement("🚀 Journey Begins", "You've started your BizInvest Hub journey!");
+        }
+
+        // Onboarding System
+        function showOnboardingScreen() {
+            document.getElementById('user-type-screen').classList.add('hidden');
+            document.getElementById('onboarding-screen').classList.remove('hidden');
+            
+            window.appState.onboardingStep = 0;
+            loadOnboardingStep();
+        }
+
+        function loadOnboardingStep() {
+            const step = window.appState.onboardingStep;
+            const userType = window.appState.userType;
+            const content = document.getElementById('onboarding-content');
+            
+            // Update progress
+            const totalSteps = userType === 'business' ? 6 : 8;
+            const progress = ((step + 1) / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `Step ${step + 1} of ${totalSteps}`;
+            
+            // Load step content
+            if (userType === 'business') {
+                content.innerHTML = getBusinessOnboardingStep(step);
+            } else {
+                content.innerHTML = getInvestorOnboardingStep(step);
+            }
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').style.display = step > 0 ? 'inline-block' : 'none';
+            document.getElementById('next-btn').textContent = step === totalSteps - 1 ? 'Complete' : 'Continue';
+        }
+
+        function getBusinessOnboardingStep(step) {
+            const steps = [
+                {
+                    title: "Welcome, Future Success Story! 🌟",
+                    content: `
+                        <h3>Let's get your business investment-ready</h3>
+                        <p>This quick setup will help investors discover and understand your amazing business opportunity.</p>
+                        <p>Ready to connect with global investors? Let's begin!</p>
+                    `
+                },
+                {
+                    title: "What stage is your business in?",
+                    content: `
+                        <div class="checkbox-group">
+                            <div class="checkbox-item" onclick="selectOption('stage', 'idea')">
+                                <input type="radio" name="stage" value="idea"> 💡 Idea Stage
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('stage', 'startup')">
+                                <input type="radio" name="stage" value="startup"> 🚀 Startup (0-2 years)
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('stage', 'growing')">
+                                <input type="radio" name="stage" value="growing"> 📈 Growing (2-5 years)
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('stage', 'established')">
+                                <input type="radio" name="stage" value="established"> 🏢 Established (5+ years)
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "What industry are you in?",
+                    content: `
+                        <div class="checkbox-group">
+                            <div class="checkbox-item" onclick="selectOption('industry', 'technology')">
+                                <input type="radio" name="industry" value="technology"> 💻 Technology
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('industry', 'agriculture')">
+                                <input type="radio" name="industry" value="agriculture"> 🌾 Agriculture
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('industry', 'healthcare')">
+                                <input type="radio" name="industry" value="healthcare"> 🏥 Healthcare
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('industry', 'education')">
+                                <input type="radio" name="industry" value="education"> 📚 Education
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('industry', 'fintech')">
+                                <input type="radio" name="industry" value="fintech"> 💳 Fintech
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('industry', 'retail')">
+                                <input type="radio" name="industry" value="retail"> 🛍️ Retail
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "How much funding are you seeking?",
+                    content: `
+                        <div class="checkbox-group">
+                            <div class="checkbox-item" onclick="selectOption('funding', '1k-10k')">
+                                <input type="radio" name="funding" value="1k-10k"> $1K - $10K
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('funding', '10k-50k')">
+                                <input type="radio" name="funding" value="10k-50k"> $10K - $50K
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('funding', '50k-250k')">
+                                <input type="radio" name="funding" value="50k-250k"> $50K - $250K
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('funding', '250k-1m')">
+                                <input type="radio" name="funding" value="250k-1m"> $250K - $1M
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('funding', '1m+')">
+                                <input type="radio" name="funding" value="1m+"> $1M+
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "What type of investment do you prefer?",
+                    content: `
+                        <div class="checkbox-group">
+                            <div class="checkbox-item" onclick="toggleMultiSelect('investmentType', 'equity')">
+                                <input type="checkbox" name="investmentType" value="equity"> 📈 Equity Investment
+                            </div>
+                            <div class="checkbox-item" onclick="toggleMultiSelect('investmentType', 'loan')">
+                                <input type="checkbox" name="investmentType" value="loan"> 💰 Business Loan
+                            </div>
+                            <div class="checkbox-item" onclick="toggleMultiSelect('investmentType', 'revenue')">
+                                <input type="checkbox" name="investmentType" value="revenue"> 💎 Revenue Sharing
+                            </div>
+                            <div class="checkbox-item" onclick="toggleMultiSelect('investmentType', 'grant')">
+                                <input type="checkbox" name="investmentType" value="grant"> 🎁 Grant Funding
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "How will you use the investment?",
+                    content: `
+                        <div class="checkbox-group">
+                            <div class="checkbox-item" onclick="toggleMultiSelect('useOfFunds', 'equipment')">
+                                <input type="checkbox" name="useOfFunds" value="equipment"> 🔧 Equipment & Infrastructure
+                            </div>
+                            <div class="checkbox-item" onclick="toggleMultiSelect('useOfFunds', 'marketing')">
+                                <input type="checkbox" name="useOfFunds" value="marketing"> 📢 Marketing & Sales
+                            </div>
+                            <div class="checkbox-item" onclick="toggleMultiSelect('useOfFunds', 'staff')">
+                                <input type="checkbox" name="useOfFunds" value="staff"> 👥 Staff & Operations
+                            </div>
+                            <div class="checkbox-item" onclick="toggleMultiSelect('useOfFunds', 'inventory')">
+                                <input type="checkbox" name="useOfFunds" value="inventory"> 📦 Inventory & Stock
+                            </div>
+                            <div class="checkbox-item" onclick="toggleMultiSelect('useOfFunds', 'expansion')">
+                                <input type="checkbox" name="useOfFunds" value="expansion"> 🌍 Geographic Expansion
+                            </div>
+                            <div class="checkbox-item" onclick="toggleMultiSelect('useOfFunds', 'rd')">
+                                <input type="checkbox" name="useOfFunds" value="rd"> 🔬 Research & Development
+                            </div>
+                        </div>
+                    `
+                }
+            ];
+            
+            return `
+                <h2>${steps[step].title}</h2>
+                ${steps[step].content}
+            `;
+        }
+
+        function getInvestorOnboardingStep(step) {
+            // Similar structure for investor onboarding
+            const steps = [
+                {
+                    title: "Welcome, Future Impact Investor! 💎",
+                    content: `
+                        <h3>Discover amazing African investment opportunities</h3>
+                        <p>You're about to join a community of global investors making a real difference in African entrepreneurship.</p>
+                        <p>Ready to build your impact portfolio? Let's personalize your experience!</p>
+                    `
+                },
+                {
+                    title: "What's your investment experience level?",
+                    content: `
+                        <div class="checkbox-group">
+                            <div class="checkbox-item" onclick="selectOption('experience', 'beginner')">
+                                <input type="radio" name="experience" value="beginner"> 🌱 Beginner (New to investing)
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('experience', 'intermediate')">
+                                <input type="radio" name="experience" value="intermediate"> 📈 Intermediate (Some experience)
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('experience', 'advanced')">
+                                <input type="radio" name="experience" value="advanced"> 🎯 Advanced (Experienced investor)
+                            </div>
+                            <div class="checkbox-item" onclick="selectOption('experience', 'professional')">
+                                <input type="radio" name="experience" value="professional"> 💼 Professional (Investment professional)
+                            </div>
+                        </div>
+                    `
+                }
+                // Add more investor steps...
+            ];
+            
+            return `
+                <h2>${steps[step].title}</h2>
+                ${steps[step].content}
+            `;
+        }
+
+        function selectOption(field, value) {
+            window.appState.onboardingData[field] = value;
+            // Update UI to show selection
+            const radioInputs = document.querySelectorAll(`input[name="${field}"]`);
+            radioInputs.forEach(input => {
+                input.checked = input.value === value;
+            });
+        }
+
+        function toggleMultiSelect(field, value) {
+            if (!window.appState.onboardingData[field]) {
+                window.appState.onboardingData[field] = [];
+            }
+            
+            const array = window.appState.onboardingData[field];
+            const index = array.indexOf(value);
+            
+            if (index > -1) {
+                array.splice(index, 1);
+            } else {
+                array.push(value);
+            }
+            
+            // Update checkbox
+            const checkbox = document.querySelector(`input[name="${field}"][value="${value}"]`);
+            checkbox.checked = array.includes(value);
+        }
+
+        function nextOnboardingStep() {
+            const userType = window.appState.userType;
+            const totalSteps = userType === 'business' ? 6 : 8;
+            
+            if (window.appState.onboardingStep === totalSteps - 1) {
+                completeOnboarding();
+            } else {
+                window.appState.onboardingStep++;
+                loadOnboardingStep();
+            }
+        }
+
+        function prevOnboardingStep() {
+            if (window.appState.onboardingStep > 0) {
+                window.appState.onboardingStep--;
+                loadOnboardingStep();
+            }
+        }
+
+        async function completeOnboarding() {
+            // Save onboarding data to Firebase
+            if (window.appState.currentUser) {
+                try {
+                    await setDoc(doc(window.db, 'users', window.appState.currentUser.uid), {
+                        userType: window.appState.userType,
+                        onboardingData: window.appState.onboardingData,
+                        onboardingCompleted: true,
+                        completedAt: new Date()
+                    }, { merge: true });
+                } catch (error) {
+                    console.error('Error saving onboarding data:', error);
+                }
+            }
+            
+            // Show achievements
+            showAchievement("🎯 Profile Master", "You've completed your profile setup!");
+            setTimeout(() => {
+                showAchievement("🌟 Welcome Warrior", "Onboarding completed successfully!");
+            }, 2000);
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+                showScreen('dashboard');
+            }, 4000);
+        }
+
+        // Achievement System
+        function showAchievement(title, description) {
+            const notification = document.getElementById('achievement-notification');
+            document.getElementById('achievement-title').textContent = title;
+            document.getElementById('achievement-description').textContent = description;
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+            
+            window.appState.achievements.push({ title, description, date: new Date() });
+        }
+
+        // Load Investment Opportunities
+        function loadInvestmentOpportunities() {
+            const grid = document.getElementById('investment-grid');
+            
+            const mockInvestments = [
+                {
+                    title: "AgriTech Startup - Ghana",
+                    amount: "$50K",
+                    description: "Revolutionary farming technology helping smallholder farmers increase yields by 300%",
+                    sector: "Agriculture",
+                    stage: "Growth",
+                    returns: "12-15% IRR"
+                },
+                {
+                    title: "EdTech Platform - Kenya",
+                    amount: "$75K",
+                    description: "Digital learning platform serving 50,000+ students across East Africa",
+                    sector: "Education",
+                    stage: "Expansion",
+                    returns: "8-12% IRR"
+                },
+                {
+                    title: "FinTech Solution - Nigeria",
+                    amount: "$100K",
+                    description: "Mobile payment system for unbanked populations with 1M+ users",
+                    sector: "Fintech",
+                    stage: "Series A",
+                    returns: "15-20% IRR"
+                },
+                {
+                    title: "Healthcare Innovation - Rwanda",
+                    amount: "$35K",
+                    description: "Telemedicine platform connecting rural patients with healthcare professionals",
+                    sector: "Healthcare",
+                    stage: "Startup",
+                    returns: "10-14% IRR"
+                }
+            ];
+            
+            grid.innerHTML = mockInvestments.map(investment => `
+                <div class="investment-card">
+                    <div class="investment-header">
+                        <div class="investment-title">${investment.title}</div>
+                        <div class="investment-amount">${investment.amount}</div>
+                    </div>
+                    <p class="mb-20">${investment.description}</p>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span><strong>Sector:</strong> ${investment.sector}</span>
+                        <span><strong>Stage:</strong> ${investment.stage}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <span><strong>Expected Returns:</strong> ${investment.returns}</span>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn" onclick="viewInvestmentDetails('${investment.title}')">View Details</button>
+                        <button class="btn btn-secondary" onclick="pledgeInvestment('${investment.title}')">Pledge Interest</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewInvestmentDetails(title) {
+            showAchievement("🔍 Explorer", "You're exploring investment opportunities!");
+            alert(`Viewing details for: ${title}\n\nThis would open a detailed investment page with:\n- Complete business plan\n- Financial projections\n- Team information\n- Risk assessment\n- Due diligence documents`);
+        }
+
+        function pledgeInvestment(title) {
+            showAchievement("💰 Investor Interest", "You've shown interest in an investment!");
+            alert(`Investment interest pledged for: ${title}\n\nThe business owner will be notified of your interest and can reach out to discuss the opportunity further.`);
+        }
+
+        // Load Dashboard Data
+        function loadDashboardData() {
+            // This would normally load real data from Firebase
+            console.log('Loading dashboard data...');
+        }
+
+        // Load Profile Data
+        function loadProfileData() {
+            if (window.appState.currentUser) {
+                document.getElementById('profile-email').textContent = window.appState.currentUser.email;
+                document.getElementById('profile-type').textContent = window.appState.userType || 'Not selected';
+                document.getElementById('profile-date').textContent = new Date().toLocaleDateString();
+            }
+        }
+
+        // Authentication
+        function showAuthModal() {
+            const email = prompt('Enter your email:');
+            const password = prompt('Enter your password:');
+            
+            if (email && password) {
+                signInUser(email, password);
+            }
+        }
+
+        async function signInUser(email, password) {
+            try {
+                const userCredential = await signInWithEmailAndPassword(window.auth, email, password);
+                console.log('User signed in:', userCredential.user);
+            } catch (error) {
+                // Try to create account if sign in fails
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(window.auth, email, password);
+                    console.log('User created:', userCredential.user);
+                    showAchievement("🎉 Welcome!", "Account created successfully!");
+                } catch (createError) {
+                    alert('Authentication failed: ' + createError.message);
+                }
+            }
+        }
+
+        async function signOut() {
+            try {
+                await window.auth.signOut();
+                window.appState.currentUser = null;
+                showScreen('welcome');
+            } catch (error) {
+                console.error('Sign out error:', error);
+            }
+        }
+
+        function resetProfile() {
+            window.appState.userType = null;
+            window.appState.onboardingData = {};
+            window.appState.onboardingStep = 0;
+            showAchievement("🔄 Fresh Start", "Profile reset successfully!");
+            showScreen('welcome');
+        }
+
+        // Firebase Auth State Observer
+        window.auth.onAuthStateChanged((user) => {
+            window.appState.currentUser = user;
+            
+            if (user) {
+                document.getElementById('user-email').textContent = user.email;
+                document.getElementById('signin-btn').style.display = 'none';
+                document.getElementById('signout-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('user-email').textContent = 'Guest';
+                document.getElementById('signin-btn').style.display = 'inline-block';
+                document.getElementById('signout-btn').style.display = 'none';
+            }
+        });
+
+        // Auto-advance welcome carousel
+        setInterval(() => {
+            if (window.appState.currentScreen === 'welcome') {
+                nextSlide();
+            }
+        }, 8000);
+
+        // Initialize app
+        console.log('🚀 BizInvest Hub initialized!');
+        showAchievement("🌍 Welcome to BizInvest Hub", "Your investment journey starts here!");
+    </script>
+</body>
+</html>

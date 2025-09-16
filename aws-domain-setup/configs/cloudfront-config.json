@@ -1,0 +1,134 @@
+{
+  "distributionConfig": {
+    "comment": "CloudFront distribution configuration for bvester.com",
+    "defaultCacheBehavior": {
+      "targetOriginId": "S3-bvester.com",
+      "viewerProtocolPolicy": "redirect-to-https",
+      "allowedMethods": {
+        "quantity": 7,
+        "items": ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"],
+        "cachedMethods": {
+          "quantity": 2,
+          "items": ["GET", "HEAD"]
+        }
+      },
+      "compress": true,
+      "cachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+      "responseHeadersPolicyId": "custom-security-headers",
+      "trustedSigners": {
+        "enabled": false,
+        "quantity": 0
+      },
+      "forwardedValues": {
+        "queryString": false,
+        "cookies": {
+          "forward": "none"
+        },
+        "headers": {
+          "quantity": 0
+        }
+      }
+    },
+    "cacheBehaviors": [
+      {
+        "pathPattern": "/api/*",
+        "targetOriginId": "S3-bvester.com",
+        "viewerProtocolPolicy": "redirect-to-https",
+        "allowedMethods": {
+          "quantity": 7,
+          "items": ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+        },
+        "cachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+        "compress": true
+      },
+      {
+        "pathPattern": "/assets/*",
+        "targetOriginId": "S3-bvester.com",
+        "viewerProtocolPolicy": "redirect-to-https",
+        "allowedMethods": {
+          "quantity": 2,
+          "items": ["GET", "HEAD"]
+        },
+        "cachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+        "compress": true
+      }
+    ],
+    "customErrorResponses": [
+      {
+        "errorCode": 403,
+        "responsePagePath": "/404.html",
+        "responseCode": "404",
+        "errorCachingMinTTL": 300
+      },
+      {
+        "errorCode": 404,
+        "responsePagePath": "/404.html",
+        "responseCode": "404",
+        "errorCachingMinTTL": 300
+      },
+      {
+        "errorCode": 500,
+        "responsePagePath": "/error.html",
+        "responseCode": "500",
+        "errorCachingMinTTL": 60
+      },
+      {
+        "errorCode": 502,
+        "responsePagePath": "/error.html",
+        "responseCode": "502",
+        "errorCachingMinTTL": 60
+      },
+      {
+        "errorCode": 503,
+        "responsePagePath": "/error.html",
+        "responseCode": "503",
+        "errorCachingMinTTL": 60
+      },
+      {
+        "errorCode": 504,
+        "responsePagePath": "/error.html",
+        "responseCode": "504",
+        "errorCachingMinTTL": 60
+      }
+    ],
+    "enabled": true,
+    "httpVersion": "http2and3",
+    "isIPV6Enabled": true,
+    "priceClass": "PriceClass_100",
+    "staging": false,
+    "webACLId": "arn:aws:wafv2:us-east-1:ACCOUNT_ID:global/webacl/bvester-web-acl/WEBACL_ID"
+  },
+  "origins": [
+    {
+      "id": "S3-bvester.com",
+      "domainName": "bvester.com.s3.us-east-1.amazonaws.com",
+      "originPath": "",
+      "customHeaders": [],
+      "s3OriginConfig": {
+        "originAccessIdentity": ""
+      },
+      "connectionAttempts": 3,
+      "connectionTimeout": 10,
+      "originShield": {
+        "enabled": false
+      }
+    }
+  ],
+  "aliases": [
+    "bvester.com",
+    "www.bvester.com"
+  ],
+  "viewerCertificate": {
+    "acmCertificateArn": "arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/CERTIFICATE_ID",
+    "sslSupportMethod": "sni-only",
+    "minimumProtocolVersion": "TLSv1.2_2021",
+    "certificateSource": "acm"
+  },
+  "logging": {
+    "enabled": true,
+    "includeCookies": false,
+    "bucket": "bvester.com-logs.s3.amazonaws.com",
+    "prefix": "cloudfront-logs/"
+  },
+  "defaultRootObject": "index.html"
+}

@@ -1,0 +1,145 @@
+# 🚀 BVESTER PLATFORM - CLOUD DEPLOYMENT
+# Ready-to-use Docker Compose for Cloud Engineers
+# No build required - pulls pre-built images from Docker Hub
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # BACKEND API - Pre-built from Docker Hub
+  # ============================================================================
+  bvester-backend:
+    image: kwamebrempong/bvester-backend:latest
+    container_name: bvester-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Firebase Configuration
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID:-bizinvest-hub-prod}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      # Payment Processing
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - FLUTTERWAVE_SECRET_KEY=${FLUTTERWAVE_SECRET_KEY}
+      # Security
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-here}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-your-encryption-key-here}
+      # Communications
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      # Redis Connection
+      - REDIS_HOST=bvester-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-bvestersecure}
+    networks:
+      - bvester-net
+    volumes:
+      - api-logs:/app/logs
+      - api-uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - bvester-redis
+    labels:
+      - "bvester.service=api"
+      - "bvester.version=2.0.0-vercel"
+
+  # ============================================================================
+  # REDIS CACHE & SESSION STORE
+  # ============================================================================
+  bvester-redis:
+    image: redis:7-alpine
+    container_name: bvester-cache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-bvestersecure}
+    networks:
+      - bvester-net
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "bvester.service=cache"
+      - "bvester.version=7-alpine"
+
+  # ============================================================================
+  # WEB APP (Optional - Frontend hosted on Vercel)
+  # ============================================================================
+  bvester-web:
+    image: kwamebrempong/bvester-web-vercel:latest
+    container_name: bvester-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - bvester-net
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles:
+      - web-local
+    labels:
+      - "bvester.service=web"
+      - "bvester.note=primary-frontend-on-vercel"
+
+  # ============================================================================
+  # REDIS ADMIN INTERFACE (Development/Debugging)
+  # ============================================================================
+  redis-admin:
+    image: rediscommander/redis-commander:latest
+    container_name: bvester-redis-ui
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=cache:bvester-redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-bvestersecure}
+      - HTTP_USER=${REDIS_ADMIN_USER:-admin}
+      - HTTP_PASSWORD=${REDIS_ADMIN_PASS:-bvestersecure}
+    networks:
+      - bvester-net
+    depends_on:
+      - bvester-redis
+    profiles:
+      - admin
+    labels:
+      - "bvester.service=redis-admin"
+
+# ============================================================================
+# NETWORKING
+# ============================================================================
+networks:
+  bvester-net:
+    driver: bridge
+    name: bvester-network
+    labels:
+      - "bvester.network=main"
+
+# ============================================================================
+# PERSISTENT STORAGE
+# ============================================================================
+volumes:
+  api-logs:
+    driver: local
+    name: bvester-api-logs
+  api-uploads:
+    driver: local
+    name: bvester-api-uploads
+  redis-data:
+    driver: local
+    name: bvester-redis-data

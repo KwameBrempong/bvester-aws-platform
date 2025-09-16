@@ -1,0 +1,73 @@
+{
+  "summary": {
+    "total": 21,
+    "passed": 11,
+    "failed": 10,
+    "skipped": 1,
+    "passRate": "52.38%",
+    "duration": "1.539s"
+  },
+  "timestamp": "2025-09-16T16:23:12.721Z",
+  "environment": {
+    "apiUrl": "http://localhost:8080",
+    "nodeEnv": "development"
+  },
+  "passed": [
+    "Server responds to root endpoint",
+    "User registration with valid data",
+    "Login with valid credentials",
+    "Login with invalid credentials",
+    "Access protected endpoint without token",
+    "Registration with missing fields",
+    "SQL injection attempt blocked",
+    "Rate limiting enforced",
+    "API response time < 1000ms",
+    "Health check response time < 100ms",
+    "Complete user journey"
+  ],
+  "failed": [
+    {
+      "name": "Health endpoint returns valid data",
+      "error": "Health endpoint not working"
+    },
+    {
+      "name": "Access protected endpoint with valid token",
+      "error": "Profile data incomplete"
+    },
+    {
+      "name": "List all businesses",
+      "error": "Response should be array"
+    },
+    {
+      "name": "Get single business details",
+      "error": "Failed to get business details"
+    },
+    {
+      "name": "Search businesses",
+      "error": "Search failed"
+    },
+    {
+      "name": "List all investments",
+      "error": "Response should be array"
+    },
+    {
+      "name": "Get investment opportunities",
+      "error": "Failed to get opportunities"
+    },
+    {
+      "name": "Registration with invalid email",
+      "error": "Should not allow invalid email"
+    },
+    {
+      "name": "Registration with weak password",
+      "error": "Should not allow weak password"
+    },
+    {
+      "name": "XSS attempt sanitized",
+      "error": "XSS handling unclear"
+    }
+  ],
+  "skipped": [
+    "Rate limiting test"
+  ]
+}

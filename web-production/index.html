@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BizInvest Hub - African SME Investment Platform</title>
+    <meta name="description" content="Connect African SMEs with global investors. Professional investment platform for funding growth and building wealth through African businesses.">
+    <meta name="keywords" content="African SME, investment platform, startup funding, business investment, Africa investors">
+    <meta name="author" content="BizInvest Hub">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="BizInvest Hub - African SME Investment Platform">
+    <meta property="og:description" content="Connect African SMEs with global investors. Professional investment platform for funding growth and building wealth.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bizinvest-hub-prod.web.app">
+    <meta property="og:image" content="https://bizinvest-hub-prod.web.app/og-image.png">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BizInvest Hub - African SME Investment Platform">
+    <meta name="twitter:description" content="Connect African SMEs with global investors. Professional investment platform for funding growth and building wealth.">
+    <meta name="twitter:image" content="https://bizinvest-hub-prod.web.app/twitter-image.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Fonts and Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Professional Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            text-decoration: none;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.5rem 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .card-metric {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        /* Professional Button */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #4c51bf;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        /* Auth Forms */
+        .auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Investment Cards */
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .investment-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .investment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .investment-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .company-info h3 {
+            color: #2d3748;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .company-info .industry {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .investment-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #4c51bf;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(102, 126, 234, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+
+        .mt-0 { margin-top: 0; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .investment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <i class="fas fa-chart-line"></i>
+                BizInvest Hub
+            </a>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">Dashboard</a>
+                <a href="#" class="nav-item" onclick="showSection('opportunities')">Opportunities</a>
+                <a href="#" class="nav-item" onclick="showSection('about')">About</a>
+                <a href="#" class="nav-item" onclick="showSection('contact')">Contact</a>
+            </nav>
+            <div class="user-profile" id="userProfile" style="display: none;">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">User</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div id="authButtons">
+                <button class="btn-secondary" onclick="showSection('register')" style="margin-right: 1rem;">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </button>
+                <button class="btn-primary" onclick="showSection('login')">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section">
+            <div class="text-center mb-4">
+                <h1 style="color: white; font-size: 3rem; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                    🌍 African SME Investment Platform
+                </h1>
+                <p style="color: rgba(255,255,255,0.9); font-size: 1.25rem; max-width: 600px; margin: 0 auto;">
+                    Connect African small and medium enterprises with global investors. 
+                    Build wealth while supporting African innovation and growth.
+                </p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Total Investment Opportunities</div>
+                        <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                    <div class="card-metric" id="totalOpportunities">125</div>
+                    <div class="card-description">Active SMEs seeking investment across Africa</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Total Funding Available</div>
+                        <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="card-metric" id="totalFunding">$2.5M</div>
+                    <div class="card-description">Investment capital ready for deployment</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Successful Investments</div>
+                        <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="card-metric" id="successfulInvestments">89</div>
+                    <div class="card-description">Completed investments with positive returns</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Average ROI</div>
+                        <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                    <div class="card-metric" id="averageROI">24%</div>
+                    <div class="card-description">Annual return on investment</div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h2 style="color: #2d3748; margin-bottom: 2rem;">
+                    <i class="fas fa-star"></i>
+                    Featured Investment Opportunities
+                </h2>
+                <div class="investment-grid" id="featuredOpportunities">
+                    <!-- Investment opportunities will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Section -->
+        <div id="login-section" class="hidden">
+            <div class="auth-container">
+                <div class="text-center mb-4">
+                    <div class="logo" style="justify-content: center; margin-bottom: 1rem;">
+                        <i class="fas fa-chart-line"></i>
+                        BizInvest Hub
+                    </div>
+                    <h2 style="color: #2d3748; margin-bottom: 0.5rem;">Welcome Back</h2>
+                    <p style="color: #718096;">Sign in to your investment platform</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(226, 232, 240, 0.5);">
+                    <p style="color: #718096;">Don't have an account?</p>
+                    <button class="btn-secondary mt-1" onclick="showSection('register')" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Section -->
+        <div id="register-section" class="hidden">
+            <div class="auth-container">
+                <div class="text-center mb-4">
+                    <div class="logo" style="justify-content: center; margin-bottom: 1rem;">
+                        <i class="fas fa-chart-line"></i>
+                        BizInvest Hub
+                    </div>
+                    <h2 style="color: #2d3748; margin-bottom: 0.5rem;">Join BizInvest Hub</h2>
+                    <p style="color: #718096;">Start your investment journey today</p>
+                </div>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="registerPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Account Type</label>
+                        <select class="form-input" id="accountType" required>
+                            <option value="">Select account type</option>
+                            <option value="business">Business Owner (Seeking Investment)</option>
+                            <option value="investor">Investor (Looking for Opportunities)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(226, 232, 240, 0.5);">
+                    <p style="color: #718096;">Already have an account?</p>
+                    <button class="btn-secondary mt-1" onclick="showSection('login')" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opportunities Section -->
+        <div id="opportunities-section" class="hidden">
+            <h2 style="color: white; text-align: center; margin-bottom: 2rem; font-size: 2rem;">
+                <i class="fas fa-search"></i>
+                Investment Opportunities
+            </h2>
+            <div class="investment-grid" id="allOpportunities">
+                <!-- All opportunities will be loaded here -->
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div id="about-section" class="hidden">
+            <div class="dashboard-card">
+                <h2 style="color: #2d3748; margin-bottom: 2rem;">
+                    <i class="fas fa-info-circle"></i>
+                    About BizInvest Hub
+                </h2>
+                <div style="line-height: 1.8; color: #4a5568;">
+                    <p style="margin-bottom: 1.5rem;">
+                        BizInvest Hub is Africa's premier investment platform connecting small and medium enterprises (SMEs) 
+                        with global investors. We bridge the funding gap for African businesses while providing attractive 
+                        investment opportunities for international capital.
+                    </p>
+                    <h3 style="color: #2d3748; margin: 2rem 0 1rem 0;">Our Mission</h3>
+                    <p style="margin-bottom: 1.5rem;">
+                        To accelerate African economic growth by facilitating access to capital for promising SMEs and 
+                        providing investors with vetted, high-potential investment opportunities across the continent.
+                    </p>
+                    <h3 style="color: #2d3748; margin: 2rem 0 1rem 0;">Why Choose BizInvest Hub?</h3>
+                    <ul style="margin-left: 2rem; margin-bottom: 1.5rem;">
+                        <li style="margin-bottom: 0.5rem;">🔍 Rigorous business vetting and due diligence</li>
+                        <li style="margin-bottom: 0.5rem;">📊 Comprehensive financial analysis and reporting</li>
+                        <li style="margin-bottom: 0.5rem;">🌍 Focus on high-growth African markets</li>
+                        <li style="margin-bottom: 0.5rem;">💼 Professional investment management tools</li>
+                        <li style="margin-bottom: 0.5rem;">🤝 Direct connection between investors and businesses</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div id="contact-section" class="hidden">
+            <div class="dashboard-card">
+                <h2 style="color: #2d3748; margin-bottom: 2rem;">
+                    <i class="fas fa-envelope"></i>
+                    Contact Us
+                </h2>
+                <div style="line-height: 1.8; color: #4a5568;">
+                    <p style="margin-bottom: 2rem;">
+                        Ready to start your investment journey or list your business? Get in touch with our team.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                        <div>
+                            <h3 style="color: #2d3748; margin-bottom: 1rem;">For Investors</h3>
+                            <p><i class="fas fa-envelope" style="margin-right: 8px; color: #667eea;"></i> investors@bizinvesthub.com</p>
+                            <p><i class="fas fa-phone" style="margin-right: 8px; color: #667eea;"></i> +1 (555) 123-4567</p>
+                        </div>
+                        <div>
+                            <h3 style="color: #2d3748; margin-bottom: 1rem;">For Businesses</h3>
+                            <p><i class="fas fa-envelope" style="margin-right: 8px; color: #667eea;"></i> businesses@bizinvesthub.com</p>
+                            <p><i class="fas fa-phone" style="margin-right: 8px; color: #667eea;"></i> +1 (555) 765-4321</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <p>&copy; 2025 BizInvest Hub. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="#" onclick="showSection('about')">About</a> | 
+                <a href="#" onclick="showSection('contact')">Contact</a> | 
+                <a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a> | 
+                <a href="#" onclick="showTermsOfService()">Terms of Service</a>
+            </p>
+            <p style="margin-top: 1rem; color: #667eea;">
+                🌍 Connecting African Innovation with Global Investment
+            </p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, getDocs, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+        // Firebase configuration - Production
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdTIb1Hpue64ZqzkcsjlTWP747TW_CJ80",
+            authDomain: "bizinvest-hub-prod.firebaseapp.com",
+            projectId: "bizinvest-hub-prod",
+            storageBucket: "bizinvest-hub-prod.firebasestorage.app",
+            messagingSenderId: "19849690024",
+            appId: "1:19849690024:web:68c283f4b0d7cbbb8a3b9d",
+            measurementId: "G-BBVBFHWCB2"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Make Firebase available globally
+        window.auth = auth;
+        window.db = db;
+        window.firebaseServices = {
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut,
+            doc,
+            setDoc,
+            getDoc,
+            updateDoc,
+            collection,
+            addDoc,
+            getDocs,
+            query,
+            where,
+            orderBy
+        };
+
+        // Application State
+        window.appState = {
+            currentUser: null,
+            currentSection: 'dashboard'
+        };
+
+        // Initialize the application
+        initializeApp();
+    </script>
+
+    <script>
+        // Initialize the application
+        function initializeApp() {
+            console.log('🚀 Initializing BizInvest Hub - Production');
+            
+            // Set up authentication state listener
+            window.firebaseServices.onAuthStateChanged(window.auth, (user) => {
+                if (user) {
+                    window.appState.currentUser = user;
+                    handleUserSignedIn(user);
+                } else {
+                    window.appState.currentUser = null;
+                    handleUserSignedOut();
+                }
+            });
+
+            // Load featured opportunities
+            loadFeaturedOpportunities();
+            loadAllOpportunities();
+            
+            // Set up form handlers
+            setupFormHandlers();
+        }
+
+        // Handle user signed in
+        function handleUserSignedIn(user) {
+            console.log('✅ User signed in:', user.email);
+            
+            // Update UI to show user is signed in
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
+            document.getElementById('userAvatar').textContent = (user.displayName || user.email).charAt(0).toUpperCase();
+        }
+
+        // Handle user signed out
+        function handleUserSignedOut() {
+            console.log('👋 User signed out');
+            
+            // Update UI to show user is signed out
+            document.getElementById('authButtons').style.display = 'block';
+            document.getElementById('userProfile').style.display = 'none';
+        }
+
+        // Setup form handlers
+        function setupFormHandlers() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                try {
+                    await window.firebaseServices.signInWithEmailAndPassword(window.auth, email, password);
+                    showSection('dashboard');
+                    alert('Welcome back! You have been signed in successfully.');
+                } catch (error) {
+                    console.error('❌ Login error:', error);
+                    alert('Login failed: ' + error.message);
+                }
+            });
+
+            // Registration form
+            document.getElementById('registerForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const accountType = document.getElementById('accountType').value;
+
+                try {
+                    const userCredential = await window.firebaseServices.createUserWithEmailAndPassword(window.auth, email, password);
+                    
+                    // Create user profile
+                    const userProfile = {
+                        fullName: name,
+                        email: email,
+                        accountType: accountType,
+                        createdAt: new Date(),
+                        profileCompletion: 25
+                    };
+
+                    await window.firebaseServices.setDoc(window.firebaseServices.doc(window.db, 'users', userCredential.user.uid), userProfile);
+                    
+                    showSection('dashboard');
+                    alert('Account created successfully! Welcome to BizInvest Hub.');
+                } catch (error) {
+                    console.error('❌ Registration error:', error);
+                    alert('Registration failed: ' + error.message);
+                }
+            });
+        }
+
+        // Show section
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = ['dashboard', 'login', 'register', 'opportunities', 'about', 'contact'];
+            sections.forEach(section => {
+                const element = document.getElementById(section + '-section');
+                if (element) {
+                    element.classList.add('hidden');
+                }
+            });
+
+            // Show requested section
+            const targetSection = document.getElementById(sectionName + '-section');
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeNavItem = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+
+            window.appState.currentSection = sectionName;
+        }
+
+        // Load featured opportunities
+        function loadFeaturedOpportunities() {
+            const opportunities = [
+                {
+                    name: "GreenTech Solutions",
+                    industry: "Clean Technology",
+                    location: "Lagos, Nigeria",
+                    fundingGoal: "$75,000",
+                    annualRevenue: "$120,000",
+                    growthRate: "25%",
+                    description: "Innovative solar energy solutions for rural African communities"
+                },
+                {
+                    name: "AgriConnect",
+                    industry: "Agriculture Technology",
+                    location: "Nairobi, Kenya",
+                    fundingGoal: "$50,000",
+                    annualRevenue: "$85,000",
+                    growthRate: "30%",
+                    description: "Mobile platform connecting farmers with buyers and suppliers"
+                },
+                {
+                    name: "EduTech Africa",
+                    industry: "Education Technology",
+                    location: "Cape Town, South Africa",
+                    fundingGoal: "$100,000",
+                    annualRevenue: "$200,000",
+                    growthRate: "40%",
+                    description: "Digital learning platform for African students and professionals"
+                }
+            ];
+
+            renderOpportunities(opportunities, 'featuredOpportunities');
+        }
+
+        // Load all opportunities
+        function loadAllOpportunities() {
+            const allOpportunities = [
+                {
+                    name: "FinTech Uganda",
+                    industry: "Financial Technology",
+                    location: "Kampala, Uganda",
+                    fundingGoal: "$60,000",
+                    annualRevenue: "$95,000",
+                    growthRate: "35%",
+                    description: "Mobile money and digital banking solutions"
+                },
+                {
+                    name: "HealthCare Ghana",
+                    industry: "Healthcare",
+                    location: "Accra, Ghana",
+                    fundingGoal: "$80,000",
+                    annualRevenue: "$150,000",
+                    growthRate: "28%",
+                    description: "Telemedicine platform for rural healthcare access"
+                },
+                {
+                    name: "LogiTech Senegal",
+                    industry: "Logistics",
+                    location: "Dakar, Senegal",
+                    fundingGoal: "$45,000",
+                    annualRevenue: "$70,000",
+                    growthRate: "22%",
+                    description: "Last-mile delivery optimization platform"
+                }
+            ];
+
+            renderOpportunities(allOpportunities, 'allOpportunities');
+        }
+
+        // Render opportunities
+        function renderOpportunities(opportunities, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = opportunities.map(opportunity => `
+                <div class="investment-card">
+                    <div class="investment-header">
+                        <div class="company-logo">
+                            ${opportunity.name.charAt(0)}
+                        </div>
+                        <div class="company-info">
+                            <h3>${opportunity.name}</h3>
+                            <div class="industry">${opportunity.industry} • ${opportunity.location}</div>
+                        </div>
+                    </div>
+                    
+                    <p style="color: #718096; margin-bottom: 1.5rem; line-height: 1.5;">
+                        ${opportunity.description}
+                    </p>
+                    
+                    <div class="investment-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value">${opportunity.fundingGoal}</div>
+                            <div class="metric-label">Funding Goal</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${opportunity.annualRevenue}</div>
+                            <div class="metric-label">Annual Revenue</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${opportunity.growthRate}</div>
+                            <div class="metric-label">Growth Rate</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">A+</div>
+                            <div class="metric-label">Credit Rating</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <button class="btn-primary" style="flex: 1;" onclick="viewBusinessDetails('${opportunity.name}')">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </button>
+                        <button class="btn-secondary" style="flex: 1;" onclick="expressInterest('${opportunity.name}')">
+                            <i class="fas fa-heart"></i>
+                            Express Interest
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // View business details
+        function viewBusinessDetails(businessName) {
+            alert(`Viewing details for ${businessName}. This feature will open a detailed business profile with financial data, business plan, and investment terms.`);
+        }
+
+        // Express interest
+        function expressInterest(businessName) {
+            if (!window.appState.currentUser) {
+                alert('Please sign in to express interest in investment opportunities.');
+                showSection('login');
+                return;
+            }
+            alert(`Thank you for your interest in ${businessName}! The business owner will be notified and may contact you with more information.`);
+        }
+
+        // Sign out function
+        async function signOut() {
+            try {
+                await window.firebaseServices.signOut(window.auth);
+                showSection('dashboard');
+                alert('You have been signed out successfully.');
+            } catch (error) {
+                console.error('❌ Sign out error:', error);
+            }
+        }
+
+        // Privacy policy
+        function showPrivacyPolicy() {
+            alert('Privacy Policy: BizInvest Hub is committed to protecting your privacy. We collect and use your information to provide our investment platform services. For detailed information, please contact us.');
+        }
+
+        // Terms of service
+        function showTermsOfService() {
+            alert('Terms of Service: By using BizInvest Hub, you agree to our terms and conditions. Investment involves risk and past performance does not guarantee future results. Please invest responsibly.');
+        }
+
+        // Make functions available globally
+        window.showSection = showSection;
+        window.signOut = signOut;
+        window.viewBusinessDetails = viewBusinessDetails;
+        window.expressInterest = expressInterest;
+        window.showPrivacyPolicy = showPrivacyPolicy;
+        window.showTermsOfService = showTermsOfService;
+    </script>
+
+    <!-- Google Analytics (optional) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BBVBFHWCB2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BBVBFHWCB2');
+    </script>
+</body>
+</html>
