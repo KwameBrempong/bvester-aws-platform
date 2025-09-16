@@ -1,0 +1,7 @@
+# Dependencies
+node_modules/
+*.exe
+*.zip
+archive/
+logs/
+.env

@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Matchmaking - Bvester Investor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: #000000;
+            padding: 16px 24px;
+            border-bottom: 1px solid #ffd700;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #ffed4a;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #ffd700 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: #cccccc;
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Layout */
+        .content-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 32px;
+        }
+
+        @media (max-width: 1024px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 215, 0, 0.1);
+        }
+
+        /* AI Preferences Sidebar */
+        .preferences-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preference-group {
+            margin-bottom: 20px;
+        }
+
+        .preference-label {
+            display: block;
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .preference-input, .preference-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .preference-input:focus, .preference-select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1);
+        }
+
+        .preference-select option {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        /* Range Slider */
+        .range-group {
+            margin-bottom: 20px;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+            border: none;
+        }
+
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .range-current {
+            text-align: center;
+            color: #ffd700;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Checkbox Group */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 3px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked {
+            background: #ffd700;
+            border-color: #ffd700;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: #000000;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .checkbox-label {
+            font-size: 13px;
+            color: #cccccc;
+        }
+
+        /* AI Analysis Button */
+        .analyze-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Matches Grid */
+        .matches-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .matches-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .match-count {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .sort-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sort-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sort-btn:hover, .sort-btn.active {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+        }
+
+        /* Business Cards */
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .business-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .business-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ffd700, #ffed4a);
+        }
+
+        .business-card:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .match-score {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .business-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .business-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #000000;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .business-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .business-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .business-industry {
+            color: #ffd700;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .business-stage {
+            color: #cccccc;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .business-description {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .business-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .business-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .business-tag {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .business-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #cccccc;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-top: 3px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .loading-subtext {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* AI Insights Panel */
+        .ai-insights {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .insights-title {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insight-item {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .insight-item::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 24px 16px;
+            }
+            
+            .glass-card {
+                padding: 24px;
+            }
+            
+            .matches-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .business-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <a href="javascript:void(0)" class="back-btn" onclick="goToDashboard()">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">🤖 AI-Powered Matchmaking</h1>
+            <p class="page-subtitle">
+                Discover the perfect African SME investment opportunities tailored to your preferences and investment strategy
+            </p>
+        </div>
+
+        <div class="content-layout">
+            <!-- AI Preferences Sidebar -->
+            <div class="glass-card">
+                <div class="preferences-section">
+                    <div class="section-title">
+                        ⚙️ Investment Preferences
+                    </div>
+
+                    <div class="preference-group">
+                        <label class="preference-label" for="investment-amount">Investment Amount Range</label>
+                        <input type="range" id="investment-amount" class="range-slider" min="5000" max="500000" value="50000" step="5000">
+                        <div class="range-values">
+                            <span>$5K</span>
+                            <span>$500K</span>
+                        </div>
+                        <div class="range-current" id="investment-display">$50,000</div>
+                    </div>
+
+                    <div class="preference-group">
+                        <label class="preference-label" for="investment-stage">Investment Stage</label>
+                        <select id="investment-stage" class="preference-select">
+                            <option value="any">Any Stage</option>
+                            <option value="pre-seed">Pre-Seed</option>
+                            <option value="seed">Seed</option>
+                            <option value="series-a">Series A</option>
+                            <option value="series-b">Series B+</option>
+                            <option value="growth">Growth Stage</option>
+                        </select>
+                    </div>
+
+                    <div class="preference-group">
+                        <label class="preference-label" for="risk-tolerance">Risk Tolerance</label>
+                        <input type="range" id="risk-tolerance" class="range-slider" min="1" max="5" value="3" step="1">
+                        <div class="range-values">
+                            <span>Conservative</span>
+                            <span>Aggressive</span>
+                        </div>
+                        <div class="range-current" id="risk-display">Moderate</div>
+                    </div>
+
+                    <div class="preference-group">
+                        <label class="preference-label" for="roi-expectation">Expected ROI Timeline</label>
+                        <select id="roi-expectation" class="preference-select">
+                            <option value="1-2">1-2 Years</option>
+                            <option value="3-5">3-5 Years</option>
+                            <option value="5-7">5-7 Years</option>
+                            <option value="7+">7+ Years</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="preferences-section">
+                    <div class="section-title">
+                        🎯 Industry Focus
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fintech" value="fintech" checked>
+                            <label class="checkbox-label" for="fintech">FinTech</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="agritech" value="agritech">
+                            <label class="checkbox-label" for="agritech">AgriTech</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="healthtech" value="healthtech">
+                            <label class="checkbox-label" for="healthtech">HealthTech</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="edtech" value="edtech">
+                            <label class="checkbox-label" for="edtech">EdTech</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ecommerce" value="ecommerce">
+                            <label class="checkbox-label" for="ecommerce">E-commerce</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cleantech" value="cleantech">
+                            <label class="checkbox-label" for="cleantech">CleanTech</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="logistics" value="logistics">
+                            <label class="checkbox-label" for="logistics">Logistics</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="manufacturing" value="manufacturing">
+                            <label class="checkbox-label" for="manufacturing">Manufacturing</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preferences-section">
+                    <div class="section-title">
+                        🌍 Geographic Focus
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="nigeria" value="nigeria" checked>
+                            <label class="checkbox-label" for="nigeria">Nigeria</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kenya" value="kenya">
+                            <label class="checkbox-label" for="kenya">Kenya</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="south-africa" value="south-africa">
+                            <label class="checkbox-label" for="south-africa">South Africa</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ghana" value="ghana">
+                            <label class="checkbox-label" for="ghana">Ghana</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="egypt" value="egypt">
+                            <label class="checkbox-label" for="egypt">Egypt</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="morocco" value="morocco">
+                            <label class="checkbox-label" for="morocco">Morocco</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="analyze-btn" onclick="runAIAnalysis()" id="analyze-button">
+                    🤖 Find My Matches
+                </button>
+
+                <div class="ai-insights" style="display: none;" id="ai-insights">
+                    <div class="insights-title">
+                        🧠 AI Insights
+                    </div>
+                    <div class="insight-item">Based on your FinTech focus, consider companies with strong digital payment solutions</div>
+                    <div class="insight-item">Your moderate risk tolerance suggests balanced portfolios with proven traction</div>
+                    <div class="insight-item">Nigerian market shows 34% higher growth potential in your investment range</div>
+                </div>
+            </div>
+
+            <!-- Matches Results -->
+            <div class="glass-card">
+                <div class="matches-header">
+                    <div class="matches-title">
+                        🎯 Recommended Matches
+                        <span class="match-count" id="match-count">12 found</span>
+                    </div>
+                    <div class="sort-options">
+                        <button class="sort-btn active" onclick="sortMatches('score', this)">Best Match</button>
+                        <button class="sort-btn" onclick="sortMatches('recent', this)">Most Recent</button>
+                        <button class="sort-btn" onclick="sortMatches('amount', this)">Investment Size</button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" id="loading-state" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">AI is analyzing opportunities...</div>
+                    <div class="loading-subtext">Finding the best matches based on your preferences</div>
+                </div>
+
+                <!-- Matches Grid -->
+                <div class="matches-grid" id="matches-grid">
+                    <div class="business-card" data-score="96" data-recent="2025-01-28" data-amount="75000">
+                        <div class="match-score">96% Match</div>
+                        <div class="business-header">
+                            <div class="business-logo">AP</div>
+                            <div class="business-info">
+                                <div class="business-name">AfriPay Solutions</div>
+                                <div class="business-industry">FinTech • Digital Payments</div>
+                                <div class="business-stage">Series A</div>
+                            </div>
+                        </div>
+                        <div class="business-description">
+                            Revolutionary mobile payment platform serving 2.5M+ users across West Africa with innovative cross-border transaction solutions.
+                        </div>
+                        <div class="business-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$2.8M</div>
+                                <div class="metric-label">Monthly Revenue</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">340%</div>
+                                <div class="metric-label">YoY Growth</div>
+                            </div>
+                        </div>
+                        <div class="business-tags">
+                            <span class="business-tag">Mobile Payments</span>
+                            <span class="business-tag">Cross-border</span>
+                            <span class="business-tag">Nigeria</span>
+                            <span class="business-tag">Profitable</span>
+                        </div>
+                        <div class="business-actions">
+                            <button class="action-btn btn-primary" onclick="viewBusiness('afripay')">View Details</button>
+                            <button class="action-btn btn-secondary" onclick="saveBusiness('afripay')">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="business-card" data-score="89" data-recent="2025-01-27" data-amount="45000">
+                        <div class="match-score">89% Match</div>
+                        <div class="business-header">
+                            <div class="business-logo">FG</div>
+                            <div class="business-info">
+                                <div class="business-name">FarmGrow Tech</div>
+                                <div class="business-industry">AgriTech • Smart Farming</div>
+                                <div class="business-stage">Seed</div>
+                            </div>
+                        </div>
+                        <div class="business-description">
+                            IoT-powered farming solutions helping 15,000+ smallholder farmers increase yields by 45% through data-driven insights.
+                        </div>
+                        <div class="business-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$890K</div>
+                                <div class="metric-label">Annual Revenue</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">180%</div>
+                                <div class="metric-label">YoY Growth</div>
+                            </div>
+                        </div>
+                        <div class="business-tags">
+                            <span class="business-tag">IoT</span>
+                            <span class="business-tag">Agriculture</span>
+                            <span class="business-tag">Kenya</span>
+                            <span class="business-tag">ESG Impact</span>
+                        </div>
+                        <div class="business-actions">
+                            <button class="action-btn btn-primary" onclick="viewBusiness('farmgrow')">View Details</button>
+                            <button class="action-btn btn-secondary" onclick="saveBusiness('farmgrow')">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="business-card" data-score="85" data-recent="2025-01-26" data-amount="125000">
+                        <div class="match-score">85% Match</div>
+                        <div class="business-header">
+                            <div class="business-logo">MC</div>
+                            <div class="business-info">
+                                <div class="business-name">MediConnect Africa</div>
+                                <div class="business-industry">HealthTech • Telemedicine</div>
+                                <div class="business-stage">Series A</div>
+                            </div>
+                        </div>
+                        <div class="business-description">
+                            Telemedicine platform connecting rural patients with qualified doctors, serving 500K+ consultations across 12 countries.
+                        </div>
+                        <div class="business-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$1.2M</div>
+                                <div class="metric-label">Monthly Revenue</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">280%</div>
+                                <div class="metric-label">YoY Growth</div>
+                            </div>
+                        </div>
+                        <div class="business-tags">
+                            <span class="business-tag">Telemedicine</span>
+                            <span class="business-tag">Healthcare</span>
+                            <span class="business-tag">Multi-country</span>
+                            <span class="business-tag">High Impact</span>
+                        </div>
+                        <div class="business-actions">
+                            <button class="action-btn btn-primary" onclick="viewBusiness('mediconnect')">View Details</button>
+                            <button class="action-btn btn-secondary" onclick="saveBusiness('mediconnect')">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="business-card" data-score="82" data-recent="2025-01-25" data-amount="35000">
+                        <div class="match-score">82% Match</div>
+                        <div class="business-header">
+                            <div class="business-logo">EL</div>
+                            <div class="business-info">
+                                <div class="business-name">EduLearn Platform</div>
+                                <div class="business-industry">EdTech • Online Learning</div>
+                                <div class="business-stage">Pre-Seed</div>
+                            </div>
+                        </div>
+                        <div class="business-description">
+                            Adaptive learning platform providing personalized education to 100K+ students in underserved communities.
+                        </div>
+                        <div class="business-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$420K</div>
+                                <div class="metric-label">Annual Revenue</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">250%</div>
+                                <div class="metric-label">YoY Growth</div>
+                            </div>
+                        </div>
+                        <div class="business-tags">
+                            <span class="business-tag">AI Learning</span>
+                            <span class="business-tag">Education</span>
+                            <span class="business-tag">Ghana</span>
+                            <span class="business-tag">Social Impact</span>
+                        </div>
+                        <div class="business-actions">
+                            <button class="action-btn btn-primary" onclick="viewBusiness('edulearn')">View Details</button>
+                            <button class="action-btn btn-secondary" onclick="saveBusiness('edulearn')">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="business-card" data-score="79" data-recent="2025-01-24" data-amount="95000">
+                        <div class="match-score">79% Match</div>
+                        <div class="business-header">
+                            <div class="business-logo">GS</div>
+                            <div class="business-info">
+                                <div class="business-name">GreenSolar Energy</div>
+                                <div class="business-industry">CleanTech • Solar Solutions</div>
+                                <div class="business-stage">Growth</div>
+                            </div>
+                        </div>
+                        <div class="business-description">
+                            Distributed solar energy solutions providing clean power to 50,000+ homes and businesses across East Africa.
+                        </div>
+                        <div class="business-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$3.5M</div>
+                                <div class="metric-label">Annual Revenue</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">120%</div>
+                                <div class="metric-label">YoY Growth</div>
+                            </div>
+                        </div>
+                        <div class="business-tags">
+                            <span class="business-tag">Solar Energy</span>
+                            <span class="business-tag">Clean Tech</span>
+                            <span class="business-tag">East Africa</span>
+                            <span class="business-tag">Sustainable</span>
+                        </div>
+                        <div class="business-actions">
+                            <button class="action-btn btn-primary" onclick="viewBusiness('greensolar')">View Details</button>
+                            <button class="action-btn btn-secondary" onclick="saveBusiness('greensolar')">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="business-card" data-score="76" data-recent="2025-01-23" data-amount="65000">
+                        <div class="match-score">76% Match</div>
+                        <div class="business-header">
+                            <div class="business-logo">LM</div>
+                            <div class="business-info">
+                                <div class="business-name">LogiMax Solutions</div>
+                                <div class="business-industry">Logistics • Supply Chain</div>
+                                <div class="business-stage">Series A</div>
+                            </div>
+                        </div>
+                        <div class="business-description">
+                            AI-powered logistics platform optimizing supply chains for 500+ businesses, reducing costs by 30% on average.
+                        </div>
+                        <div class="business-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$1.8M</div>
+                                <div class="metric-label">Monthly Revenue</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">190%</div>
+                                <div class="metric-label">YoY Growth</div>
+                            </div>
+                        </div>
+                        <div class="business-tags">
+                            <span class="business-tag">AI Logistics</span>
+                            <span class="business-tag">Supply Chain</span>
+                            <span class="business-tag">South Africa</span>
+                            <span class="business-tag">B2B</span>
+                        </div>
+                        <div class="business-actions">
+                            <button class="action-btn btn-primary" onclick="viewBusiness('logimax')">View Details</button>
+                            <button class="action-btn btn-secondary" onclick="saveBusiness('logimax')">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize sliders
+        const investmentSlider = document.getElementById('investment-amount');
+        const investmentDisplay = document.getElementById('investment-display');
+        const riskSlider = document.getElementById('risk-tolerance');
+        const riskDisplay = document.getElementById('risk-display');
+
+        // Update investment amount display
+        investmentSlider.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            investmentDisplay.textContent = `$${(value / 1000)}K`;
+        });
+
+        // Update risk tolerance display
+        riskSlider.addEventListener('input', function() {
+            const riskLevels = ['Very Conservative', 'Conservative', 'Moderate', 'Aggressive', 'Very Aggressive'];
+            riskDisplay.textContent = riskLevels[this.value - 1];
+        });
+
+        // Run AI Analysis
+        function runAIAnalysis() {
+            const button = document.getElementById('analyze-button');
+            const loadingState = document.getElementById('loading-state');
+            const matchesGrid = document.getElementById('matches-grid');
+            const aiInsights = document.getElementById('ai-insights');
+            
+            // Show loading state
+            button.disabled = true;
+            button.textContent = '🔄 Analyzing...';
+            loadingState.style.display = 'block';
+            matchesGrid.style.display = 'none';
+            
+            // Collect preferences
+            const preferences = {
+                investmentAmount: investmentSlider.value,
+                investmentStage: document.getElementById('investment-stage').value,
+                riskTolerance: riskSlider.value,
+                roiExpectation: document.getElementById('roi-expectation').value,
+                industries: Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value),
+                regions: Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value)
+            };
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                // Hide loading, show results
+                loadingState.style.display = 'none';
+                matchesGrid.style.display = 'grid';
+                aiInsights.style.display = 'block';
+                
+                // Reset button
+                button.disabled = false;
+                button.textContent = '🤖 Find My Matches';
+                
+                // Filter matches based on preferences (simplified simulation)
+                filterMatchesByPreferences(preferences);
+                
+                // Show success message
+                setTimeout(() => {
+                    alert('🎯 AI Analysis Complete!\\n\\nFound 12 high-quality matches based on your investment preferences. Each match includes a compatibility score and detailed business insights.\\n\\nRecommendation: Start with the highest-scoring matches for optimal investment opportunities.');
+                }, 500);
+            }, 3000);
+        }
+
+        // Filter matches by preferences (simplified)
+        function filterMatchesByPreferences(preferences) {
+            const cards = document.querySelectorAll('.business-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                // Simple simulation - show/hide based on investment amount
+                const cardAmount = parseInt(card.dataset.amount);
+                const userAmount = parseInt(preferences.investmentAmount);
+                
+                if (cardAmount <= userAmount * 1.5 && cardAmount >= userAmount * 0.5) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = cardAmount <= userAmount * 2 ? 'block' : 'none';
+                    if (cardAmount <= userAmount * 2) visibleCount++;
+                }
+            });
+            
+            document.getElementById('match-count').textContent = `${visibleCount} found`;
+        }
+
+        // Sort matches
+        function sortMatches(criteria, element) {
+            // Update active button
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Get all cards
+            const grid = document.getElementById('matches-grid');
+            const cards = Array.from(grid.children);
+            
+            // Sort cards
+            cards.sort((a, b) => {
+                switch(criteria) {
+                    case 'score':
+                        return parseInt(b.dataset.score) - parseInt(a.dataset.score);
+                    case 'recent':
+                        return new Date(b.dataset.recent) - new Date(a.dataset.recent);
+                    case 'amount':
+                        return parseInt(b.dataset.amount) - parseInt(a.dataset.amount);
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Re-append sorted cards
+            cards.forEach(card => grid.appendChild(card));
+        }
+
+        // Business actions
+        function viewBusiness(businessId) {
+            alert(`📊 Viewing ${businessId.toUpperCase()} Details\\n\\nThis will show comprehensive business information including:\\n\\n• Detailed financials and metrics\\n• Management team profiles\\n• Investment terms and conditions\\n• Due diligence documents\\n• Market analysis and projections\\n\\nRedirecting to business profile...`);
+        }
+
+        function saveBusiness(businessId) {
+            alert(`💾 Business Saved!\\n\\n${businessId.toUpperCase()} has been added to your saved opportunities list.\\n\\nYou can access all saved businesses from your dashboard and receive updates about their funding rounds and performance.`);
+        }
+
+        // Smart dashboard navigation
+        function goToDashboard() {
+            // Check if user came from business or investor context
+            const referrer = document.referrer;
+            const urlParams = new URLSearchParams(window.location.search);
+            const userType = urlParams.get('user') || localStorage.getItem('userType');
+            
+            if (referrer.includes('startup-dashboard') || userType === 'business') {
+                window.location.href = 'startup-dashboard.html';
+            } else if (referrer.includes('investor-dashboard') || userType === 'investor') {
+                window.location.href = 'investor-dashboard.html';
+            } else {
+                // Try to detect from page context - if in doubt, ask
+                const isBusinessContext = window.location.search.includes('business') || 
+                                        document.title.includes('Business') ||
+                                        localStorage.getItem('lastDashboard') === 'business';
+                
+                if (isBusinessContext) {
+                    window.location.href = 'startup-dashboard.html';
+                } else {
+                    window.location.href = 'investor-dashboard.html';
+                }
+            }
+        }
+
+        console.log('Bvester AI-Powered Matchmaking - Smart Investment Discovery Platform');
+    </script>
+</body>
+</html>

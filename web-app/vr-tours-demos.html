@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20250128-VR-TOURS-v1.0">
+    <title>VR Tours & Live Demos - Bvester Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: #000000;
+            padding: 16px 24px;
+            border-bottom: 1px solid #ffd700;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #ffed4a;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #ffd700 50%, #ffed4a 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: #cccccc;
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            color: #000000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* VR Experience Grid */
+        .vr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        .vr-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .vr-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 215, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .vr-card-header {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .vr-card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .vr-icon {
+            font-size: 64px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .vr-card-content {
+            padding: 24px;
+        }
+
+        .vr-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .vr-description {
+            color: #cccccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .vr-features {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .vr-features li {
+            padding: 6px 0;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vr-features li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .vr-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .vr-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .premium-tag {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            color: #000000;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Demo Session Section */
+        .demo-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 60px;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .demo-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 16px;
+        }
+
+        .demo-subtitle {
+            color: #cccccc;
+            font-size: 18px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .demo-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .demo-time {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+
+        .demo-type {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .demo-description {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .demo-book-btn {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .demo-book-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+        }
+
+        /* Technical Requirements */
+        .tech-requirements {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .tech-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .tech-category {
+            text-align: center;
+        }
+
+        .tech-category h4 {
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .tech-list {
+            list-style: none;
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        .tech-list li {
+            padding: 4px 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 36px;
+            }
+            
+            .vr-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-section {
+                padding: 24px;
+            }
+            
+            .tech-requirements {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <a href="javascript:void(0)" class="back-btn" onclick="goToDashboard()">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="premium-badge">
+                👑 Premium Feature
+            </div>
+            <h1 class="page-title">VR Tours & Live Demos</h1>
+            <p class="page-subtitle">
+                Experience African businesses like never before with immersive virtual reality tours 
+                and live demonstration sessions. Get inside access to operations, meet teams, and 
+                see opportunities firsthand.
+            </p>
+        </div>
+
+        <!-- VR Experiences -->
+        <div class="vr-grid">
+            <div class="vr-card">
+                <div class="vr-card-header">
+                    <div class="vr-icon">🥽</div>
+                    <div class="premium-tag">👑 Premium</div>
+                </div>
+                <div class="vr-card-content">
+                    <h3 class="vr-title">Virtual Factory Tours</h3>
+                    <p class="vr-description">
+                        Take immersive 360° tours of manufacturing facilities, production lines, 
+                        and operational centers across Africa.
+                    </p>
+                    <ul class="vr-features">
+                        <li>360° factory floor experience</li>
+                        <li>Interactive hotspots with data</li>
+                        <li>Real-time production metrics</li>
+                        <li>Meet the management team</li>
+                        <li>Quality control processes</li>
+                    </ul>
+                    <button class="vr-btn" onclick="startVRTour('factory')">
+                        🚀 Start VR Tour
+                    </button>
+                </div>
+            </div>
+
+            <div class="vr-card">
+                <div class="vr-card-header">
+                    <div class="vr-icon">🏢</div>
+                    <div class="premium-tag">👑 Premium</div>
+                </div>
+                <div class="vr-card-content">
+                    <h3 class="vr-title">Office & Workspace Tours</h3>
+                    <p class="vr-description">
+                        Explore modern African workspaces, tech hubs, and innovation centers 
+                        where the next generation of businesses are born.
+                    </p>
+                    <ul class="vr-features">
+                        <li>Interactive office walkthroughs</li>
+                        <li>Team collaboration spaces</li>
+                        <li>Innovation labs and R&D</li>
+                        <li>Employee testimonials</li>
+                        <li>Culture and values showcase</li>
+                    </ul>
+                    <button class="vr-btn" onclick="startVRTour('office')">
+                        🏢 Explore Workspace
+                    </button>
+                </div>
+            </div>
+
+            <div class="vr-card">
+                <div class="vr-card-header">
+                    <div class="vr-icon">🌍</div>
+                    <div class="premium-tag">👑 Premium</div>
+                </div>
+                <div class="vr-card-content">
+                    <h3 class="vr-title">Market & Community Impact</h3>
+                    <p class="vr-description">
+                        See the real-world impact of businesses in their communities, 
+                        from local markets to sustainable development projects.
+                    </p>
+                    <ul class="vr-features">
+                        <li>Community impact stories</li>
+                        <li>Sustainable practices showcase</li>
+                        <li>Local market integration</li>
+                        <li>Social responsibility projects</li>
+                        <li>Environmental initiatives</li>
+                    </ul>
+                    <button class="vr-btn" onclick="startVRTour('community')">
+                        🌱 See Impact
+                    </button>
+                </div>
+            </div>
+
+            <div class="vr-card">
+                <div class="vr-card-header">
+                    <div class="vr-icon">📱</div>
+                    <div class="premium-tag">👑 Premium</div>
+                </div>
+                <div class="vr-card-content">
+                    <h3 class="vr-title">Product Demonstrations</h3>
+                    <p class="vr-description">
+                        Interactive product demos showing how African innovations work, 
+                        their features, and market applications.
+                    </p>
+                    <ul class="vr-features">
+                        <li>Interactive product testing</li>
+                        <li>Feature walkthroughs</li>
+                        <li>Use case scenarios</li>
+                        <li>Customer testimonials</li>
+                        <li>Market positioning</li>
+                    </ul>
+                    <button class="vr-btn" onclick="startVRTour('product')">
+                        🎯 Try Products
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Demo Sessions -->
+        <div class="demo-section">
+            <div class="demo-header">
+                <h2 class="demo-title">📅 Scheduled Live Demo Sessions</h2>
+                <p class="demo-subtitle">
+                    Join live virtual sessions with entrepreneurs and business leaders
+                </p>
+            </div>
+
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <div class="demo-time">Today 3:00 PM</div>
+                    <div class="demo-type">AgriTech Startup Demo</div>
+                    <div class="demo-description">
+                        Live demonstration of automated farming solutions in Kenya. 
+                        Meet the founders and see the technology in action.
+                    </div>
+                    <button class="demo-book-btn" onclick="bookDemo('agritech')">
+                        📅 Join Session
+                    </button>
+                </div>
+
+                <div class="demo-card">
+                    <div class="demo-time">Tomorrow 11:00 AM</div>
+                    <div class="demo-type">FinTech Platform Tour</div>
+                    <div class="demo-description">
+                        Explore Nigeria's leading mobile payment platform. 
+                        Interactive Q&A with the product team.
+                    </div>
+                    <button class="demo-book-btn" onclick="bookDemo('fintech')">
+                        💳 Reserve Spot
+                    </button>
+                </div>
+
+                <div class="demo-card">
+                    <div class="demo-time">Jan 30, 2:00 PM</div>
+                    <div class="demo-type">E-commerce Marketplace</div>
+                    <div class="demo-description">
+                        Virtual tour of Ghana's fastest-growing e-commerce platform. 
+                        See logistics and operations behind the scenes.
+                    </div>
+                    <button class="demo-book-btn" onclick="bookDemo('ecommerce')">
+                        🛒 Book Tour
+                    </button>
+                </div>
+
+                <div class="demo-card">
+                    <div class="demo-time">Feb 1, 4:00 PM</div>
+                    <div class="demo-type">Clean Energy Solutions</div>
+                    <div class="demo-description">
+                        Live demo of solar energy solutions transforming rural 
+                        communities across East Africa.
+                    </div>
+                    <button class="demo-book-btn" onclick="bookDemo('cleanenergy')">
+                        ⚡ Join Demo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Requirements -->
+        <div class="tech-requirements">
+            <h3 class="tech-title">🔧 Technical Requirements</h3>
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <h4>🥽 VR Headsets</h4>
+                    <ul class="tech-list">
+                        <li>Oculus Quest 2/3</li>
+                        <li>HTC Vive</li>
+                        <li>PlayStation VR</li>
+                        <li>Pico 4</li>
+                        <li>WebVR supported browsers</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h4>💻 Desktop/Laptop</h4>
+                    <ul class="tech-list">
+                        <li>Chrome 90+ (recommended)</li>
+                        <li>Firefox 88+</li>
+                        <li>Safari 14+</li>
+                        <li>8GB RAM minimum</li>
+                        <li>Dedicated graphics card</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h4>📱 Mobile Devices</h4>
+                    <ul class="tech-list">
+                        <li>iOS 14+ (iPhone/iPad)</li>
+                        <li>Android 8+ with ARCore</li>
+                        <li>5G/high-speed WiFi</li>
+                        <li>Gyroscope support</li>
+                        <li>Cardboard VR compatible</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Start VR Tour
+        function startVRTour(type) {
+            const tourTypes = {
+                factory: 'Virtual Factory Tour',
+                office: 'Office & Workspace Tour',
+                community: 'Market & Community Impact Tour',
+                product: 'Product Demonstration'
+            };
+
+            alert(`🥽 Starting ${tourTypes[type]}!\\n\\nInitializing VR experience...\\n\\n• Loading 360° environment\\n• Connecting to live data feeds\\n• Preparing interactive elements\\n• Setting up spatial audio\\n\\nPut on your VR headset or use your browser for WebVR experience.\\n\\nNote: This is a premium feature requiring Professional or Enterprise subscription.`);
+        }
+
+        // Book Demo Session
+        function bookDemo(demoType) {
+            const demoTypes = {
+                agritech: 'AgriTech Startup Demo',
+                fintech: 'FinTech Platform Tour',
+                ecommerce: 'E-commerce Marketplace Tour',
+                cleanenergy: 'Clean Energy Solutions Demo'
+            };
+
+            alert(`📅 Booking ${demoTypes[demoType]}\\n\\n✅ Demo session reserved!\\n\\nYou will receive:\\n• Calendar invitation with Zoom link\\n• Pre-session materials\\n• Q&A preparation guide\\n• Recording access after session\\n\\nA confirmation email will be sent to your registered address.`);
+        }
+
+        // Smart dashboard navigation
+        function goToDashboard() {
+            const referrer = document.referrer;
+            const urlParams = new URLSearchParams(window.location.search);
+            const userType = urlParams.get('user') || localStorage.getItem('userType');
+            
+            if (referrer.includes('startup-dashboard') || userType === 'business') {
+                window.location.href = 'startup-dashboard.html';
+            } else if (referrer.includes('investor-dashboard') || userType === 'investor') {
+                window.location.href = 'investor-dashboard.html';
+            } else {
+                // Default to investor dashboard for VR tours (typically investor feature)
+                window.location.href = 'investor-dashboard.html';
+            }
+        }
+
+        // Initialize VR support detection
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for VR support
+            if (navigator.xr) {
+                navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+                    if (supported) {
+                        console.log('✅ VR support detected');
+                    } else {
+                        console.log('⚠️ VR not supported, fallback to WebVR');
+                    }
+                });
+            }
+
+            // Check for device orientation (mobile VR)
+            if (window.DeviceOrientationEvent) {
+                console.log('✅ Mobile VR capability detected');
+            }
+
+            console.log('🥽 Bvester VR Tours & Live Demos - Premium Experience Loaded');
+        });
+    </script>
+</body>
+</html>
