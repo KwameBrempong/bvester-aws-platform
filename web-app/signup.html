@@ -109,29 +109,30 @@
             signupBtn.disabled = true;
             signupBtn.textContent = 'Creating Account...';
             
-            try {
-                const response = await fetch(`${API_BASE}/api/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
+            // Demo mode - simulate successful registration
+            if (formData.name && formData.email && formData.password.length >= 6 && formData.userType) {
+                messageDiv.innerHTML = '<div class="success">Account created successfully! Redirecting to login...</div>';
                 
-                const data = await response.json();
+                // Store the new account info for demo purposes
+                const newAccount = {
+                    name: formData.name,
+                    email: formData.email,
+                    userType: formData.userType,
+                    password: formData.password
+                };
                 
-                if (response.ok) {
-                    messageDiv.innerHTML = '<div class="success">Account created successfully! Redirecting to login...</div>';
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 2000);
-                } else {
-                    messageDiv.innerHTML = `<div class="error">${data.message || 'Registration failed'}</div>`;
+                // Store in localStorage for demo
+                localStorage.setItem('newDemoAccount', JSON.stringify(newAccount));
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } else {
+                let errorMsg = 'Please fill all fields correctly.';
+                if (formData.password.length < 6) {
+                    errorMsg = 'Password must be at least 6 characters.';
                 }
-            } catch (error) {
-                messageDiv.innerHTML = '<div class="error">Network error. Please check if the backend server is running.</div>';
-                console.error('Registration error:', error);
-            } finally {
+                messageDiv.innerHTML = `<div class="error">${errorMsg}</div>`;
                 signupBtn.disabled = false;
                 signupBtn.textContent = 'Create Account';
             }

@@ -23,7 +23,8 @@
         .success { color: #38a169; margin-top: 0.5rem; font-size: 0.875rem; }
         .demo-section { background: #f7fafc; padding: 1rem; border-radius: 5px; margin-bottom: 1.5rem; }
         .demo-section h3 { color: #667eea; margin-bottom: 0.5rem; font-size: 1rem; }
-        .demo-credentials { font-size: 0.875rem; color: #666; }
+        .demo-credentials { font-size: 0.875rem; color: #666; cursor: pointer; }
+        .demo-credentials p:hover { background: #e2e8f0; padding: 0.25rem; border-radius: 3px; }
     </style>
 </head>
 <body>
@@ -36,8 +37,9 @@
         <div class="demo-section">
             <h3>🚀 Demo Accounts Available:</h3>
             <div class="demo-credentials">
-                <p><strong>SME Owner:</strong> sme@demo.com / Demo123!</p>
-                <p><strong>Investor:</strong> investor@demo.com / Demo123!</p>
+                <p onclick="fillDemo('sme')"><strong>SME Owner:</strong> sme@demo.com / Demo123!</p>
+                <p onclick="fillDemo('investor')"><strong>Investor:</strong> investor@demo.com / Demo123!</p>
+                <small>Click to auto-fill credentials</small>
             </div>
         </div>
         
@@ -64,7 +66,40 @@
     </div>
 
     <script>
-        const API_BASE = 'https://bvester-backend-env.eba-iym3cqmz.eu-west-2.elasticbeanstalk.com';
+        // Demo accounts for live testing
+        const demoAccounts = {
+            'sme@demo.com': {
+                password: 'Demo123!',
+                userType: 'sme',
+                name: 'John SME Owner'
+            },
+            'investor@demo.com': {
+                password: 'Demo123!',
+                userType: 'investor', 
+                name: 'Jane Investor'
+            }
+        };
+        
+        // Check for newly created demo account
+        const newAccount = localStorage.getItem('newDemoAccount');
+        if (newAccount) {
+            const account = JSON.parse(newAccount);
+            demoAccounts[account.email] = {
+                password: account.password,
+                userType: account.userType,
+                name: account.name
+            };
+        }
+        
+        function fillDemo(type) {
+            if (type === 'sme') {
+                document.getElementById('email').value = 'sme@demo.com';
+                document.getElementById('password').value = 'Demo123!';
+            } else if (type === 'investor') {
+                document.getElementById('email').value = 'investor@demo.com';
+                document.getElementById('password').value = 'Demo123!';
+            }
+        }
         
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -77,43 +112,33 @@
             loginBtn.disabled = true;
             loginBtn.textContent = 'Logging in...';
             
-            try {
-                const response = await fetch(`${API_BASE}/api/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password })
-                });
+            // Demo mode - check against demo accounts
+            if (demoAccounts[email] && demoAccounts[email].password === password) {
+                const user = demoAccounts[email];
+                messageDiv.innerHTML = '<div class="success">Login successful! Redirecting...</div>';
                 
-                const data = await response.json();
+                // Store user info
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userType', user.userType);
+                localStorage.setItem('userName', user.name);
+                localStorage.setItem('userEmail', email);
                 
-                if (response.ok) {
-                    messageDiv.innerHTML = '<div class="success">Login successful! Redirecting...</div>';
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('userType', data.user.userType);
-                    localStorage.setItem('userName', data.user.name);
-                    
-                    // Redirect based on user type
-                    setTimeout(() => {
-                        if (data.user.userType === 'investor') {
-                            window.location.href = 'investor-dashboard.html';
-                        } else if (data.user.userType === 'sme') {
-                            window.location.href = 'sme-dashboard.html';
-                        } else {
-                            window.location.href = 'premium-dashboard.html';
-                        }
-                    }, 1500);
-                } else {
-                    messageDiv.innerHTML = `<div class="error">${data.message || 'Login failed'}</div>`;
-                }
-            } catch (error) {
-                messageDiv.innerHTML = '<div class="error">Network error. Please check if the backend server is running.</div>';
-                console.error('Login error:', error);
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Login';
+                // Redirect based on user type
+                setTimeout(() => {
+                    if (user.userType === 'investor') {
+                        window.location.href = 'investor-dashboard.html';
+                    } else if (user.userType === 'sme') {
+                        window.location.href = 'sme-dashboard.html';
+                    } else {
+                        window.location.href = 'premium-dashboard.html';
+                    }
+                }, 1500);
+            } else {
+                messageDiv.innerHTML = '<div class="error">Invalid email or password. Please use demo accounts above.</div>';
             }
+            
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Login';
         });
         
         // Auto-fill demo credentials on click
