@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22
+  build:
+    commands:
+      - echo Build started on `date`
+      - cd backend
+      - npm install --production
+artifacts:
+  files:
+    - '**/*'
+  base-directory: backend
+  name: bvester-backend-build
