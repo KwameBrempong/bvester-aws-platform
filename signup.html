@@ -5,23 +5,200 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Bvester</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .signup-container { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        .logo { text-align: center; margin-bottom: 2rem; }
-        .logo h1 { color: #667eea; font-size: 2rem; }
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; color: #333; font-weight: 500; }
-        input, select { width: 100%; padding: 0.75rem; border: 2px solid #e1e5e9; border-radius: 5px; font-size: 1rem; transition: border-color 0.3s; }
-        input:focus, select:focus { outline: none; border-color: #667eea; }
-        .btn { width: 100%; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
-        .btn:hover { background: #5a67d8; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
-        .links { text-align: center; margin-top: 1.5rem; }
-        .links a { color: #667eea; text-decoration: none; }
-        .error { color: #e53e3e; margin-top: 0.5rem; font-size: 0.875rem; }
-        .success { color: #38a169; margin-top: 0.5rem; font-size: 0.875rem; }
-        .account-type-info { font-size: 0.875rem; color: #666; margin-top: 0.5rem; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2D2D2D 50%, #1A1A1A 75%, #0A0A0A 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .signup-container {
+            background: linear-gradient(135deg, #FAFAFA 0%, #FFFFFF 50%, #FFF9E6 100%);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .signup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 25%, #D4AF37 50%, #FFA500 75%, #FFD700 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo h1 {
+            color: #1A1A1A;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #4A4A4A;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .accelerator-banner {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .accelerator-banner h3 {
+            color: #D4AF37;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .accelerator-banner p {
+            color: #2D2D2D;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #0A0A0A;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1A1A1A;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #FFFFFF;
+            color: #1A1A1A;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:disabled {
+            background: #E0E0E0;
+            color: #888888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .links a {
+            color: #D4AF37;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #FFD700;
+        }
+
+        .error {
+            color: #EF4444;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .success {
+            color: #10B981;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .account-type-info {
+            font-size: 0.875rem;
+            color: #666666;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 2rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -29,6 +206,12 @@
         <div class="logo">
             <h1>Bvester</h1>
             <p>Join our investment community!</p>
+        </div>
+
+        <div id="acceleratorBanner" class="accelerator-banner" style="display: none;">
+            <h3 id="tierTitle">🚀 Accelerator Program Enrollment</h3>
+            <p id="tierDescription">Complete your registration to join the 30-Day Investment Readiness Bootcamp</p>
+            <div id="tierBadge" class="tier-badge"></div>
         </div>
         
         <form id="signupForm">
@@ -54,7 +237,6 @@
                     <option value="">Select account type</option>
                     <option value="investor">Investor - Find and fund SMEs</option>
                     <option value="sme">SME Owner - Seek funding for your business</option>
-                    <option value="premium">Premium User - Advanced analytics and insights</option>
                 </select>
                 <div class="account-type-info" id="userTypeInfo"></div>
             </div>
@@ -72,21 +254,72 @@
 
     <script>
         const API_BASE = 'https://bvester-backend-env.eba-iym3cqmz.eu-west-2.elasticbeanstalk.com';
-        
+
+        // Check for accelerator program parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const acceleratorTier = urlParams.get('accelerator');
+        const acceleratorPrice = urlParams.get('price');
+
+        // Initialize accelerator signup if parameters are present
+        if (acceleratorTier && acceleratorPrice) {
+            initializeAcceleratorSignup(acceleratorTier, acceleratorPrice);
+        }
+
+        function initializeAcceleratorSignup(tier, price) {
+            // Show accelerator banner
+            const banner = document.getElementById('acceleratorBanner');
+            banner.style.display = 'block';
+
+            // Set tier-specific content
+            const tierNames = {
+                'self-paced': 'Self-Paced Track',
+                'group': 'Group Cohort',
+                'vip': 'VIP Track'
+            };
+
+            const tierDescriptions = {
+                'self-paced': 'Learn at your own pace with comprehensive materials and community support',
+                'group': 'Join a cohort with weekly live sessions, peer collaboration, and group mentorship',
+                'vip': 'Premium experience with 1-on-1 coaching, investor introductions, and priority support'
+            };
+
+            const tierEmojis = {
+                'self-paced': '📚',
+                'group': '👥',
+                'vip': '⭐'
+            };
+
+            document.getElementById('tierTitle').textContent = `${tierEmojis[tier]} ${tierNames[tier]} Enrollment`;
+            document.getElementById('tierDescription').textContent = tierDescriptions[tier];
+            document.getElementById('tierBadge').textContent = `₵${price} - 30 Day Program`;
+
+            // Pre-select SME account type since this is for business owners
+            document.getElementById('userType').value = 'sme';
+            document.getElementById('userTypeInfo').textContent = 'Perfect! SME accounts get full access to funding opportunities and the accelerator program.';
+
+            // Store accelerator data for after signup
+            localStorage.setItem('pendingAcceleratorEnrollment', JSON.stringify({
+                tier: tier,
+                price: price,
+                timestamp: new Date().toISOString()
+            }));
+        }
+
         // Update info text based on selected user type
         document.getElementById('userType').addEventListener('change', function() {
             const infoDiv = document.getElementById('userTypeInfo');
             const selectedType = this.value;
-            
+
             switch(selectedType) {
                 case 'investor':
                     infoDiv.textContent = 'Access to investment opportunities and portfolio management tools';
                     break;
                 case 'sme':
-                    infoDiv.textContent = 'Submit your business for funding and track investor interest';
-                    break;
-                case 'premium':
-                    infoDiv.textContent = 'AI-powered analytics, market insights, and advanced tools';
+                    if (acceleratorTier) {
+                        infoDiv.textContent = 'Perfect! SME accounts get full access to funding opportunities and the accelerator program.';
+                    } else {
+                        infoDiv.textContent = 'Submit your business for funding and track investor interest';
+                    }
                     break;
                 default:
                     infoDiv.textContent = '';
@@ -121,10 +354,27 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    messageDiv.innerHTML = '<div class="success">Account created successfully! Redirecting to login...</div>';
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 2000);
+                    // Check if this is an accelerator signup
+                    const pendingEnrollment = localStorage.getItem('pendingAcceleratorEnrollment');
+
+                    if (pendingEnrollment && acceleratorTier) {
+                        messageDiv.innerHTML = '<div class="success">Account created successfully! Redirecting to complete your accelerator enrollment...</div>';
+                        setTimeout(() => {
+                            // Store user info for accelerator payment
+                            localStorage.setItem('newUserInfo', JSON.stringify({
+                                name: formData.name,
+                                email: formData.email,
+                                userType: formData.userType
+                            }));
+                            // Redirect back to accelerator page to complete payment
+                            window.location.href = `accelerator-program.html?enrolled=new&tier=${acceleratorTier}&price=${acceleratorPrice}`;
+                        }, 2000);
+                    } else {
+                        messageDiv.innerHTML = '<div class="success">Account created successfully! Redirecting to login...</div>';
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    }
                 } else {
                     messageDiv.innerHTML = `<div class="error">${data.message || 'Registration failed'}</div>`;
                 }

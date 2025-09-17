@@ -1146,7 +1146,7 @@
             const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
             if (!currentUser.email) {
-                // Not logged in - redirect to signup
+                // Not logged in - redirect to signup with accelerator parameters
                 window.location.href = `signup.html?accelerator=${tier}&price=${price}`;
             } else {
                 // Logged in - show payment modal
@@ -1776,6 +1776,35 @@
             const spotsElement = document.querySelector('.spots-left');
             if (spotsElement) {
                 spotsElement.textContent = `${spotsLeft} spots`;
+            }
+
+            // Check if user just signed up for accelerator
+            const urlParams = new URLSearchParams(window.location.search);
+            const enrolledNew = urlParams.get('enrolled');
+            const tier = urlParams.get('tier');
+            const price = urlParams.get('price');
+
+            if (enrolledNew === 'new' && tier && price) {
+                // User just signed up, show payment modal automatically
+                const newUserInfo = JSON.parse(localStorage.getItem('newUserInfo') || '{}');
+
+                if (newUserInfo.email) {
+                    // Simulate logged in user for payment flow
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        email: newUserInfo.email,
+                        name: newUserInfo.name,
+                        userType: newUserInfo.userType
+                    }));
+
+                    // Clean up temporary data
+                    localStorage.removeItem('newUserInfo');
+                    localStorage.removeItem('pendingAcceleratorEnrollment');
+
+                    // Show payment modal after brief delay
+                    setTimeout(() => {
+                        showAcceleratorPayment(tier, parseInt(price));
+                    }, 1000);
+                }
             }
 
             // Add input formatting when modals are opened
