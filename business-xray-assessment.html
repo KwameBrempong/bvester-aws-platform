@@ -35,10 +35,41 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--primary-black);
-            color: var(--text-primary);
+            color: #FFFFFF !important;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        /* FORCE WHITE TEXT - OVERRIDE ALL CONFLICTING STYLES */
+        * {
+            color: #FFFFFF !important;
+        }
+
+        .question-title {
+            color: #FFFFFF !important;
+            font-weight: 600 !important;
+        }
+
+        .question-subtitle {
+            color: #F0F0F0 !important;
+        }
+
+        .answer-label {
+            color: #FFFFFF !important;
+            font-weight: 500 !important;
+        }
+
+        .answer-detail {
+            color: #E0E0E0 !important;
+        }
+
+        .progress-text {
+            color: #F0F0F0 !important;
+        }
+
+        .btn-primary {
+            color: #000000 !important;
         }
 
         /* Header */

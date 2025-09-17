@@ -42,8 +42,45 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--primary-black);
-            color: var(--text-primary);
+            color: #FFFFFF !important;
             line-height: 1.6;
+        }
+
+        /* FORCE WHITE TEXT - OVERRIDE ALL CONFLICTING STYLES */
+        * {
+            color: #FFFFFF !important;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #FFFFFF !important;
+        }
+
+        p {
+            color: #F0F0F0 !important;
+        }
+
+        .hero-subtitle {
+            color: #E8E8E8 !important;
+        }
+
+        .stat-label {
+            color: #E0E0E0 !important;
+        }
+
+        .testimonial-text {
+            color: #F0F0F0 !important;
+        }
+
+        .faq-question {
+            color: #FFFFFF !important;
+        }
+
+        .pricing-description {
+            color: #E8E8E8 !important;
+        }
+
+        .btn-primary {
+            color: #000000 !important;
         }
 
         /* Header */
