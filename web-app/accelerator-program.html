@@ -21,79 +21,85 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2D2D2D 50%, #1A1A1A 75%, #0A0A0A 100%);
+            background: #0A0A0A;
             color: #FFFFFF !important;
             line-height: 1.6;
         }
 
-        /* Light backgrounds for readability */
+        /* Dark theme with proper contrast */
         .hero {
-            background: linear-gradient(135deg, #F5F5F5 0%, #FFFFFF 50%, #FFF9E6 100%) !important;
+            background: linear-gradient(135deg, #1A1A1A 0%, #252525 50%, #1A1A1A 100%) !important;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.2) !important;
         }
 
         .content-section {
-            background: #FFFFFF !important;
+            background: #1A1A1A !important;
             padding: 3rem 2rem !important;
             margin: 2rem auto !important;
             border-radius: 12px !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(255, 215, 0, 0.2) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
         }
 
         .card {
-            background: #F8F8F8 !important;
-            border: 1px solid #E0E0E0 !important;
+            background: rgba(30, 30, 30, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
         .stat-card {
-            background: #FFFFFF !important;
-            border: 2px solid #FFD700 !important;
+            background: #252525 !important;
+            border: 1px solid rgba(255, 215, 0, 0.5) !important;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.1) !important;
         }
 
         .testimonial-card {
-            background: #FFF9E6 !important;
-            border: 1px solid #FFD700 !important;
+            background: rgba(255, 215, 0, 0.05) !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
         }
 
         .pricing-card {
-            background: #FFFFFF !important;
-            border: 2px solid #E0E0E0 !important;
+            background: #1E1E1E !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease !important;
         }
 
         .pricing-card.featured {
-            background: #FFF3CC !important;
-            border-color: #FFD700 !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            border: 2px solid #FFD700 !important;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2) !important;
         }
 
         .faq-item {
-            background: #F5F5F5 !important;
+            background: rgba(30, 30, 30, 0.8) !important;
             padding: 1.5rem !important;
             margin-bottom: 1rem !important;
             border-radius: 8px !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
         }
 
-        /* Dark text for light backgrounds */
+        /* White text for dark backgrounds */
         h1, h2, h3, h4, h5, h6 {
-            color: #1A1A1A !important;
+            color: #FFFFFF !important;
         }
 
         p, span, div, label, li {
-            color: #333333 !important;
+            color: #E0E0E0 !important;
         }
 
         .hero-subtitle {
-            color: #4A4A4A !important;
+            color: #B0B0B0 !important;
         }
 
         .stat-label {
-            color: #666666 !important;
+            color: #A0A0A0 !important;
         }
 
         .testimonial-text {
-            color: #2D2D2D !important;
+            color: #D0D0D0 !important;
         }
 
         .faq-question {
-            color: #1A1A1A !important;
+            color: #FFFFFF !important;
             font-weight: bold !important;
         }
 

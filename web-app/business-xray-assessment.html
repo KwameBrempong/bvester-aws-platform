@@ -31,7 +31,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2D2D2D 50%, #1A1A1A 75%, #0A0A0A 100%);
+            background: #0A0A0A;
             color: #FFFFFF !important;
             min-height: 100vh;
             display: flex;
@@ -39,25 +39,30 @@
             line-height: 1.6;
         }
 
-        /* Light backgrounds for readability */
+        /* Dark card with proper contrast */
         .question-card {
-            background: #F5F5F5 !important;
-            border: 2px solid #FFD700 !important;
+            background: linear-gradient(135deg, #1A1A1A 0%, #252525 100%) !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
         }
 
         .answer-option {
-            background: #FFFFFF !important;
-            border: 2px solid #E0E0E0 !important;
+            background: rgba(30, 30, 30, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease !important;
         }
 
         .answer-option:hover {
-            background: #FFF9E6 !important;
-            border-color: #FFD700 !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            border-color: rgba(255, 215, 0, 0.5) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2) !important;
         }
 
         .answer-option.selected {
-            background: #FFF3CC !important;
+            background: rgba(255, 215, 0, 0.2) !important;
             border-color: #FFD700 !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
         }
 
         .progress-container {
@@ -66,21 +71,23 @@
             border-radius: 8px !important;
         }
 
-        /* Dark text for light backgrounds */
+        /* White text for dark backgrounds */
         .question-title {
-            color: #1A1A1A !important;
+            color: #FFFFFF !important;
+            font-weight: 600 !important;
         }
 
         .question-subtitle {
-            color: #4A4A4A !important;
+            color: #B0B0B0 !important;
         }
 
         .answer-label {
-            color: #2D2D2D !important;
+            color: #E0E0E0 !important;
+            font-weight: 500 !important;
         }
 
         .answer-detail {
-            color: #666666 !important;
+            color: #A0A0A0 !important;
         }
 
         .progress-text {
@@ -93,8 +100,11 @@
         }
 
         .question-category {
-            color: #D4AF37 !important;
+            color: #FFD700 !important;
             font-weight: bold !important;
+            text-transform: uppercase !important;
+            font-size: 0.875rem !important;
+            letter-spacing: 1px !important;
         }
 
         .timer {
@@ -210,8 +220,8 @@
 
         /* Question Card */
         .question-card {
-            background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%);
-            border: 2px solid rgba(255, 215, 0, 0.25);
+            background: linear-gradient(135deg, #1A1A1A 0%, #252525 100%);
+            border: 1px solid rgba(255, 215, 0, 0.3);
             border-radius: 12px;
             padding: 2.5rem;
             min-height: 400px;
@@ -276,8 +286,8 @@
         }
 
         .answer-option {
-            background: linear-gradient(135deg, #1A1A1A 0%, #0A0A0A 100%);
-            border: 2px solid rgba(255, 215, 0, 0.1);
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             padding: 1.25rem;
             cursor: pointer;
@@ -286,7 +296,10 @@
         }
 
         .answer-option:hover {
-            border-color: rgba(255, 215, 0, 0.3);
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
             transform: translateX(5px);
         }
 
