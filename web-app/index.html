@@ -189,13 +189,34 @@
             gap: 1rem;
         }
 
-        .nav-cta.desktop-only {
+        /* Desktop CTA - always visible on desktop */
+        .nav-cta.desktop-cta {
             display: flex;
         }
 
+        /* Mobile CTA - only visible in mobile menu */
+        .nav-cta.mobile-only {
+            display: none;
+        }
+
         @media (max-width: 968px) {
-            .nav-cta.desktop-only {
+            .nav-cta.desktop-cta {
                 display: none;
+            }
+
+            .nav-cta.mobile-only {
+                display: flex;
+                margin-top: 2rem;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 0;
+            }
+
+            .nav-cta.mobile-only .btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem 1rem;
+                margin: 0;
             }
         }
 
@@ -672,7 +693,7 @@
 
         /* Responsive - Tablet */
         @media (max-width: 968px) {
-            .desktop-only {
+            .desktop-cta {
                 display: none;
             }
 
@@ -705,20 +726,7 @@
                 display: block;
             }
 
-            .nav-menu .nav-cta {
-                margin-top: 2rem;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                padding: 0;
-            }
-
-            .nav-menu .nav-cta .btn {
-                width: 100%;
-                text-align: center;
-                padding: 0.75rem 1rem;
-                margin: 0;
-            }
+            /* Mobile menu specific styling handled above */
 
             .mobile-menu-toggle {
                 display: flex;
@@ -1004,13 +1012,15 @@
                 <li class="nav-item"><a href="#pricing">Pricing</a></li>
                 <li class="nav-item"><a href="#contact">Contact</a></li>
 
-                <div class="nav-cta">
+                <!-- Mobile CTA buttons (only visible in mobile menu) -->
+                <div class="nav-cta mobile-only">
                     <button class="btn btn-secondary" onclick="navigateToLogin()">Login</button>
                     <button class="btn btn-primary" onclick="navigateToSignup()">Get Started</button>
                 </div>
             </ul>
 
-            <div class="nav-cta desktop-only">
+            <!-- Desktop CTA buttons (always visible on desktop) -->
+            <div class="nav-cta desktop-cta">
                 <button class="btn btn-secondary" onclick="navigateToLogin()">Login</button>
                 <button class="btn btn-primary" onclick="navigateToSignup()">Get Started</button>
             </div>
