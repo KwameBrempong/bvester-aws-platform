@@ -6,49 +6,34 @@
     <title>7-Minute Business X-Ray - Bvester</title>
     <link rel="stylesheet" href="css/global-design-system.css">
     <style>
+        :root {
+            --text-primary: #FFFFFF;
+            --text-secondary: #E5E5E5;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Color Variables */
-        :root {
-            --text-primary: #FFFFFF;
-            --text-secondary: #E0E0E0;
-            --pure-white: #FFFFFF;
-            --off-white: #FAFAFA;
-            --dark-gray: #888888;
-            --primary-gold: #FFD700;
-            --primary-black: #0A0A0A;
-            --rich-black: #1A1A1A;
-            --soft-black: #2D2D2D;
-            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
-            --radius-lg: 12px;
-            --radius-md: 8px;
-            --radius-sm: 4px;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2D2D2D 50%, #1A1A1A 75%, #0A0A0A 100%);
-            color: #FFFFFF;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-black);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            line-height: 1.6;
         }
 
         /* Header */
         .header {
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            background: var(--rich-black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
         }
 
         .header-content {
@@ -61,27 +46,11 @@
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 900;
+            font-weight: bold;
             background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo::before {
-            content: '';
-            width: 32px;
-            height: 32px;
-            background-image: url('images/bvester-logo.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .timer {
@@ -124,39 +93,19 @@
         .progress-text {
             margin-top: 0.5rem;
             font-size: 0.875rem;
-            color: #E0E0E0;
+            color: #E5E5E5;
             text-align: center;
         }
 
         /* Question Card */
         .question-card {
-            background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%);
-            border: 2px solid rgba(255, 215, 0, 0.25);
+            background: var(--rich-black);
+            border: 2px solid rgba(255, 215, 0, 0.1);
             border-radius: var(--radius-lg);
-            padding: 2.5rem;
+            padding: 2rem;
             min-height: 400px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .question-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #FFD700 0%, #FFA500 25%, #D4AF37 50%, #FFA500 75%, #FFD700 100%);
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
         }
 
         .question-header {
@@ -176,14 +125,13 @@
             color: #FFFFFF;
             margin-bottom: 1rem;
             line-height: 1.3;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         .question-subtitle {
-            color: #FFFFFF;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            opacity: 0.9;
+            color: #E5E5E5;
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
         /* Answer Options */
@@ -196,8 +144,8 @@
         }
 
         .answer-option {
-            background: linear-gradient(135deg, #1A1A1A 0%, #0A0A0A 100%);
-            border: 2px solid rgba(255, 215, 0, 0.1);
+            background: var(--soft-black);
+            border: 2px solid transparent;
             border-radius: var(--radius-md);
             padding: 1.25rem;
             cursor: pointer;
@@ -234,7 +182,7 @@
         }
 
         .answer-detail {
-            color: #D0D0D0;
+            color: #D5D5D5;
             font-size: 0.875rem;
         }
 
@@ -248,10 +196,10 @@
         .number-input {
             width: 100%;
             padding: 1rem;
-            background: #1A1A1A;
-            border: 2px solid rgba(255, 215, 0, 0.3);
+            background: var(--soft-black);
+            border: 2px solid rgba(255, 215, 0, 0.2);
             border-radius: var(--radius-md);
-            color: #FFFFFF;
+            color: var(--text-primary);
             font-size: 1.25rem;
             text-align: center;
         }
@@ -263,7 +211,7 @@
         }
 
         .input-hint {
-            color: #C0C0C0;
+            color: var(--text-secondary);
             font-size: 0.875rem;
             text-align: center;
         }
@@ -287,14 +235,13 @@
 
         .btn-secondary {
             background: transparent;
-            border: 2px solid rgba(255, 215, 0, 0.4);
-            color: #E0E0E0;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            color: var(--text-secondary);
         }
 
         .btn-secondary:hover:not(:disabled) {
-            border-color: #FFD700;
-            color: #FFD700;
-            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
         }
 
         .btn-primary {
@@ -448,36 +395,16 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                padding: 0;
-            }
-
-            .timer {
-                font-size: 0.875rem;
-                padding: 0.375rem 0.75rem;
-            }
-
             .assessment-container {
                 padding: 0 1rem;
-                margin: 1rem auto;
             }
 
             .question-card {
                 padding: 1.5rem;
-                min-height: 350px;
             }
 
             .question-title {
                 font-size: 1.5rem;
-                line-height: 1.25;
-            }
-
-            .question-subtitle {
-                font-size: 1rem;
-            }
-
-            .answer-option {
-                padding: 1rem;
             }
 
             .navigation-buttons {
@@ -485,52 +412,11 @@
             }
 
             .btn {
-                padding: 0.875rem 1.5rem;
                 width: 100%;
-            }
-
-            .score-circle {
-                width: 150px;
-                height: 150px;
-            }
-
-            .score-number {
-                font-size: 2.5rem;
             }
 
             .cta-buttons {
                 flex-direction: column;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 0.75rem 1rem;
-            }
-
-            .logo {
-                font-size: 1.25rem;
-            }
-
-            .question-card {
-                padding: 1.25rem;
-                margin-bottom: 1rem;
-            }
-
-            .question-title {
-                font-size: 1.25rem;
-            }
-
-            .answer-option {
-                padding: 0.875rem;
-            }
-
-            .answer-label {
-                font-size: 0.9rem;
-            }
-
-            .answer-detail {
-                font-size: 0.8rem;
             }
         }
 
