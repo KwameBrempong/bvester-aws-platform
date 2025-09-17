@@ -1116,7 +1116,7 @@
                     <li>5 Investor Connections</li>
                     <li>Community Support</li>
                 </ul>
-                <button class="btn btn-secondary" style="width: 100%;">Start Free</button>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="subscribeToPlan('starter', 0)">Start Free</button>
             </div>
 
             <div class="pricing-card featured">
@@ -1133,7 +1133,7 @@
                     <li>Priority Support</li>
                     <li>Investment Pitch Tools</li>
                 </ul>
-                <button class="btn btn-primary" style="width: 100%;">Start Free Trial</button>
+                <button class="btn btn-primary" style="width: 100%;" onclick="subscribeToPlan('growth', 87)">Start Free Trial</button>
             </div>
 
             <div class="pricing-card">
@@ -1149,7 +1149,7 @@
                     <li>API Access</li>
                     <li>White-label Options</li>
                 </ul>
-                <button class="btn btn-secondary" style="width: 100%;">Contact Sales</button>
+                <button class="btn btn-primary" style="width: 100%;" onclick="subscribeToPlan('scale', 297)">Subscribe Now</button>
             </div>
         </div>
     </section>
@@ -1366,6 +1366,416 @@
 
         function scheduleDemo() {
             alert('Schedule a demo by emailing demo@bvester.com');
+        }
+
+        // Subscription and Payment Functions
+        function subscribeToPlan(planType, monthlyPrice) {
+            // Store the selected plan
+            const planDetails = {
+                plan: planType,
+                price: monthlyPrice,
+                timestamp: new Date().toISOString()
+            };
+
+            if (planType === 'starter') {
+                // Free plan - direct signup
+                localStorage.setItem('selectedPlan', JSON.stringify(planDetails));
+                window.location.href = 'signup.html?plan=' + planType;
+                return;
+            }
+
+            // Check if user is logged in for paid plans
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+            if (!currentUser.email) {
+                // Not logged in - redirect to signup with plan
+                localStorage.setItem('selectedPlan', JSON.stringify(planDetails));
+                window.location.href = 'signup.html?plan=' + planType;
+                return;
+            }
+
+            // User is logged in - show payment modal
+            showPaymentModal(planType, monthlyPrice);
+        }
+
+        function showPaymentModal(planType, monthlyPrice) {
+            // Create payment modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+            `;
+
+            const planName = planType.charAt(0).toUpperCase() + planType.slice(1);
+
+            modal.innerHTML = `
+                <div style="
+                    background: var(--rich-black);
+                    border: 2px solid var(--primary-gold);
+                    border-radius: var(--radius-lg);
+                    padding: 2rem;
+                    max-width: 500px;
+                    width: 90%;
+                    color: var(--text-primary);
+                    position: relative;
+                ">
+                    <button onclick="closePaymentModal()" style="
+                        position: absolute;
+                        top: 1rem;
+                        right: 1rem;
+                        background: none;
+                        border: none;
+                        color: var(--primary-gold);
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                    ">×</button>
+
+                    <h3 style="color: var(--primary-gold); margin-bottom: 1rem; text-align: center;">
+                        Subscribe to ${planName} Plan
+                    </h3>
+
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--primary-gold);">
+                            ₵${monthlyPrice} <span style="font-size: 1rem; color: var(--text-secondary);">/month</span>
+                        </div>
+                    </div>
+
+                    <form id="paymentForm" style="margin-bottom: 1.5rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                Payment Method
+                            </label>
+                            <select id="paymentMethod" required style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: var(--soft-black);
+                                border: 1px solid rgba(255, 215, 0, 0.2);
+                                border-radius: var(--radius-md);
+                                color: var(--text-primary);
+                            ">
+                                <option value="">Select Payment Method</option>
+                                <option value="mobile_money">Mobile Money (MTN/Vodafone)</option>
+                                <option value="bank_transfer">Bank Transfer</option>
+                                <option value="card">Credit/Debit Card</option>
+                                <option value="paypal">PayPal</option>
+                            </select>
+                        </div>
+
+                        <div id="paymentDetails" style="margin-bottom: 1.5rem;">
+                            <!-- Payment details will be populated based on method -->
+                        </div>
+
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="button" onclick="closePaymentModal()" style="
+                                flex: 1;
+                                padding: 0.75rem;
+                                background: transparent;
+                                border: 1px solid var(--primary-gold);
+                                color: var(--primary-gold);
+                                border-radius: var(--radius-md);
+                                cursor: pointer;
+                            ">Cancel</button>
+
+                            <button type="submit" style="
+                                flex: 1;
+                                padding: 0.75rem;
+                                background: var(--gold-gradient);
+                                border: none;
+                                color: var(--primary-black);
+                                border-radius: var(--radius-md);
+                                cursor: pointer;
+                                font-weight: bold;
+                            ">Pay ₵${monthlyPrice}</button>
+                        </div>
+                    </form>
+
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); text-align: center;">
+                        Secure payment processing. Cancel anytime.
+                    </p>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.id = 'paymentModal';
+
+            // Add event listener for payment method change
+            document.getElementById('paymentMethod').addEventListener('change', function() {
+                showPaymentDetails(this.value);
+            });
+
+            // Add form submit handler
+            document.getElementById('paymentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                processPayment(planType, monthlyPrice);
+            });
+        }
+
+        function showPaymentDetails(method) {
+            const detailsContainer = document.getElementById('paymentDetails');
+
+            switch(method) {
+                case 'mobile_money':
+                    detailsContainer.innerHTML = `
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                Mobile Number
+                            </label>
+                            <input type="tel" id="mobileNumber" required placeholder="0243XXXXXXX" style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: var(--soft-black);
+                                border: 1px solid rgba(255, 215, 0, 0.2);
+                                border-radius: var(--radius-md);
+                                color: var(--text-primary);
+                            ">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                Network
+                            </label>
+                            <select id="network" required style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: var(--soft-black);
+                                border: 1px solid rgba(255, 215, 0, 0.2);
+                                border-radius: var(--radius-md);
+                                color: var(--text-primary);
+                            ">
+                                <option value="">Select Network</option>
+                                <option value="mtn">MTN Mobile Money</option>
+                                <option value="vodafone">Vodafone Cash</option>
+                                <option value="tigo">AirtelTigo Money</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+
+                case 'card':
+                    detailsContainer.innerHTML = `
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                Card Number
+                            </label>
+                            <input type="text" id="cardNumber" required placeholder="1234 5678 9012 3456" style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: var(--soft-black);
+                                border: 1px solid rgba(255, 215, 0, 0.2);
+                                border-radius: var(--radius-md);
+                                color: var(--text-primary);
+                            ">
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                    Expiry
+                                </label>
+                                <input type="text" id="expiry" required placeholder="MM/YY" style="
+                                    width: 100%;
+                                    padding: 0.75rem;
+                                    background: var(--soft-black);
+                                    border: 1px solid rgba(255, 215, 0, 0.2);
+                                    border-radius: var(--radius-md);
+                                    color: var(--text-primary);
+                                ">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                    CVV
+                                </label>
+                                <input type="text" id="cvv" required placeholder="123" style="
+                                    width: 100%;
+                                    padding: 0.75rem;
+                                    background: var(--soft-black);
+                                    border: 1px solid rgba(255, 215, 0, 0.2);
+                                    border-radius: var(--radius-md);
+                                    color: var(--text-primary);
+                                ">
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'bank_transfer':
+                    detailsContainer.innerHTML = `
+                        <div style="padding: 1rem; background: rgba(255, 215, 0, 0.1); border-radius: var(--radius-md); margin-bottom: 1rem;">
+                            <h4 style="color: var(--primary-gold); margin-bottom: 0.5rem;">Bank Transfer Details</h4>
+                            <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                <strong>Account Name:</strong> Bvester Ghana Ltd
+                            </p>
+                            <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                <strong>Account Number:</strong> 1234567890
+                            </p>
+                            <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                <strong>Bank:</strong> GCB Bank
+                            </p>
+                            <p style="color: var(--text-secondary);">
+                                <strong>Reference:</strong> SUB-${Date.now()}
+                            </p>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                Transfer Reference/Receipt Number
+                            </label>
+                            <input type="text" id="transferRef" required placeholder="Enter transfer reference" style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: var(--soft-black);
+                                border: 1px solid rgba(255, 215, 0, 0.2);
+                                border-radius: var(--radius-md);
+                                color: var(--text-primary);
+                            ">
+                        </div>
+                    `;
+                    break;
+
+                case 'paypal':
+                    detailsContainer.innerHTML = `
+                        <div style="text-align: center; padding: 1rem;">
+                            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                                You will be redirected to PayPal to complete your payment securely.
+                            </p>
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">💳</div>
+                        </div>
+                    `;
+                    break;
+
+                default:
+                    detailsContainer.innerHTML = '';
+            }
+        }
+
+        function processPayment(planType, monthlyPrice) {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+
+            if (!paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = document.querySelector('#paymentForm button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+
+            // Simulate payment processing
+            setTimeout(() => {
+                // In production, this would integrate with actual payment processors
+                const paymentData = {
+                    plan: planType,
+                    amount: monthlyPrice,
+                    method: paymentMethod,
+                    timestamp: new Date().toISOString(),
+                    status: 'completed',
+                    transactionId: 'TXN-' + Date.now()
+                };
+
+                // Store payment information
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                currentUser.subscription = {
+                    plan: planType,
+                    startDate: new Date().toISOString(),
+                    nextBilling: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'active'
+                };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                // Store payment record
+                const payments = JSON.parse(localStorage.getItem('userPayments') || '[]');
+                payments.push(paymentData);
+                localStorage.setItem('userPayments', JSON.stringify(payments));
+
+                closePaymentModal();
+                showSuccessMessage(planType, monthlyPrice);
+
+            }, 2000);
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function showSuccessMessage(planType, monthlyPrice) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+            `;
+
+            const planName = planType.charAt(0).toUpperCase() + planType.slice(1);
+
+            modal.innerHTML = `
+                <div style="
+                    background: var(--rich-black);
+                    border: 2px solid #22C55E;
+                    border-radius: var(--radius-lg);
+                    padding: 2rem;
+                    max-width: 400px;
+                    width: 90%;
+                    color: var(--text-primary);
+                    text-align: center;
+                ">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                    <h3 style="color: #22C55E; margin-bottom: 1rem;">Payment Successful!</h3>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                        Welcome to the ${planName} plan! Your subscription is now active.
+                    </p>
+                    <div style="margin-bottom: 2rem; padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: var(--radius-md);">
+                        <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Next billing: 30 days from now</p>
+                        <p style="color: var(--text-secondary);">Amount: ₵${monthlyPrice}/month</p>
+                    </div>
+                    <button onclick="closeSuccessModal()" style="
+                        padding: 0.75rem 2rem;
+                        background: var(--gold-gradient);
+                        border: none;
+                        color: var(--primary-black);
+                        border-radius: var(--radius-md);
+                        cursor: pointer;
+                        font-weight: bold;
+                    ">Continue to Dashboard</button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.id = 'successModal';
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) {
+                modal.remove();
+            }
+
+            // Redirect to appropriate dashboard
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.userType === 'sme') {
+                window.location.href = 'sme-dashboard.html';
+            } else if (currentUser.userType === 'investor') {
+                window.location.href = 'investor-dashboard.html';
+            } else {
+                // New user - redirect to signup if not logged in
+                window.location.href = 'signup.html';
+            }
         }
 
         // Smooth scroll for navigation links
