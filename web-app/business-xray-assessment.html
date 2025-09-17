@@ -39,46 +39,84 @@
             line-height: 1.6;
         }
 
-        /* FORCE WHITE TEXT ON ALL ELEMENTS */
-        * {
-            color: #FFFFFF !important;
+        /* Light backgrounds for readability */
+        .question-card {
+            background: #F5F5F5 !important;
+            border: 2px solid #FFD700 !important;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            color: #FFFFFF !important;
+        .answer-option {
+            background: #FFFFFF !important;
+            border: 2px solid #E0E0E0 !important;
         }
 
-        p, span, div, label {
-            color: #FFFFFF !important;
+        .answer-option:hover {
+            background: #FFF9E6 !important;
+            border-color: #FFD700 !important;
         }
 
+        .answer-option.selected {
+            background: #FFF3CC !important;
+            border-color: #FFD700 !important;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1) !important;
+            padding: 1rem !important;
+            border-radius: 8px !important;
+        }
+
+        /* Dark text for light backgrounds */
         .question-title {
-            color: #FFFFFF !important;
+            color: #1A1A1A !important;
         }
 
         .question-subtitle {
-            color: #F0F0F0 !important;
+            color: #4A4A4A !important;
         }
 
         .answer-label {
-            color: #FFFFFF !important;
+            color: #2D2D2D !important;
         }
 
         .answer-detail {
-            color: #E5E5E5 !important;
+            color: #666666 !important;
         }
 
-        /* Keep buttons as designed */
+        .progress-text {
+            color: #FFFFFF !important;
+        }
+
+        /* Keep special elements as designed */
         .btn-primary {
             color: #000000 !important;
         }
 
         .question-category {
-            color: #FFD700 !important;
+            color: #D4AF37 !important;
+            font-weight: bold !important;
         }
 
         .timer {
             color: #FFD700 !important;
+        }
+
+        /* Results sections with light backgrounds */
+        .key-findings {
+            background: #F8F8F8 !important;
+        }
+
+        .finding-item {
+            background: #FFFFFF !important;
+            color: #2D2D2D !important;
+        }
+
+        .finding-title {
+            color: #1A1A1A !important;
+        }
+
+        .finding-description {
+            color: #4A4A4A !important;
         }
 
         /* Header */

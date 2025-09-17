@@ -26,37 +26,87 @@
             line-height: 1.6;
         }
 
-        /* FORCE WHITE TEXT ON ALL ELEMENTS */
-        * {
-            color: #FFFFFF !important;
+        /* Light backgrounds for readability */
+        .hero {
+            background: linear-gradient(135deg, #F5F5F5 0%, #FFFFFF 50%, #FFF9E6 100%) !important;
         }
 
+        .content-section {
+            background: #FFFFFF !important;
+            padding: 3rem 2rem !important;
+            margin: 2rem auto !important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .card {
+            background: #F8F8F8 !important;
+            border: 1px solid #E0E0E0 !important;
+        }
+
+        .stat-card {
+            background: #FFFFFF !important;
+            border: 2px solid #FFD700 !important;
+        }
+
+        .testimonial-card {
+            background: #FFF9E6 !important;
+            border: 1px solid #FFD700 !important;
+        }
+
+        .pricing-card {
+            background: #FFFFFF !important;
+            border: 2px solid #E0E0E0 !important;
+        }
+
+        .pricing-card.featured {
+            background: #FFF3CC !important;
+            border-color: #FFD700 !important;
+        }
+
+        .faq-item {
+            background: #F5F5F5 !important;
+            padding: 1.5rem !important;
+            margin-bottom: 1rem !important;
+            border-radius: 8px !important;
+        }
+
+        /* Dark text for light backgrounds */
         h1, h2, h3, h4, h5, h6 {
-            color: #FFFFFF !important;
+            color: #1A1A1A !important;
         }
 
         p, span, div, label, li {
-            color: #FFFFFF !important;
+            color: #333333 !important;
         }
 
         .hero-subtitle {
-            color: #F0F0F0 !important;
+            color: #4A4A4A !important;
         }
 
         .stat-label {
-            color: #E5E5E5 !important;
+            color: #666666 !important;
         }
 
         .testimonial-text {
-            color: #F0F0F0 !important;
+            color: #2D2D2D !important;
         }
 
         .faq-question {
-            color: #FFFFFF !important;
+            color: #1A1A1A !important;
+            font-weight: bold !important;
+        }
+
+        .faq-answer {
+            color: #4A4A4A !important;
         }
 
         .pricing-description {
-            color: #E8E8E8 !important;
+            color: #666666 !important;
+        }
+
+        .pricing-features li {
+            color: #333333 !important;
         }
 
         /* Keep special elements as designed */
