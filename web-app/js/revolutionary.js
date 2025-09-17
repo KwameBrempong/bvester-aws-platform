@@ -51,6 +51,21 @@ function initializeApp() {
 
 // Event Listeners
 function setupEventListeners() {
+    // Navigation Login/Signup Buttons
+    const loginBtn = document.querySelector('.btn-login');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+    }
+    
+    const signupBtn = document.querySelector('.btn-signup');
+    if (signupBtn) {
+        signupBtn.addEventListener('click', function() {
+            window.location.href = 'signup.html';
+        });
+    }
+    
     // CTA Buttons
     const ctaButtons = document.querySelectorAll('.btn-primary');
     ctaButtons.forEach(button => {
