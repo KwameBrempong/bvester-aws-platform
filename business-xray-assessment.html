@@ -4,9 +4,222 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>7-Minute Business X-Ray - Bvester</title>
-    <link rel="stylesheet" href="business-xray-assessment-styles.css">
     <style>
-        /* Additional page-specific styles can go here if needed */
+        /* INLINE CSS - BYPASSES ALL ROUTING ISSUES */
+        * {
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+            color: #FFFFFF !important;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+            background: #0A0A0A !important;
+            color: #FFFFFF !important;
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .header {
+            background: #1A1A1A !important;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1) !important;
+            padding: 1rem 2rem !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 100 !important;
+        }
+
+        .header-content {
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+
+        .logo {
+            font-size: 1.5rem !important;
+            font-weight: bold !important;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            text-decoration: none !important;
+        }
+
+        .timer {
+            background: rgba(255, 215, 0, 0.1) !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
+            color: #FFD700 !important;
+            font-weight: bold !important;
+        }
+
+        .assessment-container {
+            max-width: 800px !important;
+            margin: 2rem auto !important;
+            padding: 0 2rem !important;
+            flex: 1 !important;
+        }
+
+        .progress-container {
+            margin-bottom: 2rem !important;
+        }
+
+        .progress-bar {
+            height: 8px !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            border-radius: 4px !important;
+            overflow: hidden !important;
+        }
+
+        .progress-fill {
+            height: 100% !important;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+            border-radius: 4px !important;
+            transition: width 0.5s ease !important;
+            width: 0% !important;
+        }
+
+        .progress-text {
+            margin-top: 0.5rem !important;
+            font-size: 0.875rem !important;
+            color: #F0F0F0 !important;
+            text-align: center !important;
+        }
+
+        .question-card {
+            background: #1A1A1A !important;
+            border: 2px solid rgba(255, 215, 0, 0.1) !important;
+            border-radius: 12px !important;
+            padding: 2rem !important;
+            min-height: 400px !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .question-header {
+            margin-bottom: 2rem !important;
+        }
+
+        .question-category {
+            color: #FFD700 !important;
+            font-size: 0.875rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .question-title {
+            font-size: 1.75rem !important;
+            color: #FFFFFF !important;
+            margin-bottom: 1rem !important;
+            line-height: 1.3 !important;
+            font-weight: 600 !important;
+        }
+
+        .question-subtitle {
+            color: #F0F0F0 !important;
+            font-size: 1rem !important;
+            line-height: 1.5 !important;
+        }
+
+        .answer-options {
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+            margin-bottom: 2rem !important;
+        }
+
+        .answer-option {
+            background: #2D2D2D !important;
+            border: 2px solid transparent !important;
+            border-radius: 8px !important;
+            padding: 1.25rem !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+        }
+
+        .answer-option:hover {
+            border-color: rgba(255, 215, 0, 0.3) !important;
+            transform: translateX(5px) !important;
+        }
+
+        .answer-option.selected {
+            background: rgba(255, 215, 0, 0.1) !important;
+            border-color: #FFD700 !important;
+        }
+
+        .answer-label {
+            display: block !important;
+            color: #FFFFFF !important;
+            font-size: 1rem !important;
+            margin-bottom: 0.25rem !important;
+            font-weight: 500 !important;
+        }
+
+        .answer-detail {
+            color: #E0E0E0 !important;
+            font-size: 0.875rem !important;
+        }
+
+        .number-input {
+            width: 100% !important;
+            padding: 1rem !important;
+            background: #2D2D2D !important;
+            border: 2px solid rgba(255, 215, 0, 0.2) !important;
+            border-radius: 8px !important;
+            color: #FFFFFF !important;
+            font-size: 1.25rem !important;
+            text-align: center !important;
+        }
+
+        .input-hint {
+            color: #F0F0F0 !important;
+            font-size: 0.875rem !important;
+            text-align: center !important;
+        }
+
+        .btn {
+            padding: 1rem 2rem !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            font-size: 1rem !important;
+        }
+
+        .btn-secondary {
+            background: transparent !important;
+            border: 2px solid rgba(255, 215, 0, 0.3) !important;
+            color: #F0F0F0 !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+            color: #000000 !important;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #FFFFFF !important;
+        }
+
+        p {
+            color: #F0F0F0 !important;
+        }
+
+        span {
+            color: inherit !important;
+        }
+
+        div {
+            color: inherit !important;
+        }
 
         /* Header */
         .header {
