@@ -23,6 +23,7 @@
             display: flex;
             align-items: center;
             overflow: hidden;
+            padding-top: 80px; /* Account for fixed navbar */
         }
 
         .hero-bg {
@@ -139,12 +140,13 @@
         .logo-icon {
             width: 40px;
             height: 40px;
-            background: var(--gold-gradient);
-            border-radius: 50%;
+            background-image: url('images/bvester-logo.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
         }
 
         .nav-menu {
@@ -187,13 +189,23 @@
             gap: 1rem;
         }
 
+        .nav-cta.desktop-only {
+            display: flex;
+        }
+
+        @media (max-width: 968px) {
+            .nav-cta.desktop-only {
+                display: none;
+            }
+        }
+
         /* Hero Content */
         .hero-content {
             position: relative;
             z-index: 2;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 8rem 2rem 4rem;
+            padding: 2rem 2rem 4rem; /* Reduced top padding from 8rem to 2rem */
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
@@ -254,6 +266,9 @@
         .score-display {
             text-align: center;
             margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .score-circle {
@@ -261,10 +276,16 @@
             height: 200px;
             margin: 0 auto 1rem;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .score-svg {
             transform: rotate(-90deg);
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .score-bg {
@@ -299,6 +320,9 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Trust Indicators */
@@ -648,6 +672,10 @@
 
         /* Responsive - Tablet */
         @media (max-width: 968px) {
+            .desktop-only {
+                display: none;
+            }
+
             .nav-menu {
                 position: fixed;
                 top: 0;
@@ -656,10 +684,11 @@
                 height: 100vh;
                 background: var(--rich-black);
                 flex-direction: column;
-                padding: 5rem 2rem;
+                padding: 4rem 2rem 2rem;
                 transition: right 0.3s;
                 z-index: 1000;
                 box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+                justify-content: space-between;
             }
 
             .nav-menu.active {
@@ -667,17 +696,28 @@
             }
 
             .nav-menu li {
-                margin: 1rem 0;
+                margin: 0.5rem 0; /* Reduced spacing */
             }
 
             .nav-menu a {
                 font-size: 1.125rem;
-                padding: 0.75rem 0;
+                padding: 0.5rem 0; /* Reduced padding */
                 display: block;
             }
 
-            .nav-cta {
-                display: none;
+            .nav-menu .nav-cta {
+                margin-top: 2rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 0;
+            }
+
+            .nav-menu .nav-cta .btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem 1rem;
+                margin: 0;
             }
 
             .mobile-menu-toggle {
@@ -686,13 +726,14 @@
             }
 
             .hero-section {
-                padding: 100px 20px 60px;
+                padding-top: 70px; /* Adjusted for mobile navbar */
             }
 
             .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
                 gap: 3rem;
+                padding: 1rem 1rem 3rem; /* Reduced padding for mobile */
             }
 
             .hero-text h1 {
@@ -715,6 +756,11 @@
             }
 
             .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-circle .score-svg {
                 width: 150px;
                 height: 150px;
             }
@@ -763,6 +809,21 @@
             .hero-buttons {
                 flex-direction: column;
                 width: 100%;
+                gap: 0.75rem;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .hero-visual {
+                display: none; /* Hide the Investment Ready card on mobile for better UX */
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
             }
 
             .btn {
@@ -932,7 +993,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="/" class="logo">
-                <span class="logo-icon">₿</span>
+                <span class="logo-icon"></span>
                 Bvester
             </a>
 
@@ -942,9 +1003,14 @@
                 <li class="nav-item"><a href="#how-it-works">How It Works</a></li>
                 <li class="nav-item"><a href="#pricing">Pricing</a></li>
                 <li class="nav-item"><a href="#contact">Contact</a></li>
+
+                <div class="nav-cta">
+                    <button class="btn btn-secondary" onclick="navigateToLogin()">Login</button>
+                    <button class="btn btn-primary" onclick="navigateToSignup()">Get Started</button>
+                </div>
             </ul>
 
-            <div class="nav-cta">
+            <div class="nav-cta desktop-only">
                 <button class="btn btn-secondary" onclick="navigateToLogin()">Login</button>
                 <button class="btn btn-primary" onclick="navigateToSignup()">Get Started</button>
             </div>
@@ -978,10 +1044,10 @@
 
                 <div class="hero-buttons">
                     <button class="btn btn-primary" onclick="startAssessment()">
-                        Get Investment Score
+                        Check Investment Readiness
                     </button>
-                    <button class="btn btn-secondary" onclick="watchDemo()">
-                        Watch Demo
+                    <button class="btn btn-secondary" onclick="joinAccelerator()">
+                        Join Accelerator Cohort
                     </button>
                 </div>
 
@@ -1017,26 +1083,26 @@
                             </svg>
                             <div class="score-text">85</div>
                         </div>
-                        <h3 style="color: var(--primary-gold);">Investment Ready</h3>
-                        <p style="color: var(--dark-gray);">Your business score</p>
+                        <h3 style="color: var(--primary-gold); margin-top: 0.5rem;">Investment Ready</h3>
+                        <p style="color: var(--dark-gray); margin-bottom: 0;">Your business score</p>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: var(--dark-gray);">Financial Health</span>
-                            <div class="progress-bar" style="width: 100px;">
+                    <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                            <span style="color: var(--dark-gray); flex: 1;">Financial Health</span>
+                            <div class="progress-bar" style="width: 100px; flex-shrink: 0;">
                                 <div class="progress-fill" style="width: 90%;"></div>
                             </div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: var(--dark-gray);">Market Position</span>
-                            <div class="progress-bar" style="width: 100px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                            <span style="color: var(--dark-gray); flex: 1;">Market Position</span>
+                            <div class="progress-bar" style="width: 100px; flex-shrink: 0;">
                                 <div class="progress-fill" style="width: 75%;"></div>
                             </div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: var(--dark-gray);">Growth Potential</span>
-                            <div class="progress-bar" style="width: 100px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                            <span style="color: var(--dark-gray); flex: 1;">Growth Potential</span>
+                            <div class="progress-bar" style="width: 100px; flex-shrink: 0;">
                                 <div class="progress-fill" style="width: 85%;"></div>
                             </div>
                         </div>
@@ -1161,10 +1227,10 @@
             <p class="cta-subtitle" id="ctaSubtitle">Transform your business with smart investment solutions</p>
             <div class="cta-buttons" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                 <button class="btn btn-primary btn-lg" onclick="startAssessment()">
-                    Get Your Investment Score
+                    Take 7-Min Business X-Ray
                 </button>
-                <button class="btn btn-secondary btn-lg" onclick="scheduleDemo()">
-                    Schedule Demo
+                <button class="btn btn-secondary btn-lg" onclick="joinAccelerator()">
+                    Join Next Cohort
                 </button>
             </div>
         </div>
@@ -1218,7 +1284,7 @@
         </div>
 
         <div class="footer-bottom">
-            <p>© 2024 Bvester. All rights reserved. Made with ❤️ for African entrepreneurs.</p>
+            <p>© 2025 Bvester. All rights reserved. Made with ❤️ for African entrepreneurs.</p>
         </div>
     </footer>
 
@@ -1357,11 +1423,11 @@
         }
 
         function startAssessment() {
-            window.location.href = 'investment-assessment.html';
+            window.location.href = 'business-xray-assessment.html';
         }
 
-        function watchDemo() {
-            alert('Demo video coming soon! For now, explore our features.');
+        function joinAccelerator() {
+            window.location.href = 'accelerator-program.html';
         }
 
         function scheduleDemo() {
