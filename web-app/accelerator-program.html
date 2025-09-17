@@ -12,11 +12,68 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --text-primary: #FFFFFF;
+            --text-secondary: #F0F0F0;
+            --primary-gold: #FFD700;
+            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2D2D2D 50%, #1A1A1A 75%, #0A0A0A 100%);
-            color: var(--text-primary);
+            color: #FFFFFF !important;
             line-height: 1.6;
+        }
+
+        /* FORCE WHITE TEXT ON ALL ELEMENTS */
+        * {
+            color: #FFFFFF !important;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #FFFFFF !important;
+        }
+
+        p, span, div, label, li {
+            color: #FFFFFF !important;
+        }
+
+        .hero-subtitle {
+            color: #F0F0F0 !important;
+        }
+
+        .stat-label {
+            color: #E5E5E5 !important;
+        }
+
+        .testimonial-text {
+            color: #F0F0F0 !important;
+        }
+
+        .faq-question {
+            color: #FFFFFF !important;
+        }
+
+        .pricing-description {
+            color: #E8E8E8 !important;
+        }
+
+        /* Keep special elements as designed */
+        .btn-primary {
+            color: #000000 !important;
+        }
+
+        .stat-number {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
         }
 
         /* Header */
