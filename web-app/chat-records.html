@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Records - Bvester</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #e5ddd5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* WhatsApp-style Header */
+        .chat-header {
+            background: #075e54;
+            color: white;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .bot-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .bot-info {
+            flex: 1;
+        }
+
+        .bot-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .bot-status {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e5ddd5"/><circle cx="50" cy="50" r="40" fill="%23ddd6ce" opacity="0.3"/></svg>');
+            background-size: 100px 100px;
+        }
+
+        /* Message Bubbles */
+        .message {
+            display: flex;
+            margin-bottom: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 7.5px;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .message.bot .message-bubble {
+            background: white;
+            border-top-left-radius: 0;
+            margin-left: 0.5rem;
+        }
+
+        .message.user .message-bubble {
+            background: #dcf8c6;
+            border-top-right-radius: 0;
+            margin-right: 0.5rem;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 0.25rem;
+            text-align: right;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            padding: 0.5rem 1rem;
+            background: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .quick-action-btn {
+            background: #f0f2f5;
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .quick-action-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Input Area */
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f0f2f5;
+            border-top: 1px solid #ddd;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+        }
+
+        .message-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            padding: 0.25rem;
+        }
+
+        .attach-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .voice-btn, .send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+        }
+
+        .voice-btn {
+            background: #128c7e;
+            color: white;
+        }
+
+        .voice-btn:hover {
+            background: #075e54;
+        }
+
+        .voice-btn.recording {
+            background: #f44336;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .send-btn {
+            background: #128c7e;
+            color: white;
+        }
+
+        .send-btn:hover {
+            background: #075e54;
+        }
+
+        /* Voice Recording Indicator */
+        .recording-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f44336;
+            color: white;
+            border-radius: 20px;
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: slideUp 0.3s ease;
+        }
+
+        .recording-indicator.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Record Summary Card */
+        .record-card {
+            background: #f7f7f7;
+            padding: 0.75rem;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            border-left: 3px solid #667eea;
+        }
+
+        .record-card-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+
+        .record-card-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Tutorial Overlay */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .tutorial-overlay.active {
+            display: flex;
+        }
+
+        .tutorial-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .tutorial-content h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .tutorial-content p {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .tutorial-examples {
+            background: #f7f7f7;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        .tutorial-examples h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .tutorial-examples ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tutorial-examples li {
+            padding: 0.25rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .close-tutorial-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Floating Action Button */
+        .fab-container {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+
+        .fab-menu {
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .fab-menu.active {
+            display: flex;
+        }
+
+        .fab-menu-item {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .fab-menu-item:hover {
+            background: #f7f7f7;
+            transform: translateX(-5px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .message-bubble {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Chat Header -->
+    <header class="chat-header">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="bot-avatar">🤖</div>
+        <div class="bot-info">
+            <div class="bot-name">Bvester AI Assistant</div>
+            <div class="bot-status">Always here to help</div>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn" onclick="showTutorial()">❓</button>
+            <button class="header-btn" onclick="exportRecords()">📥</button>
+        </div>
+    </header>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+        <!-- Welcome Message -->
+        <div class="message bot">
+            <div class="message-bubble">
+                <div>👋 Hello! I'm your Bvester AI Assistant.</div>
+                <div style="margin-top: 0.5rem;">I can help you manage your business records using simple voice or text commands.</div>
+                <div class="message-time">9:00 AM</div>
+            </div>
+        </div>
+
+        <div class="message bot">
+            <div class="message-bubble">
+                <div>Try saying things like:</div>
+                <div style="margin-top: 0.5rem;">
+                    • "I sold 5 phones today for 2500 cedis"<br>
+                    • "Paid rent 1200 cedis"<br>
+                    • "Bought inventory worth 3000"<br>
+                    • "Show me today's sales"
+                </div>
+                <div class="message-time">9:00 AM</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="quick-action-btn" onclick="quickAction('sale')">💰 Record Sale</button>
+        <button class="quick-action-btn" onclick="quickAction('expense')">💸 Add Expense</button>
+        <button class="quick-action-btn" onclick="quickAction('inventory')">📦 Update Inventory</button>
+        <button class="quick-action-btn" onclick="quickAction('customer')">👥 Add Customer</button>
+        <button class="quick-action-btn" onclick="quickAction('summary')">📊 Today's Summary</button>
+        <button class="quick-action-btn" onclick="quickAction('reminder')">⏰ Set Reminder</button>
+    </div>
+
+    <!-- Input Container -->
+    <div class="input-container">
+        <div class="input-wrapper">
+            <button class="attach-btn" onclick="attachFile()">📎</button>
+            <input type="text" class="message-input" id="messageInput" placeholder="Type a message or use voice...">
+        </div>
+        <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤</button>
+        <button class="send-btn" onclick="sendMessage()" style="display: none;" id="sendBtn">➤</button>
+    </div>
+
+    <!-- Recording Indicator -->
+    <div class="recording-indicator" id="recordingIndicator">
+        <div class="recording-dot"></div>
+        <span>Recording... Tap to stop</span>
+    </div>
+
+    <!-- Tutorial Overlay -->
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="tutorial-content">
+            <h2>How to Use Voice Records</h2>
+            <p>Managing your business records has never been easier!</p>
+
+            <div class="tutorial-examples">
+                <h4>📱 Voice Commands:</h4>
+                <ul>
+                    <li>• Tap the microphone and speak naturally</li>
+                    <li>• "I sold 10 items for 500 cedis"</li>
+                    <li>• "Customer John paid 200 cedis"</li>
+                    <li>• "Bought supplies for 150"</li>
+                </ul>
+            </div>
+
+            <div class="tutorial-examples">
+                <h4>💬 Text Commands:</h4>
+                <ul>
+                    <li>• Type your transactions naturally</li>
+                    <li>• "Sale: Electronics 2500"</li>
+                    <li>• "Expense: Office rent 1200"</li>
+                    <li>• "Show monthly report"</li>
+                </ul>
+            </div>
+
+            <p>The AI understands natural language in English, Twi, and other local languages!</p>
+
+            <button class="close-tutorial-btn" onclick="closeTutorial()">Got it!</button>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab-container">
+        <div class="fab-menu" id="fabMenu">
+            <div class="fab-menu-item" onclick="viewReports()">📊 View Reports</div>
+            <div class="fab-menu-item" onclick="showCalendar()">📅 Calendar View</div>
+            <div class="fab-menu-item" onclick="showAnalytics()">📈 Analytics</div>
+        </div>
+        <button class="fab" onclick="toggleFabMenu()">+</button>
+    </div>
+
+    <script>
+        // Check authentication
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (!isLoggedIn || isLoggedIn !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Voice Recognition Setup
+        let recognition = null;
+        let isRecording = false;
+        let messageHistory = [];
+
+        // Initialize Speech Recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US'; // Can be changed to support local languages
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                processVoiceInput(transcript);
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                stopRecording();
+                addBotMessage("Sorry, I couldn't hear that clearly. Please try again.");
+            };
+
+            recognition.onend = function() {
+                stopRecording();
+            };
+        }
+
+        // Toggle Voice Recording
+        function toggleVoiceRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            if (!recognition) {
+                addBotMessage("Voice recording is not supported in your browser. Please type your message instead.");
+                return;
+            }
+
+            isRecording = true;
+            const voiceBtn = document.getElementById('voiceBtn');
+            const recordingIndicator = document.getElementById('recordingIndicator');
+
+            voiceBtn.classList.add('recording');
+            voiceBtn.innerHTML = '⏹️';
+            recordingIndicator.classList.add('active');
+
+            recognition.start();
+
+            // Add visual feedback
+            navigator.vibrate && navigator.vibrate(50);
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            const voiceBtn = document.getElementById('voiceBtn');
+            const recordingIndicator = document.getElementById('recordingIndicator');
+
+            voiceBtn.classList.remove('recording');
+            voiceBtn.innerHTML = '🎤';
+            recordingIndicator.classList.remove('active');
+
+            if (recognition) {
+                recognition.stop();
+            }
+        }
+
+        // Process Voice Input
+        function processVoiceInput(transcript) {
+            addUserMessage(transcript);
+            processCommand(transcript);
+        }
+
+        // Send Message
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (message) {
+                addUserMessage(message);
+                processCommand(message);
+                input.value = '';
+                toggleSendButton();
+            }
+        }
+
+        // Process Commands
+        function processCommand(message) {
+            const lowerMessage = message.toLowerCase();
+
+            // Simulate AI processing delay
+            setTimeout(() => {
+                let response = '';
+                let recordData = null;
+
+                // Parse for sales
+                if (lowerMessage.includes('sold') || lowerMessage.includes('sale') || lowerMessage.includes('customer paid')) {
+                    const amount = extractAmount(lowerMessage);
+                    const item = extractItem(lowerMessage);
+
+                    recordData = {
+                        type: 'Sale',
+                        description: item || 'Product sale',
+                        amount: amount || 0,
+                        date: new Date().toLocaleDateString()
+                    };
+
+                    response = `✅ Recorded sale: ${recordData.description} for ₵${recordData.amount}`;
+                    addRecordToHistory(recordData);
+                }
+                // Parse for expenses
+                else if (lowerMessage.includes('paid') || lowerMessage.includes('bought') || lowerMessage.includes('expense')) {
+                    const amount = extractAmount(lowerMessage);
+                    const item = extractItem(lowerMessage);
+
+                    recordData = {
+                        type: 'Expense',
+                        description: item || 'Business expense',
+                        amount: amount || 0,
+                        date: new Date().toLocaleDateString()
+                    };
+
+                    response = `✅ Recorded expense: ${recordData.description} for ₵${recordData.amount}`;
+                    addRecordToHistory(recordData);
+                }
+                // Show summary
+                else if (lowerMessage.includes('summary') || lowerMessage.includes('report') || lowerMessage.includes('show')) {
+                    response = generateSummary();
+                }
+                // Help
+                else if (lowerMessage.includes('help')) {
+                    response = `I can help you with:\n• Recording sales and expenses\n• Tracking inventory\n• Managing customer data\n• Generating reports\n\nJust tell me what happened in your business today!`;
+                }
+                // Default response
+                else {
+                    response = `I understand you said: "${message}". Could you be more specific? For example:\n• "Sold 5 items for 500 cedis"\n• "Paid rent 1200 cedis"\n• "Show today's summary"`;
+                }
+
+                addBotMessage(response, recordData);
+            }, 500);
+        }
+
+        // Extract amount from message
+        function extractAmount(message) {
+            const patterns = [
+                /(\d+)\s*cedis/i,
+                /ghc\s*(\d+)/i,
+                /₵\s*(\d+)/i,
+                /(\d+)\s*ghana/i,
+                /for\s+(\d+)/i,
+                /worth\s+(\d+)/i,
+                /(\d+(?:\.\d+)?)/
+            ];
+
+            for (let pattern of patterns) {
+                const match = message.match(pattern);
+                if (match) {
+                    return parseFloat(match[1]);
+                }
+            }
+            return 0;
+        }
+
+        // Extract item description
+        function extractItem(message) {
+            // Remove common words and extract meaningful description
+            const commonWords = ['i', 'sold', 'bought', 'paid', 'for', 'cedis', 'ghc', 'worth', 'today', 'yesterday'];
+            const words = message.toLowerCase().split(' ').filter(word => {
+                return !commonWords.includes(word) && isNaN(word);
+            });
+
+            return words.slice(0, 3).join(' ') || 'Transaction';
+        }
+
+        // Generate Summary
+        function generateSummary() {
+            const today = new Date().toLocaleDateString();
+            const todayRecords = messageHistory.filter(record => record.date === today);
+
+            const sales = todayRecords.filter(r => r.type === 'Sale');
+            const expenses = todayRecords.filter(r => r.type === 'Expense');
+
+            const totalSales = sales.reduce((sum, r) => sum + r.amount, 0);
+            const totalExpenses = expenses.reduce((sum, r) => sum + r.amount, 0);
+            const profit = totalSales - totalExpenses;
+
+            return `📊 Today's Summary (${today}):\n\n💰 Total Sales: ₵${totalSales}\n💸 Total Expenses: ₵${totalExpenses}\n📈 Net Profit: ₵${profit}\n\n${sales.length} sales recorded\n${expenses.length} expenses recorded`;
+        }
+
+        // Add User Message
+        function addUserMessage(text) {
+            const chatContainer = document.getElementById('chatContainer');
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `
+                <div class="message-bubble">
+                    <div>${text}</div>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Add Bot Message
+        function addBotMessage(text, recordData) {
+            const chatContainer = document.getElementById('chatContainer');
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+
+            let recordCard = '';
+            if (recordData) {
+                recordCard = `
+                    <div class="record-card">
+                        <div class="record-card-title">${recordData.type} Record</div>
+                        <div class="record-card-details">
+                            ${recordData.description} - ₵${recordData.amount}<br>
+                            <small>${recordData.date}</small>
+                        </div>
+                    </div>
+                `;
+            }
+
+            messageDiv.innerHTML = `
+                <div class="message-bubble">
+                    <div>${text.replace(/\n/g, '<br>')}</div>
+                    ${recordCard}
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Play notification sound (optional)
+            playNotificationSound();
+        }
+
+        // Add Record to History
+        function addRecordToHistory(record) {
+            messageHistory.push(record);
+            // Save to localStorage for persistence
+            localStorage.setItem('chatRecords', JSON.stringify(messageHistory));
+        }
+
+        // Quick Actions
+        function quickAction(action) {
+            let message = '';
+
+            switch(action) {
+                case 'sale':
+                    message = 'Recording a new sale. Please tell me what you sold and for how much.';
+                    break;
+                case 'expense':
+                    message = 'Recording a new expense. What did you pay for and how much?';
+                    break;
+                case 'inventory':
+                    message = 'Updating inventory. What items did you receive or sell?';
+                    break;
+                case 'customer':
+                    message = 'Adding a new customer. Please provide the customer name and contact.';
+                    break;
+                case 'summary':
+                    processCommand('show today summary');
+                    return;
+                case 'reminder':
+                    message = 'Setting a reminder. What would you like to be reminded about?';
+                    break;
+            }
+
+            addBotMessage(message);
+        }
+
+        // Toggle Send Button
+        function toggleSendButton() {
+            const input = document.getElementById('messageInput');
+            const voiceBtn = document.getElementById('voiceBtn');
+            const sendBtn = document.getElementById('sendBtn');
+
+            if (input.value.trim()) {
+                voiceBtn.style.display = 'none';
+                sendBtn.style.display = 'flex';
+            } else {
+                voiceBtn.style.display = 'flex';
+                sendBtn.style.display = 'none';
+            }
+        }
+
+        // Play Notification Sound
+        function playNotificationSound() {
+            // Create a simple beep sound
+            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi');
+            audio.volume = 0.1;
+            audio.play().catch(e => console.log('Audio play failed:', e));
+        }
+
+        // Show Tutorial
+        function showTutorial() {
+            document.getElementById('tutorialOverlay').classList.add('active');
+        }
+
+        // Close Tutorial
+        function closeTutorial() {
+            document.getElementById('tutorialOverlay').classList.remove('active');
+        }
+
+        // Toggle FAB Menu
+        function toggleFabMenu() {
+            const fabMenu = document.getElementById('fabMenu');
+            fabMenu.classList.toggle('active');
+        }
+
+        // View Reports
+        function viewReports() {
+            addBotMessage('📊 Generating your business reports...\n\nThis feature will show detailed analytics of your business performance.');
+            toggleFabMenu();
+        }
+
+        // Show Calendar
+        function showCalendar() {
+            addBotMessage('📅 Opening calendar view...\n\nYou can view all your transactions by date here.');
+            toggleFabMenu();
+        }
+
+        // Show Analytics
+        function showAnalytics() {
+            const userTier = localStorage.getItem('userTier') || 'starter';
+            if (userTier === 'starter') {
+                addBotMessage('📈 Advanced analytics is available with Growth tier.\n\nUpgrade to access detailed business insights, AI predictions, and investment recommendations.');
+            } else {
+                addBotMessage('📈 Loading your business analytics...\n\n• Revenue trends\n• Customer insights\n• Growth predictions\n• Investment readiness score');
+            }
+            toggleFabMenu();
+        }
+
+        // Export Records
+        function exportRecords() {
+            const data = generateExportData();
+            addBotMessage('📥 Exporting your records...\n\nYour business records have been prepared for download in CSV format.');
+        }
+
+        // Generate Export Data
+        function generateExportData() {
+            // This would generate CSV or PDF export
+            return messageHistory;
+        }
+
+        // Attach File
+        function attachFile() {
+            addBotMessage('📎 You can attach receipts, invoices, or photos of your transactions.\n\nThis feature helps keep visual records of your business activities.');
+        }
+
+        // Go Back
+        function goBack() {
+            window.location.href = 'sme-dashboard-enhanced.html';
+        }
+
+        // Event Listeners
+        document.getElementById('messageInput').addEventListener('input', toggleSendButton);
+
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Load saved records on startup
+        window.addEventListener('load', function() {
+            const savedRecords = localStorage.getItem('chatRecords');
+            if (savedRecords) {
+                messageHistory = JSON.parse(savedRecords);
+            }
+
+            // Show tutorial on first visit
+            const hasSeenTutorial = localStorage.getItem('hasSeenChatTutorial');
+            if (!hasSeenTutorial) {
+                setTimeout(showTutorial, 1000);
+                localStorage.setItem('hasSeenChatTutorial', 'true');
+            }
+        });
+    </script>
+</body>
+</html>

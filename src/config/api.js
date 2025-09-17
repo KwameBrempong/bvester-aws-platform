@@ -10,11 +10,11 @@ const API_CONFIG = {
     timeout: 10000,
   },
   production: {
-    baseURL: process.env.EXPO_PUBLIC_API_URL || 'https://us-central1-bizinvest-hub-prod.cloudfunctions.net/api',
+    baseURL: process.env.EXPO_PUBLIC_API_URL || 'https://api.bvester.com',
     timeout: 15000,
   },
   staging: {
-    baseURL: process.env.EXPO_PUBLIC_STAGING_API_URL || 'https://us-central1-bizinvest-hub-prod.cloudfunctions.net/api',
+    baseURL: process.env.EXPO_PUBLIC_STAGING_API_URL || 'https://staging-api.bvester.com',
     timeout: 12000,
   }
 };
@@ -181,6 +181,34 @@ export const API_ENDPOINTS = {
     MESSAGES: (conversationId) => `/api/messaging/conversations/${conversationId}/messages`,
     SEND_MESSAGE: '/api/messaging/send',
     MARK_READ: (messageId) => `/api/messaging/messages/${messageId}/read`,
+  },
+
+  // Chat Records (MVP Feature)
+  CHAT_RECORDS: {
+    PROCESS: '/api/chat-records/process',
+    HISTORY: '/api/chat-records/history',
+    SUMMARY: '/api/chat-records/summary',
+    SUGGESTIONS: '/api/chat-records/suggestions',
+  },
+
+  // Business Health Assessment (MVP Feature)
+  BUSINESS_HEALTH: {
+    QUESTIONS: '/api/business-health/questions',
+    SUBMIT: '/api/business-health/submit',
+    HISTORY: '/api/business-health/history',
+    REPORT: (assessmentId) => `/api/business-health/report/${assessmentId}`,
+  },
+
+  // DynamoDB Direct Access
+  DYNAMODB: {
+    CREATE: (tableName) => `/api/dynamodb/${tableName}`,
+    GET: (tableName, id) => `/api/dynamodb/${tableName}/${id}`,
+    QUERY: (tableName) => `/api/dynamodb/${tableName}`,
+    UPDATE: (tableName, id) => `/api/dynamodb/${tableName}/${id}`,
+    DELETE: (tableName, id) => `/api/dynamodb/${tableName}/${id}`,
+    BATCH: '/api/dynamodb/batch',
+    SEARCH: (tableName) => `/api/dynamodb/search/${tableName}`,
+    ANALYTICS: (userId) => `/api/dynamodb/analytics/user/${userId}/stats`,
   },
 };
 

@@ -14,6 +14,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const SimpleHomepage = ({ navigation }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const isMobile = screenWidth < 768;
   const styles = getStyles(isMobile);
 
@@ -29,51 +30,62 @@ const SimpleHomepage = ({ navigation }) => {
             <Text style={styles.logoText}>Bvester</Text>
           </TouchableOpacity>
           
-          <View style={styles.navMenu}>
-            <TouchableOpacity 
-              style={styles.navItem}
-              onPress={() => {
-                console.log('Discover pressed - navigating to About');
-                navigation.navigate('About');
-              }}
-            >
-              <Text style={styles.navText}>Discover</Text>
-            </TouchableOpacity>
-            
-            <View style={styles.dropdownContainer}>
-              <TouchableOpacity 
+          {!isMobile && (
+            <View style={styles.navMenu}>
+              <TouchableOpacity
                 style={styles.navItem}
-                onPress={() => setShowDropdown(!showDropdown)}
+                onPress={() => {
+                  console.log('Discover pressed - navigating to About');
+                  navigation.navigate('About');
+                }}
               >
-                <Text style={styles.navText}>For Investors ▼</Text>
+                <Text style={styles.navText}>Discover</Text>
               </TouchableOpacity>
-              
-              {showDropdown && (
-                <View style={styles.dropdown}>
-                  <TouchableOpacity 
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      console.log('Investment Opportunities pressed');
-                      setShowDropdown(false);
-                      navigation.navigate('About'); // Navigate to existing screen for now
-                    }}
-                  >
-                    <Text style={styles.dropdownText}>Investment Opportunities</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      console.log('Portfolio Management pressed');
-                      setShowDropdown(false);
-                      navigation.navigate('About'); // Navigate to existing screen for now
-                    }}
-                  >
-                    <Text style={styles.dropdownText}>Portfolio Management</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+
+              <View style={styles.dropdownContainer}>
+                <TouchableOpacity
+                  style={styles.navItem}
+                  onPress={() => setShowDropdown(!showDropdown)}
+                >
+                  <Text style={styles.navText}>For Investors ▼</Text>
+                </TouchableOpacity>
+
+                {showDropdown && (
+                  <View style={styles.dropdown}>
+                    <TouchableOpacity
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        console.log('Investment Opportunities pressed');
+                        setShowDropdown(false);
+                        navigation.navigate('About'); // Navigate to existing screen for now
+                      }}
+                    >
+                      <Text style={styles.dropdownText}>Investment Opportunities</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        console.log('Portfolio Management pressed');
+                        setShowDropdown(false);
+                        navigation.navigate('About'); // Navigate to existing screen for now
+                      }}
+                    >
+                      <Text style={styles.dropdownText}>Portfolio Management</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
             </View>
-          </View>
+          )}
+
+          {isMobile && (
+            <TouchableOpacity
+              style={styles.mobileMenuButton}
+              onPress={() => setShowMobileMenu(!showMobileMenu)}
+            >
+              <Text style={styles.hamburgerIcon}>☰</Text>
+            </TouchableOpacity>
+          )}
 
           <View style={styles.navActions}>
             <TouchableOpacity 
@@ -97,6 +109,68 @@ const SimpleHomepage = ({ navigation }) => {
           </View>
         </View>
       </View>
+
+      {/* Mobile Menu Overlay */}
+      {isMobile && showMobileMenu && (
+        <View style={styles.mobileMenuOverlay}>
+          <View style={styles.mobileMenuContent}>
+            <TouchableOpacity
+              style={styles.mobileMenuItem}
+              onPress={() => {
+                console.log('Mobile: Discover pressed - navigating to About');
+                setShowMobileMenu(false);
+                navigation.navigate('About');
+              }}
+            >
+              <Text style={styles.mobileMenuText}>Discover</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.mobileMenuItem}
+              onPress={() => {
+                console.log('Mobile: Investment Opportunities pressed');
+                setShowMobileMenu(false);
+                navigation.navigate('About');
+              }}
+            >
+              <Text style={styles.mobileMenuText}>Investment Opportunities</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.mobileMenuItem}
+              onPress={() => {
+                console.log('Mobile: Portfolio Management pressed');
+                setShowMobileMenu(false);
+                navigation.navigate('About');
+              }}
+            >
+              <Text style={styles.mobileMenuText}>Portfolio Management</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.mobileMenuItem}
+              onPress={() => {
+                console.log('Mobile: Sign In pressed');
+                setShowMobileMenu(false);
+                navigation.navigate('Login');
+              }}
+            >
+              <Text style={styles.mobileMenuText}>Sign In</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.mobileMenuItem, styles.mobileSignupButton]}
+              onPress={() => {
+                console.log('Mobile: Sign up pressed');
+                setShowMobileMenu(false);
+                navigation.navigate('Register');
+              }}
+            >
+              <Text style={styles.mobileSignupText}>Sign up</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
 
       {/* Hero Section */}
       <View style={styles.heroSection}>
@@ -398,6 +472,59 @@ const getStyles = (isMobile) => StyleSheet.create({
   footerCopyright: {
     fontSize: 14,
     color: '#6b7280',
+    textAlign: 'center',
+  },
+
+  // Mobile Menu Styles
+  mobileMenuButton: {
+    padding: 8,
+  },
+  hamburgerIcon: {
+    fontSize: 24,
+    color: '#374151',
+  },
+  mobileMenuOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1000,
+  },
+  mobileMenuContent: {
+    backgroundColor: '#ffffff',
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    marginTop: 60,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  mobileMenuItem: {
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f3f4f6',
+  },
+  mobileMenuText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#374151',
+  },
+  mobileSignupButton: {
+    backgroundColor: '#000000',
+    borderRadius: 6,
+    marginTop: 8,
+    borderBottomWidth: 0,
+  },
+  mobileSignupText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#ffffff',
     textAlign: 'center',
   },
 });

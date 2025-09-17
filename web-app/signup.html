@@ -111,8 +111,8 @@
             
             // Demo mode - simulate successful registration
             if (formData.name && formData.email && formData.password.length >= 6 && formData.userType) {
-                messageDiv.innerHTML = '<div class="success">Account created successfully! Redirecting to login...</div>';
-                
+                messageDiv.innerHTML = '<div class="success">Account created successfully! Setting up your dashboard...</div>';
+
                 // Store the new account info for demo purposes
                 const newAccount = {
                     name: formData.name,
@@ -120,12 +120,32 @@
                     userType: formData.userType,
                     password: formData.password
                 };
-                
+
                 // Store in localStorage for demo
                 localStorage.setItem('newDemoAccount', JSON.stringify(newAccount));
-                
+
+                // Automatically log the user in
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userType', formData.userType);
+                localStorage.setItem('userName', formData.name);
+                localStorage.setItem('userEmail', formData.email);
+                localStorage.setItem('userTier', 'starter'); // New users start with free tier
+
+                // Redirect to appropriate dashboard based on user type
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    switch(formData.userType) {
+                        case 'sme':
+                            window.location.href = 'sme-dashboard.html';
+                            break;
+                        case 'investor':
+                            window.location.href = 'investor-dashboard.html';
+                            break;
+                        case 'premium':
+                            window.location.href = 'premium-dashboard.html';
+                            break;
+                        default:
+                            window.location.href = 'sme-dashboard.html';
+                    }
                 }, 2000);
             } else {
                 let errorMsg = 'Please fill all fields correctly.';

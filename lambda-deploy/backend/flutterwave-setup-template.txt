@@ -1,0 +1,28 @@
+# 🌍 FLUTTERWAVE PRODUCTION CREDENTIALS
+# Get these after completing business verification
+
+FLUTTERWAVE_SECRET_KEY=FLWSECK-your_live_secret_key_here
+FLUTTERWAVE_PUBLIC_KEY=FLWPUBK-your_live_public_key_here
+
+# Instructions:
+# 1. Complete Flutterwave business verification
+# 2. Go to Settings → API Keys  
+# 3. Switch to "Live" environment
+# 4. Copy Secret Key (starts with FLWSECK-)
+# 5. Copy Public Key (starts with FLWPUBK-)
+
+# Verification Timeline: 2-7 business days
+# Required Documents:
+# - Certificate of incorporation
+# - Tax clearance certificate  
+# - Bank statement (3 months)
+# - Director identification
+# - Proof of business address
+
+# Supported Countries:
+# - Nigeria (NGN) - Cards, Bank Transfer, USSD, Mobile Money
+# - Kenya (KES) - M-Pesa, Cards, Bank Transfer
+# - Ghana (GHS) - Mobile Money, Cards, Bank Transfer  
+# - South Africa (ZAR) - Cards, EFT, Instant Payments
+# - Uganda (UGX) - Mobile Money, Cards
+# - Rwanda (RWF) - Mobile Money, Cards

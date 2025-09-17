@@ -19,6 +19,9 @@ import AnalysisScreen from '../screens/sme/AnalysisScreen';
 import InvestmentSearchScreen from '../screens/investor/InvestmentSearchScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import AddTransactionScreen from '../screens/records/AddTransactionScreen';
+import ChatRecordsScreen from '../screens/records/ChatRecordsScreen';
+import BusinessHealthAssessmentScreen from '../screens/assessment/BusinessHealthAssessmentScreen';
+import SMEOnboardingScreen from '../screens/onboarding/SMEOnboardingScreen';
 import BusinessListingScreen from '../screens/sme/BusinessListingScreen';
 import BusinessSettingsScreen from '../screens/business/BusinessSettingsScreen';
 
@@ -50,6 +53,7 @@ function AuthStack() {
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="SMEOnboarding" component={SMEOnboardingScreen} />
     </Stack.Navigator>
   );
 }
@@ -63,6 +67,8 @@ function SMEStackNavigator() {
     >
       <Stack.Screen name="SMETabs" component={SMETabNavigator} />
       <Stack.Screen name="AddTransaction" component={AddTransactionScreen} />
+      <Stack.Screen name="ChatRecords" component={ChatRecordsScreen} />
+      <Stack.Screen name="BusinessHealthAssessment" component={BusinessHealthAssessmentScreen} />
       <Stack.Screen name="BusinessListing" component={BusinessListingScreen} />
       <Stack.Screen name="BusinessSettings" component={BusinessSettingsScreen} />
       <Stack.Screen name="ConversationsList" component={ConversationsListScreen} />
@@ -137,6 +143,8 @@ function InvestorStackNavigator() {
       <Stack.Screen name="BusinessDetail" component={BusinessDetailScreen} />
       <Stack.Screen name="InvestmentHistory" component={InvestmentHistoryScreen} />
       <Stack.Screen name="InvestorProfile" component={InvestorProfileScreen} />
+      <Stack.Screen name="ChatRecords" component={ChatRecordsScreen} />
+      <Stack.Screen name="BusinessHealthAssessment" component={BusinessHealthAssessmentScreen} />
       <Stack.Screen name="BusinessSettings" component={BusinessSettingsScreen} />
       <Stack.Screen name="ConversationsList" component={ConversationsListScreen} />
       <Stack.Screen name="Messaging" component={MessagingScreen} />

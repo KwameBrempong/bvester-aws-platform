@@ -14,9 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import AfricaInsightsWidget from '../../components/AfricaInsights/AfricaInsightsWidget';
-import { userDataService } from '../../services/firebase/UserDataService';
-import { transactionService, businessService } from '../../services/firebase/FirebaseService';
-import { cmsService } from '../../services/firebase/CMSService';
+import { dynamoDBService } from '../../services/aws/DynamoDBService';
 import { 
   Card, 
   Button, 
@@ -79,25 +77,21 @@ export default function DashboardScreen({ navigation }) {
 
       // Load all user data in parallel
       const [
-        completeProfile,
+        userStats,
         transactions,
         business,
-        featuredTools,
-        featuredResources,
         notifications
       ] = await Promise.all([
-        userDataService.getCompleteUserProfile(user.uid),
-        transactionService.getUserTransactions(user.uid, { limit: 10 }),
-        businessService.getUserBusiness(user.uid),
-        cmsService.getFeaturedContent('business_tool'),
-        cmsService.getFeaturedContent('growth_resource'),
-        userDataService.getUserNotifications(user.uid, { unreadOnly: true, limit: 5 })
+        dynamoDBService.getUserStats(user.uid),
+        dynamoDBService.getUserTransactions(user.uid, { limit: 10 }),
+        dynamoDBService.getUserBusiness(user.uid),
+        dynamoDBService.getUserNotifications(user.uid, { unreadOnly: true, limit: 5 })
       ]);
 
-      setUserStats(completeProfile.stats);
+      setUserStats(userStats);
       setBusinessData(business);
       setRecentTransactions(transactions);
-      setFeaturedContent([...featuredTools.slice(0, 2), ...featuredResources.slice(0, 2)]);
+      setFeaturedContent([]); // TODO: Implement featured content with AWS
       setUnreadNotifications(notifications.length);
 
       console.log('Dashboard data loaded successfully');
@@ -110,14 +104,14 @@ export default function DashboardScreen({ navigation }) {
 
   const setupRealTimeUpdates = () => {
     // Set up real-time listeners for transactions and notifications
-    const unsubscribeTransactions = transactionService.subscribeToUserTransactions(
+    const unsubscribeTransactions = dynamoDBService.subscribeToUserTransactions(
       user.uid,
       (updatedTransactions) => {
         setRecentTransactions(updatedTransactions.slice(0, 10));
       }
     );
 
-    const unsubscribeNotifications = userDataService.subscribeToUserNotifications(
+    const unsubscribeNotifications = dynamoDBService.subscribeToUserNotifications(
       user.uid,
       (notifications) => {
         setUnreadNotifications(notifications.length);
@@ -255,13 +249,13 @@ export default function DashboardScreen({ navigation }) {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.actionGrid}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.modernActionCard}
-            onPress={() => navigation.navigate('AddTransaction')}
+            onPress={() => navigation.navigate('ChatRecords')}
           >
             <LinearGradient colors={['#667eea', '#764ba2']} style={styles.actionGradient}>
-              <Ionicons name="add-circle-outline" size={28} color="white" />
-              <Text style={styles.actionText}>Add Record</Text>
+              <Ionicons name="chatbubbles-outline" size={28} color="white" />
+              <Text style={styles.actionText}>Chat Records</Text>
             </LinearGradient>
           </TouchableOpacity>
 
@@ -285,13 +279,13 @@ export default function DashboardScreen({ navigation }) {
             </LinearGradient>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.modernActionCard}
-            onPress={() => navigation.navigate('Analysis')}
+            onPress={() => navigation.navigate('BusinessHealthAssessment')}
           >
             <LinearGradient colors={['#9f7aea', '#805ad5']} style={styles.actionGradient}>
-              <Ionicons name="analytics-outline" size={28} color="white" />
-              <Text style={styles.actionText}>Analytics</Text>
+              <Ionicons name="fitness-outline" size={28} color="white" />
+              <Text style={styles.actionText}>Health Check</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>

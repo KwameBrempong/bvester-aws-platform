@@ -180,21 +180,33 @@
 
     <script>
         // Check if user is logged in
-        const token = localStorage.getItem('token');
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
         const userName = localStorage.getItem('userName');
-        
-        if (!token) {
+        const userType = localStorage.getItem('userType');
+
+        if (!isLoggedIn || isLoggedIn !== 'true') {
             window.location.href = 'login.html';
         }
-        
+
+        // Verify this is the right dashboard for the user type
+        if (userType && userType !== 'investor') {
+            // Redirect to appropriate dashboard
+            if (userType === 'sme') {
+                window.location.href = 'sme-dashboard.html';
+            } else if (userType === 'premium') {
+                window.location.href = 'premium-dashboard.html';
+            }
+        }
+
         if (userName) {
             document.getElementById('userName').textContent = `Welcome, ${userName}!`;
         }
-        
+
         function logout() {
-            localStorage.removeItem('token');
+            localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userType');
             localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
             window.location.href = 'index.html';
         }
     </script>

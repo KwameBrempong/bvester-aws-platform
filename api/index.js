@@ -6,7 +6,10 @@ const compression = require('compression');
 const morgan = require('morgan');
 
 // Import routes
-const authRoutes = require('../backend/api/routes/authRoutes');
+const authRoutes = require('../backend/api/routes/authRoutesAWS');
+const dynamodbRoutes = require('../backend/api/routes/dynamodbRoutes');
+const chatRecordsRoutes = require('../backend/api/routes/chatRecordsRoutes');
+const businessHealthRoutes = require('../backend/api/routes/businessHealthRoutes');
 const investmentRoutes = require('../backend/api/routes/investmentRoutes');
 const paymentRoutes = require('../backend/api/routes/paymentRoutes');
 const kycRoutes = require('../backend/api/routes/kycRoutes');
@@ -19,8 +22,8 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.gstatic.com", "https://apis.google.com"],
-      connectSrc: ["'self'", "https://bizinvest-hub-prod.firebaseapp.com", "https://identitytoolkit.googleapis.com", "https://firestore.googleapis.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      connectSrc: ["'self'", "https://api.bvester.com", "https://bvester.com"],
       imgSrc: ["'self'", "data:", "https:"],
       fontSrc: ["'self'", "data:"],
       objectSrc: ["'none'"],
@@ -34,11 +37,12 @@ app.use(helmet({
 // CORS configuration
 const corsOptions = {
   origin: [
-    'https://bizinvest-hub-prod.web.app',
-    'https://bizinvest-hub-prod.firebaseapp.com',
-    'https://bvester.vercel.app',
+    'https://bvester.com',
+    'https://www.bvester.com',
+    'https://api.bvester.com',
     'http://localhost:3000',
-    'http://localhost:5000'
+    'http://localhost:5000',
+    'http://localhost:8081'
   ],
   credentials: true,
   optionsSuccessStatus: 200
@@ -62,6 +66,9 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/dynamodb', dynamodbRoutes);
+app.use('/api/chat-records', chatRecordsRoutes);
+app.use('/api/business-health', businessHealthRoutes);
 app.use('/api/investments', investmentRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/kyc', kycRoutes);

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester - African Investment Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background-color: #ffffff;
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            margin-right: 8px;
+        }
+
+        /* Desktop Navigation - hidden on mobile */
+        .nav-menu {
+            display: none;
+        }
+
+        /* Mobile hamburger button */
+        .mobile-menu-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #374151;
+            cursor: pointer;
+            padding: 8px;
+            display: block;
+        }
+
+        /* Desktop nav actions - hidden on mobile */
+        .nav-actions {
+            display: none;
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none;
+        }
+
+        .mobile-menu-overlay.show {
+            display: block;
+        }
+
+        .mobile-menu-content {
+            background-color: #ffffff;
+            padding: 24px;
+            margin: 80px 16px 0;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-menu-item {
+            display: block;
+            width: 100%;
+            padding: 16px 0;
+            border: none;
+            background: none;
+            color: #374151;
+            font-size: 18px;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .mobile-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-menu-item:active {
+            background-color: #f9fafb;
+        }
+
+        .mobile-login-button {
+            background-color: transparent;
+            color: #2E7D8F;
+            border: 1px solid #2E7D8F;
+            border-radius: 6px;
+            margin-top: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .mobile-signup-button {
+            background-color: #2E7D8F;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            margin-top: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 60px 20px;
+            text-align: center;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .hero-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .investor-button {
+            background-color: #2E7D8F;
+            color: #ffffff;
+        }
+
+        .funding-button {
+            background-color: transparent;
+            border: 2px solid #2E7D8F;
+            color: #2E7D8F;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .nav-container {
+                padding: 16px 24px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .nav-menu {
+                display: flex;
+                align-items: center;
+                flex: 1;
+                justify-content: center;
+            }
+
+            .nav-item {
+                padding: 8px 16px;
+                margin: 0 8px;
+                color: #374151;
+                font-size: 15px;
+                font-weight: 500;
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .nav-item:hover {
+                color: #2E7D8F;
+            }
+
+            .mobile-menu-button {
+                display: none;
+            }
+
+            .nav-actions {
+                display: flex;
+                align-items: center;
+            }
+
+            .login-button {
+                background: none;
+                border: none;
+                color: #374151;
+                font-size: 15px;
+                font-weight: 500;
+                margin-right: 12px;
+                padding: 8px 16px;
+                cursor: pointer;
+            }
+
+            .login-button:hover {
+                color: #2E7D8F;
+            }
+
+            .signup-button {
+                background-color: #000000;
+                color: #ffffff;
+                padding: 10px 20px;
+                border-radius: 6px;
+                border: none;
+                font-size: 15px;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            .signup-button:hover {
+                background-color: #333333;
+            }
+
+            .hero-section {
+                padding: 80px 24px;
+            }
+
+            .hero-title {
+                font-size: 48px;
+                margin-bottom: 24px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+                margin-bottom: 40px;
+            }
+
+            .hero-buttons {
+                flex-direction: row;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .hero-button {
+                width: auto;
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="logo-icon">💎</span>
+                Bvester
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="nav-menu">
+                <button class="nav-item" onclick="navigateTo('about')">Discover</button>
+                <button class="nav-item" onclick="navigateTo('opportunities')">For Investors</button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-button" onclick="toggleMobileMenu()" id="mobileMenuBtn">
+                ☰
+            </button>
+
+            <!-- Desktop Actions -->
+            <div class="nav-actions">
+                <button class="login-button" onclick="navigateTo('login')">Sign In</button>
+                <button class="signup-button" onclick="navigateTo('register')">Sign up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="mobile-menu-item" onclick="navigateTo('about'); closeMobileMenu();">
+                Discover
+            </button>
+            <button class="mobile-menu-item" onclick="navigateTo('opportunities'); closeMobileMenu();">
+                Investment Opportunities
+            </button>
+            <button class="mobile-menu-item" onclick="navigateTo('portfolio'); closeMobileMenu();">
+                Portfolio Management
+            </button>
+            <button class="mobile-menu-item mobile-login-button" onclick="navigateTo('login'); closeMobileMenu();">
+                Sign In
+            </button>
+            <button class="mobile-menu-item mobile-signup-button" onclick="navigateTo('register'); closeMobileMenu();">
+                Sign up
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <main class="hero-section">
+        <h1 class="hero-title">Where African Innovation Meets Global Investment</h1>
+        <p class="hero-subtitle">Connect with opportunities, grow your business, and invest in Africa's future.</p>
+
+        <div class="hero-buttons">
+            <button class="hero-button investor-button" onclick="navigateTo('register')">
+                I Want to Invest in Africa
+            </button>
+            <button class="hero-button funding-button" onclick="navigateTo('register')">
+                I Need Funding for My Business
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 Bvester. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Navigation function
+        function navigateTo(page) {
+            console.log('Navigating to:', page);
+
+            // Provide user feedback
+            switch(page) {
+                case 'login':
+                    alert('🔐 Login Page\n\nThis would redirect to the authentication system.');
+                    break;
+                case 'register':
+                    alert('📝 Registration Page\n\nThis would redirect to the signup form.');
+                    break;
+                case 'about':
+                    alert('ℹ️ About Bvester\n\nLearn more about our platform connecting African SMEs with global investors.');
+                    break;
+                case 'opportunities':
+                    alert('💰 Investment Opportunities\n\nBrowse available investment opportunities in African businesses.');
+                    break;
+                case 'portfolio':
+                    alert('📊 Portfolio Management\n\nManage your investment portfolio and track performance.');
+                    break;
+                default:
+                    alert('🔄 Navigation\n\nRedirecting to: ' + page);
+            }
+        }
+
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            console.log('Toggle mobile menu clicked');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            if (overlay.classList.contains('show')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        }
+
+        function openMobileMenu() {
+            console.log('Opening mobile menu');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            overlay.classList.add('show');
+            btn.innerHTML = '✕';
+
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            console.log('Closing mobile menu');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            overlay.classList.remove('show');
+            btn.innerHTML = '☰';
+
+            // Restore body scroll
+            document.body.style.overflow = '';
+        }
+
+        // Close menu when clicking overlay background
+        document.getElementById('mobileMenuOverlay').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeMobileMenu();
+            }
+        });
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(closeMobileMenu, 100);
+        });
+
+        // Debug: Log when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Bvester mobile site loaded successfully');
+        });
+    </script>
+</body>
+</html>

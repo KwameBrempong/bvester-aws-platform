@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Dashboard - Bvester</title>
+    <link rel="stylesheet" href="css/global-design-system.css">
+    <style>
+        /* Core styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-black);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--rich-black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-gold);
+            color: var(--primary-black);
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--rich-black);
+            border-right: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 2rem 1rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item a:hover,
+        .nav-item a.active {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary-gold);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--rich-black);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .card h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: var(--radius-lg);
+            border: 2px dashed rgba(255, 215, 0, 0.2);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--gold-gradient);
+            color: var(--primary-black);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Stats */
+        .stat-card {
+            background: var(--rich-black);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tables */
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .records-table th {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary-gold);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-gold);
+        }
+
+        .records-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.05);
+            color: var(--text-primary);
+        }
+
+        .records-table tbody tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 215, 0, 0.1);
+            border-top-color: var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold-gradient);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        /* Onboarding Steps */
+        .onboarding-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: var(--radius-lg);
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--rich-black);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .step.completed .step-number {
+            background: var(--primary-gold);
+            color: var(--primary-black);
+        }
+
+        .step-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+                gap: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
+
+            .nav-item {
+                margin: 0;
+                flex-shrink: 0;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Bvester</h1>
+            <span>Business Center</span>
+        </div>
+        <div class="user-info">
+            <span id="userName">Welcome!</span>
+            <span id="businessName" style="color: var(--primary-gold);"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#overview" class="nav-link active" onclick="showSection('overview')">
+                            📊 Overview
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#business" class="nav-link" onclick="showSection('business')">
+                            🏢 Business Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#records" class="nav-link" onclick="showSection('records')">
+                            📝 Records
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#financial" class="nav-link" onclick="showSection('financial')">
+                            💰 Financials
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#investors" class="nav-link" onclick="showSection('investors')">
+                            👥 Investors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#assessment" class="nav-link" onclick="showSection('assessment')">
+                            📈 Assessment
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section active">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Welcome to Your Business Dashboard</h2>
+
+                <!-- Onboarding for new users -->
+                <div id="onboardingSection" style="display: none;">
+                    <div class="card">
+                        <h3>🚀 Let's Get Started!</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            Complete these steps to unlock the full potential of Bvester for your business
+                        </p>
+                        <div class="onboarding-steps">
+                            <div class="step" id="step1">
+                                <div class="step-number">1</div>
+                                <div class="step-title">Complete Profile</div>
+                            </div>
+                            <div class="step" id="step2">
+                                <div class="step-number">2</div>
+                                <div class="step-title">Add Records</div>
+                            </div>
+                            <div class="step" id="step3">
+                                <div class="step-number">3</div>
+                                <div class="step-title">Financial Info</div>
+                            </div>
+                            <div class="step" id="step4">
+                                <div class="step-number">4</div>
+                                <div class="step-title">Get Assessment</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <button class="btn btn-primary" onclick="startOnboarding()">
+                                Start Setup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Stats - Initially empty -->
+                <div id="dashboardStats" class="dashboard-grid">
+                    <!-- Stats will be populated dynamically -->
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <h3>📋 Recent Activity</h3>
+                    <div id="recentActivity">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <h3>No Activity Yet</h3>
+                            <p>Start by completing your business profile to begin tracking your business activities</p>
+                            <button class="btn btn-primary" onclick="showSection('business')">
+                                Complete Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Business Profile Section -->
+            <section id="business" class="content-section">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Business Profile</h2>
+
+                <div class="card">
+                    <h3>Business Information</h3>
+                    <form id="businessProfileForm">
+                        <div style="display: grid; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                    Business Name *
+                                </label>
+                                <input type="text" id="bizName" required style="width: 100%; padding: 0.75rem; background: var(--soft-black); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: var(--radius-md); color: var(--text-primary);">
+                            </div>
+
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                    Industry *
+                                </label>
+                                <select id="bizIndustry" required style="width: 100%; padding: 0.75rem; background: var(--soft-black); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: var(--radius-md); color: var(--text-primary);">
+                                    <option value="">Select Industry</option>
+                                    <option value="agriculture">Agriculture</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="retail">Retail & E-commerce</option>
+                                    <option value="manufacturing">Manufacturing</option>
+                                    <option value="services">Services</option>
+                                    <option value="healthcare">Healthcare</option>
+                                    <option value="education">Education</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="realestate">Real Estate</option>
+                                    <option value="hospitality">Hospitality</option>
+                                    <option value="transportation">Transportation</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                    Year Established *
+                                </label>
+                                <input type="number" id="bizYear" min="1900" max="2025" required style="width: 100%; padding: 0.75rem; background: var(--soft-black); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: var(--radius-md); color: var(--text-primary);">
+                            </div>
+
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                    Number of Employees
+                                </label>
+                                <input type="number" id="bizEmployees" min="0" style="width: 100%; padding: 0.75rem; background: var(--soft-black); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: var(--radius-md); color: var(--text-primary);">
+                            </div>
+
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                    Business Description
+                                </label>
+                                <textarea id="bizDescription" rows="4" style="width: 100%; padding: 0.75rem; background: var(--soft-black); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: var(--radius-md); color: var(--text-primary); resize: vertical;"></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Save Profile
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Records Section -->
+            <section id="records" class="content-section">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Business Records</h2>
+
+                <div style="margin-bottom: 1rem;">
+                    <button class="btn btn-primary" onclick="showAddRecordModal()">
+                        + Add New Record
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>Transaction Records</h3>
+                    <div id="recordsTableContainer">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📝</div>
+                            <h3>No Records Yet</h3>
+                            <p>Add your first business record to start tracking transactions</p>
+                            <button class="btn btn-primary" onclick="showAddRecordModal()">
+                                Add First Record
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Financial Section -->
+            <section id="financial" class="content-section">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Financial Overview</h2>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRevenue">₵0</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalExpenses">₵0</div>
+                        <div class="stat-label">Total Expenses</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="netProfit">₵0</div>
+                        <div class="stat-label">Net Profit</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Financial Summary</h3>
+                    <div id="financialSummary">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">💰</div>
+                            <h3>No Financial Data</h3>
+                            <p>Add business records to see your financial overview</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Investors Section -->
+            <section id="investors" class="content-section">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Investor Relations</h2>
+
+                <div class="card">
+                    <h3>Investment Status</h3>
+                    <div id="investmentStatus">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🤝</div>
+                            <h3>No Investors Yet</h3>
+                            <p>Complete your business assessment to attract potential investors</p>
+                            <button class="btn btn-primary" onclick="showSection('assessment')">
+                                Get Assessment Score
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Assessment Section -->
+            <section id="assessment" class="content-section">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Business Assessment</h2>
+
+                <div class="card">
+                    <h3>Investment Readiness Score</h3>
+                    <div id="assessmentContent">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📈</div>
+                            <h3>Assessment Not Started</h3>
+                            <p>Complete your business profile and add financial records to get your investment readiness score</p>
+                            <button class="btn btn-primary" onclick="startAssessment()">
+                                Start Assessment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize dashboard on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+        });
+
+        // Initialize Dashboard
+        function initializeDashboard() {
+            // Check if user is logged in
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+            if (!user.email) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Set user name
+            document.getElementById('userName').textContent = `Welcome, ${user.name || user.email}!`;
+
+            // Load business data
+            loadBusinessData();
+
+            // Check if new user for onboarding
+            checkOnboarding();
+
+            // Load dashboard stats
+            updateDashboardStats();
+        }
+
+        // Check if user needs onboarding
+        function checkOnboarding() {
+            const businessData = JSON.parse(localStorage.getItem('businessData') || '{}');
+            const onboardingSection = document.getElementById('onboardingSection');
+
+            if (!businessData.profileComplete) {
+                onboardingSection.style.display = 'block';
+            } else {
+                onboardingSection.style.display = 'none';
+            }
+
+            // Update onboarding steps
+            updateOnboardingSteps();
+        }
+
+        // Update onboarding steps
+        function updateOnboardingSteps() {
+            const businessData = JSON.parse(localStorage.getItem('businessData') || '{}');
+
+            // Step 1: Profile
+            if (businessData.profileComplete) {
+                document.getElementById('step1').classList.add('completed');
+            }
+
+            // Step 2: Records
+            const records = JSON.parse(localStorage.getItem('businessRecords') || '[]');
+            if (records.length > 0) {
+                document.getElementById('step2').classList.add('completed');
+            }
+
+            // Step 3: Financial
+            if (businessData.financialInfoComplete) {
+                document.getElementById('step3').classList.add('completed');
+            }
+
+            // Step 4: Assessment
+            if (businessData.assessmentComplete) {
+                document.getElementById('step4').classList.add('completed');
+            }
+        }
+
+        // Load business data
+        function loadBusinessData() {
+            const businessData = JSON.parse(localStorage.getItem('businessData') || '{}');
+
+            if (businessData.name) {
+                document.getElementById('businessName').textContent = businessData.name;
+                document.getElementById('bizName').value = businessData.name || '';
+                document.getElementById('bizIndustry').value = businessData.industry || '';
+                document.getElementById('bizYear').value = businessData.yearEstablished || '';
+                document.getElementById('bizEmployees').value = businessData.employees || '';
+                document.getElementById('bizDescription').value = businessData.description || '';
+            }
+        }
+
+        // Update dashboard stats
+        function updateDashboardStats() {
+            const records = JSON.parse(localStorage.getItem('businessRecords') || '[]');
+            const investors = JSON.parse(localStorage.getItem('investors') || '[]');
+            const businessData = JSON.parse(localStorage.getItem('businessData') || '{}');
+
+            const statsContainer = document.getElementById('dashboardStats');
+
+            if (businessData.profileComplete) {
+                // Calculate real stats from records
+                const revenue = records.filter(r => r.type === 'income').reduce((sum, r) => sum + (r.amount || 0), 0);
+                const expenses = records.filter(r => r.type === 'expense').reduce((sum, r) => sum + (r.amount || 0), 0);
+                const profit = revenue - expenses;
+
+                statsContainer.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">₵${revenue.toLocaleString()}</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">₵${expenses.toLocaleString()}</div>
+                        <div class="stat-label">Total Expenses</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${records.length}</div>
+                        <div class="stat-label">Total Records</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${investors.length}</div>
+                        <div class="stat-label">Investors</div>
+                    </div>
+                `;
+
+                // Update financial section
+                document.getElementById('totalRevenue').textContent = `₵${revenue.toLocaleString()}`;
+                document.getElementById('totalExpenses').textContent = `₵${expenses.toLocaleString()}`;
+                document.getElementById('netProfit').textContent = `₵${profit.toLocaleString()}`;
+            } else {
+                statsContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <h3>Complete Your Profile</h3>
+                        <p>Set up your business profile to see your dashboard statistics</p>
+                        <button class="btn btn-primary" onclick="showSection('business')">
+                            Setup Profile
+                        </button>
+                    </div>
+                `;
+            }
+
+            // Update recent activity
+            updateRecentActivity();
+        }
+
+        // Update recent activity
+        function updateRecentActivity() {
+            const records = JSON.parse(localStorage.getItem('businessRecords') || '[]');
+            const activityContainer = document.getElementById('recentActivity');
+
+            if (records.length > 0) {
+                const recentRecords = records.slice(-5).reverse();
+                let html = '<table class="records-table"><thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead><tbody>';
+
+                recentRecords.forEach(record => {
+                    html += `
+                        <tr>
+                            <td>${new Date(record.date).toLocaleDateString()}</td>
+                            <td>${record.description}</td>
+                            <td style="color: ${record.type === 'income' ? '#38a169' : '#e53e3e'}">
+                                ${record.type === 'income' ? '+' : '-'}₵${record.amount.toLocaleString()}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                activityContainer.innerHTML = html;
+            }
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Load section-specific data
+            if (sectionId === 'records') {
+                loadRecords();
+            } else if (sectionId === 'financial') {
+                updateFinancialData();
+            } else if (sectionId === 'investors') {
+                loadInvestors();
+            }
+        }
+
+        // Save business profile
+        document.getElementById('businessProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const businessData = {
+                name: document.getElementById('bizName').value,
+                industry: document.getElementById('bizIndustry').value,
+                yearEstablished: document.getElementById('bizYear').value,
+                employees: document.getElementById('bizEmployees').value,
+                description: document.getElementById('bizDescription').value,
+                profileComplete: true,
+                dateUpdated: new Date().toISOString()
+            };
+
+            localStorage.setItem('businessData', JSON.stringify(businessData));
+            document.getElementById('businessName').textContent = businessData.name;
+
+            alert('Business profile saved successfully!');
+            checkOnboarding();
+            updateDashboardStats();
+        });
+
+        // Load records
+        function loadRecords() {
+            const records = JSON.parse(localStorage.getItem('businessRecords') || '[]');
+            const container = document.getElementById('recordsTableContainer');
+
+            if (records.length > 0) {
+                let html = `
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                records.forEach((record, index) => {
+                    html += `
+                        <tr>
+                            <td>${new Date(record.date).toLocaleDateString()}</td>
+                            <td>${record.type}</td>
+                            <td>${record.description}</td>
+                            <td style="color: ${record.type === 'income' ? '#38a169' : '#e53e3e'}">
+                                ₵${record.amount.toLocaleString()}
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="deleteRecord(${index})" style="padding: 0.25rem 0.75rem; font-size: 0.875rem;">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+        }
+
+        // Show add record modal
+        function showAddRecordModal() {
+            // Simple prompt for demo - in production, use a proper modal
+            const type = prompt('Enter type (income/expense):');
+            const description = prompt('Enter description:');
+            const amount = parseFloat(prompt('Enter amount:'));
+
+            if (type && description && amount) {
+                const records = JSON.parse(localStorage.getItem('businessRecords') || '[]');
+                records.push({
+                    type: type.toLowerCase(),
+                    description: description,
+                    amount: amount,
+                    date: new Date().toISOString()
+                });
+
+                localStorage.setItem('businessRecords', JSON.stringify(records));
+                loadRecords();
+                updateDashboardStats();
+                updateOnboardingSteps();
+            }
+        }
+
+        // Delete record
+        function deleteRecord(index) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                const records = JSON.parse(localStorage.getItem('businessRecords') || '[]');
+                records.splice(index, 1);
+                localStorage.setItem('businessRecords', JSON.stringify(records));
+                loadRecords();
+                updateDashboardStats();
+            }
+        }
+
+        // Update financial data
+        function updateFinancialData() {
+            const records = JSON.parse(localStorage.getItem('businessRecords') || '[]');
+            const container = document.getElementById('financialSummary');
+
+            if (records.length > 0) {
+                const monthlyData = {};
+
+                records.forEach(record => {
+                    const month = new Date(record.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+                    if (!monthlyData[month]) {
+                        monthlyData[month] = { income: 0, expense: 0 };
+                    }
+
+                    if (record.type === 'income') {
+                        monthlyData[month].income += record.amount;
+                    } else {
+                        monthlyData[month].expense += record.amount;
+                    }
+                });
+
+                let html = '<div style="overflow-x: auto;"><table class="records-table"><thead><tr><th>Month</th><th>Income</th><th>Expenses</th><th>Net</th></tr></thead><tbody>';
+
+                Object.entries(monthlyData).forEach(([month, data]) => {
+                    const net = data.income - data.expense;
+                    html += `
+                        <tr>
+                            <td>${month}</td>
+                            <td style="color: #38a169;">₵${data.income.toLocaleString()}</td>
+                            <td style="color: #e53e3e;">₵${data.expense.toLocaleString()}</td>
+                            <td style="color: ${net >= 0 ? '#38a169' : '#e53e3e'};">₵${net.toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+            }
+        }
+
+        // Load investors
+        function loadInvestors() {
+            const investors = JSON.parse(localStorage.getItem('investors') || '[]');
+            const container = document.getElementById('investmentStatus');
+
+            if (investors.length > 0) {
+                let html = '<table class="records-table"><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody>';
+
+                investors.forEach(investor => {
+                    html += `
+                        <tr>
+                            <td>${investor.name}</td>
+                            <td>₵${investor.amount.toLocaleString()}</td>
+                            <td>${new Date(investor.date).toLocaleDateString()}</td>
+                            <td>${investor.status}</td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+        }
+
+        // Start onboarding
+        function startOnboarding() {
+            showSection('business');
+        }
+
+        // Start assessment
+        function startAssessment() {
+            window.location.href = 'investment-assessment.html';
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Bvester - African Innovation Meets Global Investment</title>
+    <meta name="description" content="Connect African SMEs with global investors. Investment opportunities, business funding, and portfolio management.">
+
+    <!-- Mobile-first optimized styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #ffffff;
+            line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        /* Navigation - Mobile First */
+        .nav-container {
+            background-color: #ffffff;
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            font-size: 20px;
+            margin-right: 6px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        /* Desktop navigation - hidden on mobile */
+        .nav-menu {
+            display: none;
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #374151;
+            cursor: pointer;
+            padding: 8px;
+            touch-action: manipulation;
+        }
+
+        .nav-actions {
+            display: none;
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .mobile-menu-content {
+            background-color: #ffffff;
+            padding: 24px;
+            margin: 80px 16px 0;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu-overlay.show .mobile-menu-content {
+            transform: translateY(0);
+        }
+
+        .mobile-menu-item {
+            display: block;
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            background: none;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            width: 100%;
+            text-align: left;
+            touch-action: manipulation;
+        }
+
+        .mobile-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-menu-item:active {
+            background-color: #f9fafb;
+        }
+
+        .mobile-signup-button {
+            background-color: #2E7D8F;
+            color: #ffffff;
+            border-radius: 8px;
+            margin-top: 16px;
+            border: none;
+            text-align: center;
+            padding: 16px;
+        }
+
+        /* Hero Section - Mobile Optimized */
+        .hero-section {
+            padding: 40px 20px;
+            text-align: center;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-button {
+            padding: 16px 24px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 320px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+        }
+
+        .hero-button:active {
+            transform: scale(0.98);
+        }
+
+        .investor-button {
+            background-color: #2E7D8F;
+            color: #ffffff;
+        }
+
+        .funding-button {
+            background-color: transparent;
+            border: 2px solid #2E7D8F;
+            color: #2E7D8F;
+        }
+
+        /* Footer - Mobile Optimized */
+        .footer-container {
+            background-color: #111827;
+            padding: 40px 20px;
+        }
+
+        .footer-content {
+            max-width: 100%;
+        }
+
+        .footer-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .footer-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .footer-link {
+            display: block;
+            padding: 8px 0;
+            color: #9ca3af;
+            font-size: 15px;
+            text-decoration: none;
+            touch-action: manipulation;
+        }
+
+        .footer-link:active {
+            color: #ffffff;
+        }
+
+        .footer-bottom {
+            padding-top: 24px;
+            border-top: 1px solid #374151;
+            text-align: center;
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Tablet and Desktop Styles */
+        @media (min-width: 768px) {
+            .nav-container {
+                padding: 16px 24px;
+            }
+
+            .nav-content {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .logo-icon {
+                font-size: 24px;
+                margin-right: 8px;
+            }
+
+            .logo-text {
+                font-size: 24px;
+            }
+
+            .nav-menu {
+                display: flex;
+                align-items: center;
+                flex: 1;
+                justify-content: center;
+            }
+
+            .nav-item {
+                padding: 8px 16px;
+                margin: 0 8px;
+                text-decoration: none;
+                color: #374151;
+                font-size: 15px;
+                font-weight: 500;
+                cursor: pointer;
+                border: none;
+                background: none;
+            }
+
+            .nav-item:hover {
+                color: #2E7D8F;
+            }
+
+            .dropdown-container {
+                position: relative;
+            }
+
+            .dropdown {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 8px;
+                margin-top: 4px;
+                min-width: 200px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                z-index: 100;
+                display: none;
+            }
+
+            .dropdown.show {
+                display: block;
+            }
+
+            .dropdown-item {
+                padding: 8px 12px;
+                color: #374151;
+                font-size: 14px;
+                cursor: pointer;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+            }
+
+            .dropdown-item:hover {
+                background-color: #f9fafb;
+            }
+
+            .mobile-menu-button {
+                display: none;
+            }
+
+            .nav-actions {
+                display: flex;
+                align-items: center;
+            }
+
+            .login-button {
+                padding: 8px 16px;
+                margin-right: 12px;
+                background: none;
+                border: none;
+                color: #374151;
+                font-size: 15px;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            .login-button:hover {
+                color: #2E7D8F;
+            }
+
+            .signup-button {
+                background-color: #000000;
+                color: #ffffff;
+                padding: 10px 20px;
+                border-radius: 6px;
+                border: none;
+                font-size: 15px;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            .signup-button:hover {
+                background-color: #333333;
+            }
+
+            .hero-section {
+                padding: 80px 24px;
+                min-height: 70vh;
+            }
+
+            .hero-title {
+                font-size: 48px;
+                margin-bottom: 24px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+                margin-bottom: 40px;
+            }
+
+            .hero-buttons {
+                flex-direction: row;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .hero-button {
+                min-width: 250px;
+                width: auto;
+            }
+
+            .footer-container {
+                padding: 80px 24px;
+            }
+
+            .footer-content {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .footer-grid {
+                flex-direction: row;
+                justify-content: space-between;
+                margin-bottom: 48px;
+            }
+
+            .footer-section {
+                flex: 1;
+                margin-right: 32px;
+            }
+
+            .footer-bottom {
+                padding-top: 32px;
+            }
+        }
+
+        /* High DPI Display Support */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            body {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- Navigation Header -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="logo-icon">💎</span>
+                <span class="logo-text">Bvester</span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="nav-menu">
+                <button class="nav-item" onclick="navigate('about')">Discover</button>
+                <div class="dropdown-container">
+                    <button class="nav-item" onclick="toggleDropdown()">For Investors ▼</button>
+                    <div class="dropdown" id="dropdown">
+                        <button class="dropdown-item" onclick="navigate('register')">Investment Opportunities</button>
+                        <button class="dropdown-item" onclick="navigate('login')">Portfolio Management</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-button" onclick="toggleMobileMenu()" aria-label="Open menu">
+                ☰
+            </button>
+
+            <!-- Desktop Actions -->
+            <div class="nav-actions">
+                <button class="login-button" onclick="navigate('login')">Sign In</button>
+                <button class="signup-button" onclick="navigate('register')">Sign up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenu" onclick="closeMobileMenuOnOverlay(event)">
+        <div class="mobile-menu-content">
+            <button class="mobile-menu-item" onclick="navigate('about'); closeMobileMenu();">Discover</button>
+            <button class="mobile-menu-item" onclick="navigate('register'); closeMobileMenu();">Investment Opportunities</button>
+            <button class="mobile-menu-item" onclick="navigate('login'); closeMobileMenu();">Portfolio Management</button>
+            <button class="mobile-menu-item" onclick="navigate('login'); closeMobileMenu();">Sign In</button>
+            <button class="mobile-menu-item mobile-signup-button" onclick="navigate('register'); closeMobileMenu();">Sign up</button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <main class="hero-section">
+        <h1 class="hero-title">Where African Innovation Meets Global Investment</h1>
+        <p class="hero-subtitle">Connect with opportunities, grow your business, and invest in Africa's future.</p>
+
+        <div class="hero-buttons">
+            <button class="hero-button investor-button" onclick="navigate('register')">
+                I Want to Invest in Africa
+            </button>
+            <button class="hero-button funding-button" onclick="navigate('register')">
+                I Need Funding for My Business
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer-container">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3 class="footer-section-title">For Investors</h3>
+                    <a href="#" class="footer-link" onclick="navigate('register')">Investment Opportunities</a>
+                    <a href="#" class="footer-link" onclick="navigate('login')">Portfolio Management</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-section-title">For Startups</h3>
+                    <a href="#" class="footer-link" onclick="navigate('register')">Raise Funding</a>
+                    <a href="#" class="footer-link" onclick="navigate('about')">Business Valuation</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2024 Bvester. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile-optimized JavaScript
+        (function() {
+            'use strict';
+
+            // Performance optimization - defer non-critical JS
+            document.addEventListener('DOMContentLoaded', function() {
+                // Show content after load
+                document.body.style.opacity = '1';
+            });
+
+            // Navigation functionality
+            window.navigate = function(page) {
+                console.log(`Navigating to ${page}`);
+
+                // Haptic feedback on mobile
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+
+                switch(page) {
+                    case 'login':
+                        showMessage('Login', 'Login functionality would redirect to authentication page');
+                        break;
+                    case 'register':
+                        showMessage('Register', 'Registration would redirect to signup page');
+                        break;
+                    case 'about':
+                        showMessage('About', 'About page would show company information');
+                        break;
+                    default:
+                        console.log('Unknown page:', page);
+                }
+            };
+
+            // Mobile-friendly message display
+            function showMessage(title, message) {
+                if (window.innerWidth <= 768) {
+                    // Simple alert for mobile
+                    alert(`${title}: ${message}`);
+                } else {
+                    // Could be enhanced with custom modal on desktop
+                    alert(`${title}: ${message}`);
+                }
+            }
+
+            // Dropdown functionality
+            window.toggleDropdown = function() {
+                const dropdown = document.getElementById('dropdown');
+                dropdown.classList.toggle('show');
+            };
+
+            // Mobile menu functionality
+            window.toggleMobileMenu = function() {
+                const mobileMenu = document.getElementById('mobileMenu');
+                mobileMenu.classList.toggle('show');
+
+                // Prevent body scroll when menu is open
+                if (mobileMenu.classList.contains('show')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            };
+
+            window.closeMobileMenu = function() {
+                const mobileMenu = document.getElementById('mobileMenu');
+                mobileMenu.classList.remove('show');
+                document.body.style.overflow = '';
+            };
+
+            window.closeMobileMenuOnOverlay = function(event) {
+                if (event.target === event.currentTarget) {
+                    closeMobileMenu();
+                }
+            };
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('dropdown');
+                const dropdownContainer = event.target.closest('.dropdown-container');
+
+                if (!dropdownContainer && dropdown) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            // Handle orientation change
+            window.addEventListener('orientationchange', function() {
+                setTimeout(function() {
+                    closeMobileMenu();
+                }, 100);
+            });
+
+            // Optimize for mobile performance
+            if ('serviceWorker' in navigator) {
+                // Could add service worker for offline functionality
+                console.log('Service worker supported');
+            }
+
+            // Touch event optimization
+            let touchStartTime = 0;
+            document.addEventListener('touchstart', function() {
+                touchStartTime = Date.now();
+            }, { passive: true });
+
+            document.addEventListener('touchend', function() {
+                const touchDuration = Date.now() - touchStartTime;
+                if (touchDuration > 500) {
+                    // Long press detected
+                    console.log('Long press detected');
+                }
+            }, { passive: true });
+
+        })();
+    </script>
+</body>
+</html>

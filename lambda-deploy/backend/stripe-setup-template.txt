@@ -1,0 +1,19 @@
+# 💳 STRIPE PRODUCTION CREDENTIALS
+# Get these from your Stripe Dashboard after business verification
+
+STRIPE_SECRET_KEY=sk_live_your_actual_live_secret_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_after_deployment
+
+# Instructions:
+# 1. Complete Stripe business verification
+# 2. Go to Developers → API keys
+# 3. Toggle to "Live data"
+# 4. Copy Secret key (starts with sk_live_)
+# 5. Webhook secret comes after deployment setup
+
+# Verification Requirements:
+# - Business registration documents
+# - Tax ID/EIN number  
+# - Bank account for payouts
+# - Identity verification
+# - Business address and details
