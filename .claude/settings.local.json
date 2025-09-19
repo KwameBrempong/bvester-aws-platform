@@ -12,7 +12,12 @@
       "Bash(ROOT_ID=\"g6982kes7h\")",
       "Bash(./setup-monitoring.sh:*)",
       "Bash(./dynamodb-backup.sh:*)",
-      "Bash(xargs curl:*)"
+      "Bash(xargs curl:*)",
+      "Bash(git remote remove:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git pull:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
