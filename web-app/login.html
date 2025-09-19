@@ -76,21 +76,38 @@
             },
             'investor@demo.com': {
                 password: 'Demo123!',
-                userType: 'investor', 
+                userType: 'investor',
                 name: 'Jane Investor'
             }
         };
-        
-        // Check for newly created demo account
-        const newAccount = localStorage.getItem('newDemoAccount');
-        if (newAccount) {
-            const account = JSON.parse(newAccount);
-            demoAccounts[account.email] = {
-                password: account.password,
-                userType: account.userType,
-                name: account.name
-            };
+
+        // Load all created demo accounts from localStorage
+        function loadAllDemoAccounts() {
+            try {
+                // Check for single new account (legacy support)
+                const newAccount = localStorage.getItem('newDemoAccount');
+                if (newAccount) {
+                    const account = JSON.parse(newAccount);
+                    demoAccounts[account.email] = {
+                        password: account.password,
+                        userType: account.userType,
+                        name: account.name
+                    };
+                }
+
+                // Check for multiple demo accounts
+                const allDemoAccounts = localStorage.getItem('allDemoAccounts');
+                if (allDemoAccounts) {
+                    const accounts = JSON.parse(allDemoAccounts);
+                    Object.assign(demoAccounts, accounts);
+                }
+            } catch (error) {
+                console.warn('Error loading demo accounts:', error);
+            }
         }
+
+        // Load demo accounts on page load
+        loadAllDemoAccounts();
         
         function fillDemo(type) {
             if (type === 'sme') {
@@ -135,24 +152,18 @@
                 } catch (apiError) {
                     console.warn('API login failed, trying demo mode:', apiError);
 
-                    // Check against demo accounts
+                    // Reload demo accounts to get latest created accounts
+                    loadAllDemoAccounts();
+
+                    // Check against all demo accounts (including newly created ones)
                     if (demoAccounts[email] && demoAccounts[email].password === password) {
                         result = bvesterAPI.loginDemo(email, password);
                         messageDiv.innerHTML = '<div class="success">Login successful! (Demo Mode) Redirecting...</div>';
+                        console.log('✅ Demo login successful for:', email);
                     } else {
-                        // Check for newly created demo account
-                        const newAccount = localStorage.getItem('newDemoAccount');
-                        if (newAccount) {
-                            const account = JSON.parse(newAccount);
-                            if (account.email === email && account.password === password) {
-                                result = bvesterAPI.loginDemo(email, password);
-                                messageDiv.innerHTML = '<div class="success">Login successful! (Demo Mode) Redirecting...</div>';
-                            } else {
-                                throw new Error('Invalid email or password. Please use demo accounts or create a new account.');
-                            }
-                        } else {
-                            throw new Error('Invalid email or password. Please use demo accounts or create a new account.');
-                        }
+                        console.log('❌ No matching demo account found for:', email);
+                        console.log('Available demo accounts:', Object.keys(demoAccounts));
+                        throw new Error('Invalid email or password. Please check your credentials or create a new account.');
                     }
                 }
 

@@ -159,10 +159,42 @@ class BvesterAPI {
             }
         };
 
+        // Load all created demo accounts from localStorage
+        try {
+            // Check for single new account (legacy support)
+            const newAccount = localStorage.getItem('newDemoAccount');
+            if (newAccount) {
+                const account = JSON.parse(newAccount);
+                demoAccounts[account.email] = {
+                    password: account.password,
+                    userType: account.userType,
+                    name: account.name,
+                    id: 'demo_' + Date.now()
+                };
+            }
+
+            // Check for multiple demo accounts
+            const allDemoAccounts = localStorage.getItem('allDemoAccounts');
+            if (allDemoAccounts) {
+                const accounts = JSON.parse(allDemoAccounts);
+                Object.keys(accounts).forEach(accountEmail => {
+                    const acc = accounts[accountEmail];
+                    demoAccounts[accountEmail] = {
+                        password: acc.password,
+                        userType: acc.userType,
+                        name: acc.name,
+                        id: 'demo_' + accountEmail.replace(/[^a-zA-Z0-9]/g, '_')
+                    };
+                });
+            }
+        } catch (error) {
+            console.warn('Error loading demo accounts in loginDemo:', error);
+        }
+
         const account = demoAccounts[email];
         if (account && account.password === password) {
             const user = {
-                id: account.id,
+                id: account.id || 'demo_' + Date.now(),
                 email: email,
                 name: account.name,
                 userType: account.userType,
@@ -177,7 +209,8 @@ class BvesterAPI {
                 token: this.token
             };
         } else {
-            throw new Error('Invalid demo credentials');
+            console.log('Available demo accounts:', Object.keys(demoAccounts));
+            throw new Error('Invalid demo credentials for: ' + email);
         }
     }
 

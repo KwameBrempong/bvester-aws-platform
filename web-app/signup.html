@@ -136,7 +136,29 @@
                         userType: formData.userType,
                         password: formData.password
                     };
+
+                    // Store as single account (legacy support)
                     localStorage.setItem('newDemoAccount', JSON.stringify(newAccount));
+
+                    // Store in multiple accounts system
+                    try {
+                        let allDemoAccounts = {};
+                        const existing = localStorage.getItem('allDemoAccounts');
+                        if (existing) {
+                            allDemoAccounts = JSON.parse(existing);
+                        }
+
+                        allDemoAccounts[formData.email] = {
+                            password: formData.password,
+                            userType: formData.userType,
+                            name: formData.name
+                        };
+
+                        localStorage.setItem('allDemoAccounts', JSON.stringify(allDemoAccounts));
+                        console.log('✅ Account stored for future login:', formData.email);
+                    } catch (error) {
+                        console.warn('⚠️ Could not store account for multiple users:', error);
+                    }
 
                     // Simulate successful registration
                     result = {
