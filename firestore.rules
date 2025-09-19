@@ -1,0 +1,265 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Helper function to check if user has admin role
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'super_admin'];
+    }
+    
+    // Helper function to check if user has business owner role
+    function isBusinessOwner() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.accountType == 'business';
+    }
+    
+    // Helper function to check if user is verified investor
+    function isVerifiedInvestor() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.accountType == 'investor' &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isVerified == true;
+    }
+    
+    // Helper function to validate currency fields
+    function validateCurrencyFields(data) {
+      let validCurrencies = ['USD', 'EUR', 'GBP', 'NGN', 'GHS', 'KES', 'ZAR', 'EGP', 'MAD', 'TND', 'DZD', 'XAF', 'XOF', 'UGX', 'TZS', 'RWF', 'ZMW', 'MWK', 'BWP', 'SZL', 'LSL', 'NAD', 'AUD', 'CAD', 'CHF', 'JPY', 'CNY'];
+      return (!('currency' in data) || data.currency in validCurrencies) &&
+             (!('businessCurrency' in data) || data.businessCurrency in validCurrencies) &&
+             (!('preferredViewCurrency' in data) || data.preferredViewCurrency in validCurrencies);
+    }
+    
+    // Helper function to validate transaction currency data
+    function validateTransactionCurrency(data) {
+      let validCurrencies = ['USD', 'EUR', 'GBP', 'NGN', 'GHS', 'KES', 'ZAR', 'EGP', 'MAD', 'TND', 'DZD', 'XAF', 'XOF', 'UGX', 'TZS', 'RWF', 'ZMW', 'MWK', 'BWP', 'SZL', 'LSL', 'NAD', 'AUD', 'CAD', 'CHF', 'JPY', 'CNY'];
+      return (!('currency' in data) || data.currency in validCurrencies) &&
+             (!('originalCurrency' in data) || data.originalCurrency in validCurrencies) &&
+             (!('exchangeRate' in data) || (data.exchangeRate is number && data.exchangeRate > 0)) &&
+             (!('usdEquivalent' in data) || (data.usdEquivalent is number && data.usdEquivalent >= 0));
+    }
+
+    // Users - can only access their own data
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      allow read: if isAdmin(); // Admins can read all user data
+      // Allow updates to currency fields by owner
+      allow update: if isOwner(userId) && 
+        validateCurrencyFields(request.resource.data);
+    }
+    
+    // User profiles - extended data
+    match /user_profiles/{userId} {
+      allow read, write: if isOwner(userId);
+      allow read: if isAdmin();
+    }
+    
+    // Business profiles - public read for published, owner write
+    match /businesses/{businessId} {
+      allow read: if isAuthenticated() && 
+        (resource == null || resource.data.status == 'published' || resource.data.ownerId == request.auth.uid);
+      allow create: if isAuthenticated() && isBusinessOwner() && 
+        request.resource.data.ownerId == request.auth.uid &&
+        validateCurrencyFields(request.resource.data);
+      allow update: if isAuthenticated() && 
+        (resource.data.ownerId == request.auth.uid || isAdmin()) &&
+        validateCurrencyFields(request.resource.data);
+      allow delete: if isAdmin() || resource.data.ownerId == request.auth.uid;
+    }
+    
+    // Investment opportunities - public read for published, owner write
+    match /investment_opportunities/{opportunityId} {
+      allow read: if isAuthenticated() && 
+        (resource == null || resource.data.status == 'published' || resource.data.businessOwnerId == request.auth.uid);
+      allow create: if isAuthenticated() && isBusinessOwner() && 
+        request.resource.data.businessOwnerId == request.auth.uid;
+      allow update: if isAuthenticated() && 
+        (resource.data.businessOwnerId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin() || resource.data.businessOwnerId == request.auth.uid;
+    }
+    
+    // Investments - strict access control
+    match /investments/{investmentId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.investorId == request.auth.uid || 
+         resource.data.businessOwnerId == request.auth.uid ||
+         isAdmin());
+      allow create: if isAuthenticated() && isVerifiedInvestor() && 
+        request.resource.data.investorId == request.auth.uid &&
+        request.resource.data.status == 'pending';
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.investorId || 
+         request.auth.uid == resource.data.businessOwnerId ||
+         isAdmin()) &&
+        // Prevent tampering with critical fields
+        request.resource.data.amount == resource.data.amount &&
+        request.resource.data.investorId == resource.data.investorId &&
+        request.resource.data.businessOwnerId == resource.data.businessOwnerId;
+      allow delete: if isAdmin();
+    }
+    
+    // Investment pledges - temporary investment commitments
+    match /investment_pledges/{pledgeId} {
+      allow read, write: if isAuthenticated() && 
+        (resource == null || resource.data.userId == request.auth.uid);
+      allow read: if isAdmin();
+    }
+    
+    // Transactions - highly restricted financial data
+    match /transactions/{transactionId} {
+      allow read, write: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.amount > 0 &&
+        validateTransactionCurrency(request.resource.data);
+      allow update: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid &&
+        validateTransactionCurrency(request.resource.data);
+    }
+    
+    // Business records - owner only access
+    match /business_records/{recordId} {
+      allow read, write: if isAuthenticated() && 
+        resource.data.businessId in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.businessIds;
+      allow read: if isAdmin();
+    }
+    
+    // Investment analytics - restricted access
+    match /investment_analytics/{analyticsId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.investorId == request.auth.uid || 
+         resource.data.businessOwnerId == request.auth.uid ||
+         isAdmin());
+      allow write: if isAdmin(); // Only system can write analytics
+    }
+    
+    // CMS Content - public read for published, admin write
+    match /cms_content/{contentId} {
+      allow read: if resource.data.status == 'published';
+      allow read: if isAdmin(); // Admins can read all content
+      allow write: if isAdmin();
+      allow create: if isAdmin() && 
+        request.resource.data.authorId == request.auth.uid;
+    }
+    
+    // Content interactions (likes, downloads, views)
+    match /content_interactions/{interactionId} {
+      allow read, write: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+    }
+    
+    // Security logs - admin only access
+    match /security_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated(); // Allow creation for security tracking
+      allow update, delete: if isAdmin();
+    }
+    
+    // User sessions - user can only access their own
+    match /user_sessions/{sessionId} {
+      allow read, write: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+    }
+    
+    // Account locks - admin and system access
+    match /account_locks/{lockId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
+      allow create: if isAuthenticated(); // Allow system to create locks
+    }
+    
+    // KYC documents - highly restricted
+    match /kyc_documents/{documentId} {
+      allow read, write: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+    }
+    
+    // Payment methods - user only access
+    match /payment_methods/{methodId} {
+      allow read, write: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+    }
+    
+    // Notifications - user only access
+    match /notifications/{notificationId} {
+      allow read, write: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated(); // Allow system notifications
+    }
+    
+    // Support tickets - user and admin access
+    match /support_tickets/{ticketId} {
+      allow read, write: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      allow read, write: if isAdmin();
+    }
+    
+    // System configurations - admin only
+    match /system_config/{configId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Audit trails - admin only
+    match /audit_trails/{auditId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated(); // Allow system audit logging
+      allow update, delete: if false; // Audit trails are immutable
+    }
+    
+    // Rate limiting - system access
+    match /rate_limits/{limitId} {
+      allow read: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      allow write: if isAuthenticated(); // Allow system rate limiting
+    }
+    
+    // Investment performance tracking
+    match /investment_performance/{performanceId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.investorId == request.auth.uid || 
+         resource.data.businessOwnerId == request.auth.uid ||
+         isAdmin());
+      allow write: if isAdmin(); // Only system updates performance
+    }
+    
+    // Message threads between investors and businesses
+    match /message_threads/{threadId} {
+      allow read, write: if isAuthenticated() && 
+        request.auth.uid in resource.data.participantIds;
+      allow read: if isAdmin();
+    }
+    
+    // Messages within threads
+    match /message_threads/{threadId}/messages/{messageId} {
+      allow read: if isAuthenticated() && 
+        request.auth.uid in get(/databases/$(database)/documents/message_threads/$(threadId)).data.participantIds;
+      allow create: if isAuthenticated() && 
+        request.resource.data.senderId == request.auth.uid &&
+        request.auth.uid in get(/databases/$(database)/documents/message_threads/$(threadId)).data.participantIds;
+      allow update: if isAuthenticated() && 
+        resource.data.senderId == request.auth.uid;
+      allow read: if isAdmin();
+    }
+    
+    // Default deny rule - explicit security
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

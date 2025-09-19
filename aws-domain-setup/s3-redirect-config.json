@@ -1,0 +1,6 @@
+{
+  "RedirectAllRequestsTo": {
+    "HostName": "bvester.com",
+    "Protocol": "https"
+  }
+}

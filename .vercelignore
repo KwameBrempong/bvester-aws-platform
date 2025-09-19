@@ -1,0 +1,15 @@
+# Vercel ignore file
+archive/
+backend/
+docker-compose*.yml
+Dockerfile*
+*.md
+.git/
+.github/
+node_modules/
+.env*
+.firebase*
+firebase*
+*.log
+temp/
+test*/

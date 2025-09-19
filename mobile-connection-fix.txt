@@ -1,0 +1,39 @@
+🔧 FIXING "ERR_SSL_PROTOCOL_ERROR" - Step by Step
+=====================================================
+
+❌ PROBLEM: Your phone is trying to use HTTPS instead of HTTP
+
+✅ SOLUTIONS:
+
+METHOD 1: Force HTTP (Most Important)
+------------------------------------
+1. Make sure you type: http:// (NOT https://)
+2. URL should be: http://192.168.8.101:9002/test
+3. Do NOT let browser auto-complete to https://
+
+METHOD 2: Clear Browser Auto-HTTPS
+----------------------------------
+1. Open phone browser settings
+2. Clear all browsing data/cache
+3. Disable "Always use secure connections" if present
+4. Try in incognito/private mode
+
+METHOD 3: Try Different Browser
+------------------------------
+- Try Chrome, Safari, Firefox
+- Some browsers force HTTPS more aggressively than others
+
+METHOD 4: Type URL Carefully
+----------------------------
+✅ CORRECT: http://192.168.8.101:9002/test
+❌ WRONG:   https://192.168.8.101:9002/test
+❌ WRONG:   192.168.8.101:9002/test (missing http://)
+
+METHOD 5: Alternative IP
+------------------------
+If first IP doesn't work, try:
+http://172.23.16.1:9002/test
+
+🎯 QUICK TEST:
+Type exactly: http://192.168.8.101:9002/test
+(Copy this text to avoid typos)

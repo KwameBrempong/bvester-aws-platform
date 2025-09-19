@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Connection Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f0f0f0;
+            text-align: center;
+        }
+        .success { 
+            background: #10b981; 
+            color: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .info {
+            background: #3b82f6;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="success">
+        🎉 MOBILE CONNECTION SUCCESSFUL! 🎉
+    </div>
+    
+    <div class="info">
+        ✅ Your phone can connect to this server!
+    </div>
+    
+    <div class="info">
+        📱 Screen Width: <span id="width"></span>px
+    </div>
+    
+    <div class="info">
+        🌐 User Agent: <span id="agent"></span>
+    </div>
+    
+    <p>
+        <strong>Next Step:</strong><br>
+        <a href="/" style="color: #3b82f6; font-size: 18px;">
+            → Go to Full BizInvest Hub App ←
+        </a>
+    </p>
+
+    <script>
+        document.getElementById('width').textContent = window.innerWidth;
+        document.getElementById('agent').textContent = navigator.userAgent.substring(0, 50) + '...';
+    </script>
+</body>
+</html>

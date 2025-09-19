@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester Tab/Button Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            padding: 20px;
+        }
+        .hero-tabs {
+            margin: 20px 0;
+        }
+        .hero-tab {
+            background: #333;
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .hero-tab.active {
+            background: #ffd700;
+            color: #000;
+        }
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #ffd700;
+            margin: 20px 0;
+        }
+        .tab-content.hidden {
+            display: none;
+        }
+        .test-button {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Bvester Tab/Button Functionality Test</h1>
+    
+    <div class="hero-tabs">
+        <button class="hero-tab active" onclick="switchTab('investors', this)">
+            💰 I Want to Invest in Africa
+        </button>
+        <button class="hero-tab" onclick="switchTab('startups', this)">
+            🚀 I Need Funding for My Business
+        </button>
+    </div>
+
+    <div class="tab-content" id="investors-content">
+        <h3>For Investors</h3>
+        <p>Discover high-growth investment opportunities in Africa.</p>
+        <button class="test-button" onclick="alert('Investor button clicked!')">Test Investor Action</button>
+    </div>
+
+    <div class="tab-content hidden" id="startups-content">
+        <h3>For Startups</h3>
+        <p>Get funding for your African business.</p>
+        <button class="test-button" onclick="alert('Startup button clicked!')">Test Startup Action</button>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <h3>Mobile Menu Test</h3>
+        <button class="test-button" onclick="toggleMobileMenu()">Toggle Mobile Menu</button>
+        <button class="test-button" onclick="showInvestorMenu(event)">Show Investor Menu</button>
+        <button class="test-button" onclick="showStartupMenu(event)">Show Startup Menu</button>
+    </div>
+
+    <div id="mobile-menu-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none;" onclick="closeMobileMenu()">
+        <div id="mobile-menu-panel" style="position: fixed; right: -300px; top: 0; width: 300px; height: 100%; background: #111; transition: right 0.3s;">
+            <h3 style="padding: 20px;">Mobile Menu</h3>
+            <button onclick="closeMobileMenu()" style="position: absolute; top: 20px; right: 20px; background: #ffd700; border: none; padding: 10px;">×</button>
+        </div>
+    </div>
+
+    <div id="test-results" style="margin-top: 30px; padding: 20px; background: #111;">
+        <h3>Test Results:</h3>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Tab switching function
+        function switchTab(tab, element) {
+            console.log('switchTab called:', tab, element);
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.hero-tab').forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            element.classList.add('active');
+            
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Show selected tab content
+            const targetContent = document.getElementById(tab + '-content');
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+                logResult(`✅ Tab switched to: ${tab}`);
+            } else {
+                logResult(`❌ Tab content not found: ${tab}-content`);
+            }
+        }
+
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const panel = document.getElementById('mobile-menu-panel');
+            
+            if (overlay.style.display === 'none') {
+                overlay.style.display = 'block';
+                panel.style.right = '0';
+                logResult('✅ Mobile menu opened');
+            } else {
+                closeMobileMenu();
+            }
+        }
+
+        function closeMobileMenu() {
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const panel = document.getElementById('mobile-menu-panel');
+            
+            overlay.style.display = 'none';
+            panel.style.right = '-300px';
+            logResult('✅ Mobile menu closed');
+        }
+
+        function showInvestorMenu(event) {
+            event.preventDefault();
+            logResult('✅ Investor menu function called');
+        }
+
+        function showStartupMenu(event) {
+            event.preventDefault();
+            logResult('✅ Startup menu function called');
+        }
+
+        // Test logging
+        function logResult(message) {
+            const results = document.getElementById('results');
+            results.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+
+        // Test on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            logResult('✅ Page loaded successfully');
+            logResult('✅ All functions defined');
+            
+            // Test if elements exist
+            if (document.querySelector('.hero-tab')) {
+                logResult('✅ Hero tabs found');
+            } else {
+                logResult('❌ Hero tabs not found');
+            }
+            
+            if (document.getElementById('investors-content')) {
+                logResult('✅ Tab content elements found');
+            } else {
+                logResult('❌ Tab content elements not found');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Investment Advisor - Bvester</title>
+    <link rel="stylesheet" href="css/design-system.css">
+    <style>
+        /* AI Advisor Specific Styles */
+        .ai-brain {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .ai-brain::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            background: conic-gradient(from 0deg, var(--primary-color), transparent, var(--secondary-color));
+            border-radius: 50%;
+            animation: rotate 3s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .prediction-chart {
+            height: 300px;
+            background: var(--glass-background);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confidence-meter {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .confidence-meter svg {
+            transform: rotate(-90deg);
+        }
+
+        .confidence-meter .meter-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .opportunity-card {
+            background: var(--glass-background);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .opportunity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .opportunity-card:hover::before {
+            left: 100%;
+        }
+
+        .opportunity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .ai-score {
+            display: inline-block;
+            padding: 5px 15px;
+            background: var(--gradient-secondary);
+            border-radius: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .risk-badge.high { background: var(--error-color); color: white; }
+        .risk-badge.medium { background: var(--warning-color); color: var(--text-primary); }
+        .risk-badge.low { background: var(--success-color); color: white; }
+
+        .insight-card {
+            background: linear-gradient(135deg, var(--card-background), transparent);
+            border-left: 4px solid var(--primary-color);
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+        }
+
+        .market-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--glass-background);
+            border-radius: var(--radius-sm);
+            margin-bottom: 10px;
+        }
+
+        .market-indicator .trend-arrow {
+            font-size: 1.5rem;
+        }
+
+        .trend-up { color: var(--success-color); }
+        .trend-down { color: var(--error-color); }
+        .trend-neutral { color: var(--text-secondary); }
+
+        .allocation-chart {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .chat-interface {
+            background: var(--glass-background);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm);
+        }
+
+        .chat-message {
+            margin-bottom: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            max-width: 80%;
+        }
+
+        .chat-message.ai {
+            background: var(--primary-color);
+            color: white;
+            margin-right: auto;
+        }
+
+        .chat-message.user {
+            background: var(--secondary-color);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--input-background);
+        }
+
+        .prediction-confidence {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .confidence-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: width 0.5s ease;
+        }
+
+        .strategy-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .strategy-timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm);
+            background: var(--glass-background);
+            border-radius: var(--radius-sm);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid var(--background);
+        }
+
+        .learning-module {
+            background: var(--glass-background);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .learning-module .icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .sentiment-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: var(--glass-background);
+            border-radius: 20px;
+        }
+
+        .sentiment-indicator.bullish { color: var(--success-color); }
+        .sentiment-indicator.bearish { color: var(--error-color); }
+        .sentiment-indicator.neutral { color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- AI Advisor Header -->
+        <header class="glass-card" style="text-align: center; padding: var(--spacing-lg);">
+            <div class="ai-brain"></div>
+            <h1 class="gradient-text" style="margin-top: var(--spacing-md);">
+                AI Investment Advisor
+            </h1>
+            <p style="color: var(--text-secondary);">
+                Powered by Advanced Machine Learning Algorithms
+            </p>
+        </header>
+
+        <!-- Quick Stats -->
+        <div class="grid" style="margin: var(--spacing-lg) 0;">
+            <div class="glass-card">
+                <h3>Portfolio Performance</h3>
+                <div class="stat-value gradient-text">+24.5%</div>
+                <div class="stat-label">YTD Returns</div>
+            </div>
+            <div class="glass-card">
+                <h3>AI Accuracy</h3>
+                <div class="stat-value gradient-text">92%</div>
+                <div class="stat-label">Prediction Success</div>
+            </div>
+            <div class="glass-card">
+                <h3>Risk Score</h3>
+                <div class="stat-value gradient-text">65/100</div>
+                <div class="stat-label">Moderate</div>
+            </div>
+            <div class="glass-card">
+                <h3>Active Recommendations</h3>
+                <div class="stat-value gradient-text">7</div>
+                <div class="stat-label">View All</div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid" style="gap: var(--spacing-lg);">
+            <!-- Left Column -->
+            <div style="grid-column: span 8;">
+                <!-- Top Investment Opportunities -->
+                <section class="glass-card">
+                    <h2>AI-Recommended Opportunities</h2>
+                    
+                    <div class="opportunity-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h3>TechStart AI Solutions</h3>
+                                <p style="color: var(--text-secondary); margin: 5px 0;">
+                                    Artificial Intelligence • Startup Equity
+                                </p>
+                                <div style="margin: 10px 0;">
+                                    <span class="risk-badge high">High Risk</span>
+                                    <span style="margin-left: 10px;">Min. Investment: $5,000</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="ai-score">AI Score: 92</div>
+                                <div style="color: var(--success-color); font-weight: bold; margin-top: 5px;">
+                                    35-45% Expected Return
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prediction-confidence">
+                            <span>Confidence:</span>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: 92%;"></div>
+                            </div>
+                            <span>92%</span>
+                        </div>
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                            <strong>AI Analysis:</strong>
+                            <ul style="margin: 5px 0 0 20px;">
+                                <li>Strong founding team with proven track record</li>
+                                <li>Growing market with 40% CAGR</li>
+                                <li>Unique technology with patent pending</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="opportunity-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h3>Green Energy Fund</h3>
+                                <p style="color: var(--text-secondary); margin: 5px 0;">
+                                    Renewable Energy • Mutual Fund
+                                </p>
+                                <div style="margin: 10px 0;">
+                                    <span class="risk-badge medium">Medium Risk</span>
+                                    <span style="margin-left: 10px;">Min. Investment: $1,000</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="ai-score">AI Score: 85</div>
+                                <div style="color: var(--success-color); font-weight: bold; margin-top: 5px;">
+                                    12-18% Expected Return
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prediction-confidence">
+                            <span>Confidence:</span>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: 85%;"></div>
+                            </div>
+                            <span>85%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Market Predictions -->
+                <section class="glass-card" style="margin-top: var(--spacing-lg);">
+                    <h2>Market Predictions</h2>
+                    <div class="prediction-chart">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                    <div class="grid" style="margin-top: var(--spacing-md);">
+                        <div class="market-indicator">
+                            <span class="trend-arrow trend-up">↑</span>
+                            <div>
+                                <div style="font-weight: bold;">NASDAQ</div>
+                                <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    Bullish - +2.5% predicted
+                                </div>
+                            </div>
+                        </div>
+                        <div class="market-indicator">
+                            <span class="trend-arrow trend-neutral">→</span>
+                            <div>
+                                <div style="font-weight: bold;">S&P 500</div>
+                                <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    Neutral - +0.5% predicted
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Portfolio Optimization -->
+                <section class="glass-card" style="margin-top: var(--spacing-lg);">
+                    <h2>AI Portfolio Optimization</h2>
+                    <div class="grid">
+                        <div>
+                            <h3>Current Allocation</h3>
+                            <div class="allocation-chart">
+                                <canvas id="currentAllocation"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3>Recommended Allocation</h3>
+                            <div class="allocation-chart">
+                                <canvas id="recommendedAllocation"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: var(--spacing-md);">
+                        Apply AI Recommendations
+                    </button>
+                </section>
+            </div>
+
+            <!-- Right Column -->
+            <div style="grid-column: span 4;">
+                <!-- AI Chat Assistant -->
+                <section class="glass-card">
+                    <h3>AI Investment Assistant</h3>
+                    <div class="chat-interface">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="chat-message ai">
+                                Hello! I'm your AI investment advisor. How can I help you today?
+                            </div>
+                            <div class="chat-message user">
+                                What's your analysis on tech stocks?
+                            </div>
+                            <div class="chat-message ai">
+                                Tech stocks show strong momentum. My analysis indicates:
+                                • AI sector: +35% growth potential
+                                • Cloud computing: Stable growth
+                                • Semiconductors: Supply chain improving
+                                Recommend 25% portfolio allocation.
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" placeholder="Ask your investment question...">
+                            <button class="btn btn-primary">Send</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AI Insights -->
+                <section class="glass-card" style="margin-top: var(--spacing-lg);">
+                    <h3>AI Insights</h3>
+                    
+                    <div class="insight-card">
+                        <strong>🎯 Opportunity Alert</strong>
+                        <p style="margin: 5px 0; font-size: 0.9rem;">
+                            Green energy sector showing unusual volume. Consider increasing allocation by 5%.
+                        </p>
+                    </div>
+
+                    <div class="insight-card">
+                        <strong>⚠️ Risk Warning</strong>
+                        <p style="margin: 5px 0; font-size: 0.9rem;">
+                            Your tech exposure exceeds 40%. Diversification recommended.
+                        </p>
+                    </div>
+
+                    <div class="insight-card">
+                        <strong>📈 Market Trend</strong>
+                        <p style="margin: 5px 0; font-size: 0.9rem;">
+                            Bullish sentiment detected in emerging markets. +15% potential in 6 months.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Sentiment Analysis -->
+                <section class="glass-card" style="margin-top: var(--spacing-lg);">
+                    <h3>Market Sentiment Analysis</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Overall Market</span>
+                            <span class="sentiment-indicator bullish">
+                                <span>↑</span> Bullish
+                            </span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Tech Sector</span>
+                            <span class="sentiment-indicator bullish">
+                                <span>↑</span> Very Bullish
+                            </span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Energy Sector</span>
+                            <span class="sentiment-indicator neutral">
+                                <span>→</span> Neutral
+                            </span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Real Estate</span>
+                            <span class="sentiment-indicator bearish">
+                                <span>↓</span> Bearish
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Learning Recommendations -->
+                <section class="glass-card" style="margin-top: var(--spacing-lg);">
+                    <h3>Recommended Learning</h3>
+                    
+                    <div class="learning-module">
+                        <div class="icon">📚</div>
+                        <div>
+                            <strong>Understanding Market Cycles</strong>
+                            <p style="margin: 5px 0; font-size: 0.9rem; color: var(--text-secondary);">
+                                2 hours • High relevance
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="learning-module">
+                        <div class="icon">💡</div>
+                        <div>
+                            <strong>Tax-Efficient Investing</strong>
+                            <p style="margin: 5px 0; font-size: 0.9rem; color: var(--text-secondary);">
+                                1 hour • Medium relevance
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Investment Timeline -->
+        <section class="glass-card" style="margin-top: var(--spacing-lg);">
+            <h2>AI-Generated Investment Strategy</h2>
+            <div class="strategy-timeline">
+                <div class="timeline-item">
+                    <strong>Immediate (This Week)</strong>
+                    <p>Rebalance portfolio - Tech allocation exceeds target by 8%</p>
+                    <button class="btn btn-sm">Execute Now</button>
+                </div>
+                <div class="timeline-item">
+                    <strong>Short Term (1-3 Months)</strong>
+                    <p>Invest in Green Energy Fund - Momentum building in renewable sector</p>
+                    <div class="sentiment-indicator bullish" style="margin-top: 5px;">
+                        Expected Return: 12-18%
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <strong>Medium Term (3-6 Months)</strong>
+                    <p>Consider emerging markets exposure - AI detects growth opportunity</p>
+                </div>
+                <div class="timeline-item">
+                    <strong>Long Term (1+ Year)</strong>
+                    <p>Increase equity allocation by 10% - Age and risk profile support aggressive strategy</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Confidence Meter -->
+        <section class="glass-card" style="margin-top: var(--spacing-lg); text-align: center;">
+            <h2>AI Confidence Level</h2>
+            <div class="confidence-meter">
+                <svg width="200" height="200">
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="var(--border-color)" stroke-width="10"/>
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="url(#gradient)" stroke-width="10"
+                            stroke-dasharray="565" stroke-dashoffset="113" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="gradient">
+                            <stop offset="0%" stop-color="var(--primary-color)"/>
+                            <stop offset="100%" stop-color="var(--secondary-color)"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="meter-value">85%</div>
+            </div>
+            <p style="margin-top: var(--spacing-md); color: var(--text-secondary);">
+                Based on 1M+ data points and 500+ market indicators
+            </p>
+        </section>
+    </div>
+
+    <!-- Load Chart.js and Interactive Components -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/interactive-components.js"></script>
+    <script>
+        // Initialize prediction chart
+        const predictionCtx = document.getElementById('predictionChart').getContext('2d');
+        new Chart(predictionCtx, {
+            type: 'line',
+            data: {
+                labels: ['Today', '1W', '2W', '1M', '2M', '3M'],
+                datasets: [{
+                    label: 'Expected Returns',
+                    data: [0, 2, 5, 8, 12, 18],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.4
+                }, {
+                    label: 'Best Case',
+                    data: [0, 4, 8, 12, 18, 25],
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderDash: [5, 5],
+                    backgroundColor: 'transparent',
+                    tension: 0.4
+                }, {
+                    label: 'Worst Case',
+                    data: [0, -1, 1, 3, 6, 10],
+                    borderColor: 'rgb(255, 99, 132)',
+                    borderDash: [5, 5],
+                    backgroundColor: 'transparent',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Returns (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize allocation charts
+        const pieConfig = {
+            type: 'doughnut',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        };
+
+        // Current allocation
+        new Chart(document.getElementById('currentAllocation'), {
+            ...pieConfig,
+            data: {
+                labels: ['Stocks', 'Bonds', 'Real Estate', 'Crypto', 'Cash'],
+                datasets: [{
+                    data: [55, 20, 10, 10, 5],
+                    backgroundColor: [
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 206, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(153, 102, 255)',
+                        'rgb(201, 203, 207)'
+                    ]
+                }]
+            }
+        });
+
+        // Recommended allocation
+        new Chart(document.getElementById('recommendedAllocation'), {
+            ...pieConfig,
+            data: {
+                labels: ['Stocks', 'Bonds', 'Real Estate', 'Crypto', 'Cash'],
+                datasets: [{
+                    data: [65, 15, 8, 7, 5],
+                    backgroundColor: [
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 206, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(153, 102, 255)',
+                        'rgb(201, 203, 207)'
+                    ]
+                }]
+            }
+        });
+
+        // AI Chat functionality
+        document.querySelector('.chat-input button').addEventListener('click', function() {
+            const input = document.querySelector('.chat-input input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-message user';
+            userMsg.textContent = message;
+            chatMessages.appendChild(userMsg);
+
+            // Clear input
+            input.value = '';
+
+            // Simulate AI response
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'chat-message ai';
+                aiMsg.textContent = 'Analyzing your question... Based on current market data and your portfolio, I recommend maintaining your current strategy with minor adjustments to tech sector exposure.';
+                chatMessages.appendChild(aiMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        });
+
+        // Animate confidence meters on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.confidence-fill').forEach(bar => {
+                        const width = bar.style.width;
+                        bar.style.width = '0';
+                        setTimeout(() => {
+                            bar.style.width = width;
+                        }, 100);
+                    });
+                }
+            });
+        });
+
+        document.querySelectorAll('.prediction-confidence').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Real-time updates simulation
+        setInterval(() => {
+            // Update market indicators
+            document.querySelectorAll('.market-indicator').forEach(indicator => {
+                const changeValue = (Math.random() * 2 - 1).toFixed(2);
+                const trendArrow = indicator.querySelector('.trend-arrow');
+                
+                if (changeValue > 0.5) {
+                    trendArrow.className = 'trend-arrow trend-up';
+                    trendArrow.textContent = '↑';
+                } else if (changeValue < -0.5) {
+                    trendArrow.className = 'trend-arrow trend-down';
+                    trendArrow.textContent = '↓';
+                } else {
+                    trendArrow.className = 'trend-arrow trend-neutral';
+                    trendArrow.textContent = '→';
+                }
+            });
+        }, 5000);
+
+        // Initialize tooltips and interactions
+        document.querySelectorAll('.opportunity-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Show detailed analysis modal
+                console.log('Show detailed analysis for:', card.querySelector('h3').textContent);
+            });
+        });
+
+        // Add notification for new insights
+        let insightCount = 3;
+        setInterval(() => {
+            insightCount++;
+            const toast = new ToastNotification(
+                `New AI Insight Available (#${insightCount})`,
+                'info'
+            );
+            toast.show();
+        }, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SME Dashboard - Bvester</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #0A0A0A 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .logout-btn {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #FFD700;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(0,0,0,0.9);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        .main-content { 
+            max-width: 1200px; 
+            margin: 2rem auto; 
+            padding: 0 2rem; 
+        }
+        
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 2rem; 
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+        }
+        
+        .card h3 {
+            color: #FFD700;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #0A0A0A;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .health-score { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        
+        .score-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0A0A0A;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Bvester</h1>
+            <span>SME Dashboard</span>
+        </div>
+        <div class="user-info">
+            <span id="userName">Welcome back!</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>💰 Funding Raised</h3>
+                <div class="stat-number">$25,000</div>
+                <p>Total funds raised from investors</p>
+            </div>
+            
+            <div class="card">
+                <h3>👥 Active Investors</h3>
+                <div class="stat-number">8</div>
+                <p>Investors backing your business</p>
+            </div>
+            
+            <div class="card">
+                <h3>🎯 Funding Goal</h3>
+                <div class="stat-number">$100,000</div>
+                <p>Target funding amount</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📊 Business Health Score</h3>
+            <div class="health-score">
+                <div class="score-circle">85</div>
+                <div>
+                    <p><strong>Excellent Investment Readiness</strong></p>
+                    <p>Your business shows strong fundamentals and growth potential</p>
+                </div>
+            </div>
+            <a href="#" class="btn-primary">View Detailed Analysis</a>
+        </div>
+
+        <div class="card">
+            <h3>📈 Performance Metrics</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <strong>Monthly Revenue</strong><br>
+                    <span style="color: #38a169; font-size: 1.5rem;">$15,000</span>
+                </div>
+                <div>
+                    <strong>Growth Rate</strong><br>
+                    <span style="color: #38a169; font-size: 1.5rem;">+12%</span>
+                </div>
+                <div>
+                    <strong>Customer Base</strong><br>
+                    <span style="color: #667eea; font-size: 1.5rem;">450</span>
+                </div>
+                <div>
+                    <strong>Market Position</strong><br>
+                    <span style="color: #667eea; font-size: 1.5rem;">#3</span>
+                </div>
+            </div>
+            <a href="#" class="btn-primary">Update Business Data</a>
+        </div>
+
+        <div class="card">
+            <h3>🚀 Next Steps</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 1rem; padding: 1rem; background: #f7fafc; border-radius: 5px;">
+                    ✅ Complete business profile
+                </li>
+                <li style="margin-bottom: 1rem; padding: 1rem; background: #f7fafc; border-radius: 5px;">
+                    ✅ Submit financial documents
+                </li>
+                <li style="margin-bottom: 1rem; padding: 1rem; background: #fff5f5; border-radius: 5px;">
+                    📝 Create investor presentation
+                </li>
+                <li style="margin-bottom: 1rem; padding: 1rem; background: #fff5f5; border-radius: 5px;">
+                    📊 Set up quarterly reporting
+                </li>
+            </ul>
+            <a href="#" class="btn-primary">Continue Setup</a>
+        </div>
+
+        <div class="card">
+            <h3>💡 AI Recommendations</h3>
+            <p style="margin-bottom: 1rem;">Based on your business data and market analysis:</p>
+            <ul style="margin-bottom: 1rem;">
+                <li>Consider expanding to the Nigerian market (+30% potential)</li>
+                <li>Optimize your pricing model for better margins</li>
+                <li>Focus on customer retention strategies</li>
+            </ul>
+            <a href="#" class="btn-primary">Get AI Business Review</a>
+        </div>
+    </main>
+
+    <script>
+        // Redirect to enhanced dashboard
+        window.location.href = 'sme-dashboard-enhanced.html';
+
+        // Check if user is logged in
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const userName = localStorage.getItem('userName');
+        const userType = localStorage.getItem('userType');
+
+        if (!isLoggedIn || isLoggedIn !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Verify this is the right dashboard for the user type
+        if (userType && userType !== 'sme') {
+            // Redirect to appropriate dashboard
+            if (userType === 'investor') {
+                window.location.href = 'investor-dashboard.html';
+            } else if (userType === 'premium') {
+                window.location.href = 'premium-dashboard.html';
+            }
+        }
+
+        if (userName) {
+            document.getElementById('userName').textContent = `Welcome, ${userName}!`;
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userType');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

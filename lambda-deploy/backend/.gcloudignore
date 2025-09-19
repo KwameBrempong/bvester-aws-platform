@@ -1,0 +1,25 @@
+# Google Cloud Build ignore file
+.gcloudignore
+.git
+.gitignore
+README.md
+*.md
+node_modules
+npm-debug.log
+.nyc_output
+.coverage
+*.log
+logs/
+.DS_Store
+.env*
+!.env.production
+firebase-setup-template.txt
+stripe-setup-template.txt
+flutterwave-setup-template.txt
+sendgrid-setup-template.txt
+twilio-setup-template.txt
+railway-deploy-guide.md
+vercel-deploy-guide.md
+gcp-deploy-guide.md
+install-gcloud.bat
+GOOGLE_CLOUD_SETUP.md

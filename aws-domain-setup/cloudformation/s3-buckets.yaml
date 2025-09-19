@@ -1,0 +1,160 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'S3 Buckets setup for static website hosting - bvester.com'
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: bvester.com
+    Description: The domain name for the S3 buckets
+
+Resources:
+  # Main S3 bucket for website content
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DomainName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      NotificationConfiguration:
+        CloudWatchConfigurations:
+          - Event: s3:ObjectCreated:*
+            CloudWatchConfiguration:
+              LogGroupName: !Ref WebsiteLogGroup
+      Tags:
+        - Key: Name
+          Value: !Sub '${DomainName}-website-bucket'
+        - Key: Environment
+          Value: Production
+        - Key: Project
+          Value: BVester
+
+  # WWW redirect bucket
+  WWWBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'www.${DomainName}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref DomainName
+          Protocol: https
+      Tags:
+        - Key: Name
+          Value: !Sub 'www.${DomainName}-redirect-bucket'
+        - Key: Environment
+          Value: Production
+        - Key: Project
+          Value: BVester
+
+  # Origin Access Control for CloudFront
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${DomainName}-oac'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+        Description: !Sub 'Origin Access Control for ${DomainName}'
+
+  # Bucket policy for CloudFront access
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowCloudFrontAccess
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${WebsiteBucket}/*'
+            Condition:
+              StringEquals:
+                'AWS:SourceArn': !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/*'
+
+  # Deployment bucket for CI/CD
+  DeploymentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${DomainName}-deployment'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldDeployments
+            Status: Enabled
+            ExpirationInDays: 30
+            NoncurrentVersionExpirationInDays: 7
+      Tags:
+        - Key: Name
+          Value: !Sub '${DomainName}-deployment-bucket'
+        - Key: Environment
+          Value: Production
+        - Key: Project
+          Value: BVester
+
+  # CloudWatch Log Group for S3 access logs
+  WebsiteLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/s3/${DomainName}'
+      RetentionInDays: 30
+
+Outputs:
+  WebsiteBucketName:
+    Description: 'Name of the main website S3 bucket'
+    Value: !Ref WebsiteBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-WebsiteBucketName'
+      
+  WebsiteBucketArn:
+    Description: 'ARN of the main website S3 bucket'
+    Value: !GetAtt WebsiteBucket.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-WebsiteBucketArn'
+      
+  WebsiteBucketDomainName:
+    Description: 'Domain name of the website S3 bucket'
+    Value: !GetAtt WebsiteBucket.RegionalDomainName
+    Export:
+      Name: !Sub '${AWS::StackName}-WebsiteBucketDomainName'
+      
+  WWWBucketName:
+    Description: 'Name of the WWW redirect S3 bucket'
+    Value: !Ref WWWBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-WWWBucketName'
+      
+  DeploymentBucketName:
+    Description: 'Name of the deployment S3 bucket'
+    Value: !Ref DeploymentBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-DeploymentBucketName'
+      
+  OriginAccessControlId:
+    Description: 'Origin Access Control ID'
+    Value: !Ref OriginAccessControl
+    Export:
+      Name: !Sub '${AWS::StackName}-OriginAccessControlId'

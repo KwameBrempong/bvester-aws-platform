@@ -1,0 +1,72 @@
+# Google Cloud Build configuration for Docker Hub push
+steps:
+  # Build Backend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'build'
+      - '-f'
+      - 'backend/Dockerfile'
+      - '-t'
+      - 'kwamebrempong/bvester-backend:latest'
+      - '-t'
+      - 'kwamebrempong/bvester-backend:v2.0.0-vercel'
+      - './backend'
+    
+  # Build Web Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'Dockerfile.web.vercel'
+      - '-t'
+      - 'kwamebrempong/bvester-web-vercel:latest'
+      - '-t'
+      - 'kwamebrempong/bvester-web-vercel:v2.0.0'
+      - '.'
+    
+  # Build Dev Backend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'backend/Dockerfile.dev'
+      - '-t'
+      - 'kwamebrempong/bvester-backend-dev:latest'
+      - '-t'
+      - 'kwamebrempong/bvester-backend-dev:v2.0.0-vercel'
+      - './backend'
+    
+  # Push Backend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'kwamebrempong/bvester-backend:latest']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'kwamebrempong/bvester-backend:v2.0.0-vercel']
+  
+  # Push Web Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'kwamebrempong/bvester-web-vercel:latest']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'kwamebrempong/bvester-web-vercel:v2.0.0']
+  
+  # Push Dev Backend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'kwamebrempong/bvester-backend-dev:latest']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'kwamebrempong/bvester-backend-dev:v2.0.0-vercel']
+
+# Configure Docker Hub authentication
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 1200s  # 20 minutes
+
+# Use secrets for Docker Hub credentials
+availableSecrets:
+  secretManager:
+    - versionName: projects/YOUR_PROJECT_ID/secrets/DOCKER_HUB_USERNAME/versions/latest
+      env: 'DOCKER_USERNAME'
+    - versionName: projects/YOUR_PROJECT_ID/secrets/DOCKER_HUB_PASSWORD/versions/latest
+      env: 'DOCKER_PASSWORD'

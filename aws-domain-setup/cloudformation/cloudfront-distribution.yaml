@@ -1,0 +1,228 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFront Distribution setup for bvester.com with HTTPS and security headers'
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: bvester.com
+    Description: The domain name for CloudFront distribution
+    
+  CertificateArn:
+    Type: String
+    Description: ARN of the SSL certificate from ACM
+    
+  WebsiteBucketDomainName:
+    Type: String
+    Description: Domain name of the S3 website bucket
+    
+  OriginAccessControlId:
+    Type: String
+    Description: Origin Access Control ID for S3 access
+
+Resources:
+  # CloudFront Distribution
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Ref DomainName
+          - !Sub 'www.${DomainName}'
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          TargetOriginId: !Sub '${DomainName}-s3-origin'
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad  # Managed-CachingOptimized
+          ResponseHeadersPolicyId: !Ref SecurityHeadersPolicy
+          Compress: true
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 300
+          - ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 300
+        Enabled: true
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        Origins:
+          - Id: !Sub '${DomainName}-s3-origin'
+            DomainName: !Ref WebsiteBucketDomainName
+            OriginAccessControlId: !Ref OriginAccessControlId
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        PriceClass: PriceClass_100  # Use only North America and Europe edge locations
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+        WebACLId: !Ref WebACL
+      Tags:
+        - Key: Name
+          Value: !Sub '${DomainName}-cloudfront-distribution'
+        - Key: Environment
+          Value: Production
+        - Key: Project
+          Value: BVester
+
+  # WWW CloudFront Distribution (redirect)
+  WWWCloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Sub 'www.${DomainName}'
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          TargetOriginId: !Sub 'www.${DomainName}-s3-origin'
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+          Compress: true
+        Enabled: true
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        Origins:
+          - Id: !Sub 'www.${DomainName}-s3-origin'
+            DomainName: !Sub 'www.${DomainName}.s3-website-${AWS::Region}.amazonaws.com'
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: http-only
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+      Tags:
+        - Key: Name
+          Value: !Sub 'www.${DomainName}-cloudfront-distribution'
+        - Key: Environment
+          Value: Production
+        - Key: Project
+          Value: BVester
+
+  # Security Headers Policy
+  SecurityHeadersPolicy:
+    Type: AWS::CloudFront::ResponseHeadersPolicy
+    Properties:
+      ResponseHeadersPolicyConfig:
+        Name: !Sub '${DomainName}-security-headers'
+        Comment: 'Security headers for bvester.com'
+        SecurityHeadersConfig:
+          StrictTransportSecurity:
+            AccessControlMaxAgeSec: 31536000
+            IncludeSubdomains: true
+            Preload: true
+          ContentTypeOptions:
+            Override: true
+          FrameOptions:
+            FrameOption: DENY
+            Override: true
+          ReferrerPolicy:
+            ReferrerPolicy: strict-origin-when-cross-origin
+            Override: true
+        CustomHeadersConfig:
+          Items:
+            - Header: X-Powered-By
+              Value: AWS
+              Override: true
+            - Header: Cache-Control
+              Value: public, max-age=31536000
+              Override: false
+
+  # WAF Web ACL for security
+  WebACL:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      Name: !Sub '${DomainName}-web-acl'
+      Scope: CLOUDFRONT
+      DefaultAction:
+        Allow: {}
+      Rules:
+        - Name: AWSManagedRulesCommonRuleSet
+          Priority: 1
+          OverrideAction:
+            None: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesCommonRuleSet
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: CommonRuleSetMetric
+        - Name: AWSManagedRulesKnownBadInputsRuleSet
+          Priority: 2
+          OverrideAction:
+            None: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesKnownBadInputsRuleSet
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: KnownBadInputsRuleSetMetric
+        - Name: RateLimitRule
+          Priority: 3
+          Action:
+            Block: {}
+          Statement:
+            RateBasedStatement:
+              Limit: 2000
+              AggregateKeyType: IP
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: RateLimitRule
+      VisibilityConfig:
+        SampledRequestsEnabled: true
+        CloudWatchMetricsEnabled: true
+        MetricName: !Sub '${DomainName}WebACL'
+      Tags:
+        - Key: Name
+          Value: !Sub '${DomainName}-web-acl'
+        - Key: Environment
+          Value: Production
+
+Outputs:
+  DistributionId:
+    Description: 'CloudFront Distribution ID'
+    Value: !Ref CloudFrontDistribution
+    Export:
+      Name: !Sub '${AWS::StackName}-DistributionId'
+      
+  DistributionDomainName:
+    Description: 'CloudFront Distribution Domain Name'
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: !Sub '${AWS::StackName}-DistributionDomainName'
+      
+  WWWDistributionId:
+    Description: 'WWW CloudFront Distribution ID'
+    Value: !Ref WWWCloudFrontDistribution
+    Export:
+      Name: !Sub '${AWS::StackName}-WWWDistributionId'
+      
+  WWWDistributionDomainName:
+    Description: 'WWW CloudFront Distribution Domain Name'
+    Value: !GetAtt WWWCloudFrontDistribution.DomainName
+    Export:
+      Name: !Sub '${AWS::StackName}-WWWDistributionDomainName'
+      
+  WebACLId:
+    Description: 'WAF Web ACL ID'
+    Value: !GetAtt WebACL.Id
+    Export:
+      Name: !Sub '${AWS::StackName}-WebACLId'

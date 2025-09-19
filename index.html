@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester - Connect African SMEs with Global Investors</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; }
+        
+        .hero { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 100px 0; 
+            text-align: center; 
+        }
+        
+        .hero h1 { 
+            font-size: 3rem; 
+            margin-bottom: 1rem; 
+            font-weight: bold; 
+        }
+        
+        .hero p { 
+            font-size: 1.2rem; 
+            margin-bottom: 2rem; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        
+        .cta-buttons { 
+            display: flex; 
+            gap: 1rem; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+        }
+        
+        .btn { 
+            padding: 1rem 2rem; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            text-decoration: none; 
+            display: inline-block; 
+            font-weight: bold; 
+        }
+        
+        .btn-primary { 
+            background: #ffffff; 
+            color: #667eea; 
+        }
+        
+        .btn-primary:hover { 
+            background: #f8f9fa; 
+            transform: translateY(-2px); 
+        }
+        
+        .btn-secondary { 
+            background: transparent; 
+            color: white; 
+            border: 2px solid white; 
+        }
+        
+        .btn-secondary:hover { 
+            background: white; 
+            color: #667eea; 
+        }
+        
+        .features { 
+            padding: 80px 0; 
+            background: #f8f9fa; 
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        .features-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem; 
+        }
+        
+        .feature { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            text-align: center; 
+        }
+        
+        .feature h3 { 
+            font-size: 1.5rem; 
+            margin-bottom: 1rem; 
+            color: #667eea; 
+        }
+        
+        .stats { 
+            padding: 80px 0; 
+            background: white; 
+        }
+        
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 2rem; 
+            text-align: center; 
+        }
+        
+        .stat h3 { 
+            font-size: 2.5rem; 
+            color: #667eea; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .footer { 
+            background: #333; 
+            color: white; 
+            padding: 40px 0; 
+            text-align: center; 
+        }
+        
+        .nav { 
+            display: flex; 
+            gap: 1rem; 
+            justify-content: center; 
+            margin-top: 2rem; 
+        }
+        
+        .nav a { 
+            color: white; 
+            text-decoration: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 5px; 
+            transition: background 0.3s; 
+        }
+        
+        .nav a:hover { 
+            background: rgba(255,255,255,0.1); 
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="container">
+            <h1>Bvester</h1>
+            <p>Connecting African Small & Medium Enterprises with Global Investors</p>
+            <div class="cta-buttons">
+                <a href="signup.html" class="btn btn-primary">Start Free Trial</a>
+                <a href="login.html" class="btn btn-secondary">Login</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem; color: #333;">Why Choose Bvester?</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <h3>🏢 For SMEs</h3>
+                    <p>Get access to global investors, track your business health, and secure funding to grow your business across Africa.</p>
+                </div>
+                <div class="feature">
+                    <h3>💰 For Investors</h3>
+                    <p>Discover vetted African SMEs, make secure investments, and track your portfolio performance in real-time.</p>
+                </div>
+                <div class="feature">
+                    <h3>🤖 AI-Powered</h3>
+                    <p>Our AI advisor helps assess business viability, investment opportunities, and provides data-driven insights.</p>
+                </div>
+                <div class="feature">
+                    <h3>🌍 Global Reach</h3>
+                    <p>Connect African businesses with investors worldwide through our secure, regulated platform.</p>
+                </div>
+                <div class="feature">
+                    <h3>📊 Real-time Analytics</h3>
+                    <p>Track investments, monitor business performance, and get detailed analytics on your portfolio.</p>
+                </div>
+                <div class="feature">
+                    <h3>🔒 Secure & Compliant</h3>
+                    <p>Bank-level security, regulatory compliance, and transparent transaction processing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem; color: #333;">Platform Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat">
+                    <h3>1,000+</h3>
+                    <p>Registered SMEs</p>
+                </div>
+                <div class="stat">
+                    <h3>500+</h3>
+                    <p>Global Investors</p>
+                </div>
+                <div class="stat">
+                    <h3>$2M+</h3>
+                    <p>Funded Projects</p>
+                </div>
+                <div class="stat">
+                    <h3>15</h3>
+                    <p>African Countries</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Bvester. Empowering African SMEs through Global Investment.</p>
+            <div class="nav">
+                <a href="login.html">Login</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,151 @@
+{
+  "dnsRecords": {
+    "description": "DNS record configuration for bvester.com",
+    "domain": "bvester.com",
+    "records": [
+      {
+        "name": "bvester.com",
+        "type": "A",
+        "aliasTarget": {
+          "dnsName": "CLOUDFRONT_DOMAIN_NAME",
+          "evaluateTargetHealth": false,
+          "hostedZoneId": "Z2FDTNDATAQYW2"
+        },
+        "comment": "Apex domain pointing to CloudFront"
+      },
+      {
+        "name": "bvester.com",
+        "type": "AAAA",
+        "aliasTarget": {
+          "dnsName": "CLOUDFRONT_DOMAIN_NAME",
+          "evaluateTargetHealth": false,
+          "hostedZoneId": "Z2FDTNDATAQYW2"
+        },
+        "comment": "Apex domain IPv6 pointing to CloudFront"
+      },
+      {
+        "name": "www.bvester.com",
+        "type": "A",
+        "aliasTarget": {
+          "dnsName": "CLOUDFRONT_DOMAIN_NAME",
+          "evaluateTargetHealth": false,
+          "hostedZoneId": "Z2FDTNDATAQYW2"
+        },
+        "comment": "WWW subdomain pointing to CloudFront"
+      },
+      {
+        "name": "www.bvester.com",
+        "type": "AAAA",
+        "aliasTarget": {
+          "dnsName": "CLOUDFRONT_DOMAIN_NAME",
+          "evaluateTargetHealth": false,
+          "hostedZoneId": "Z2FDTNDATAQYW2"
+        },
+        "comment": "WWW subdomain IPv6 pointing to CloudFront"
+      }
+    ],
+    "additionalRecords": [
+      {
+        "name": "mail.bvester.com",
+        "type": "CNAME",
+        "ttl": 300,
+        "resourceRecords": [
+          {
+            "value": "mail.google.com"
+          }
+        ],
+        "comment": "Email CNAME (example - configure as needed)"
+      },
+      {
+        "name": "bvester.com",
+        "type": "MX",
+        "ttl": 300,
+        "resourceRecords": [
+          {
+            "value": "10 aspmx.l.google.com"
+          },
+          {
+            "value": "20 alt1.aspmx.l.google.com"
+          },
+          {
+            "value": "30 alt2.aspmx.l.google.com"
+          }
+        ],
+        "comment": "Google Workspace MX records (example - configure as needed)"
+      },
+      {
+        "name": "bvester.com",
+        "type": "TXT",
+        "ttl": 300,
+        "resourceRecords": [
+          {
+            "value": "\"v=spf1 include:_spf.google.com ~all\""
+          }
+        ],
+        "comment": "SPF record for Google Workspace (example - configure as needed)"
+      },
+      {
+        "name": "_dmarc.bvester.com",
+        "type": "TXT",
+        "ttl": 300,
+        "resourceRecords": [
+          {
+            "value": "\"v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@bvester.com\""
+          }
+        ],
+        "comment": "DMARC policy (example - configure as needed)"
+      },
+      {
+        "name": "api.bvester.com",
+        "type": "A",
+        "aliasTarget": {
+          "dnsName": "API_CLOUDFRONT_DOMAIN_NAME",
+          "evaluateTargetHealth": false,
+          "hostedZoneId": "Z2FDTNDATAQYW2"
+        },
+        "comment": "API subdomain (configure if needed)"
+      },
+      {
+        "name": "admin.bvester.com",
+        "type": "A",
+        "aliasTarget": {
+          "dnsName": "ADMIN_CLOUDFRONT_DOMAIN_NAME",
+          "evaluateTargetHealth": false,
+          "hostedZoneId": "Z2FDTNDATAQYW2"
+        },
+        "comment": "Admin subdomain (configure if needed)"
+      }
+    ]
+  },
+  "healthChecks": [
+    {
+      "type": "HTTPS",
+      "resourcePath": "/",
+      "fullyQualifiedDomainName": "bvester.com",
+      "port": 443,
+      "requestInterval": 30,
+      "failureThreshold": 3,
+      "tags": [
+        {
+          "key": "Name",
+          "value": "bvester.com-health-check"
+        }
+      ]
+    }
+  ],
+  "cloudWatchAlarms": [
+    {
+      "alarmName": "bvester-com-health-check-failure",
+      "metricName": "HealthCheckStatus",
+      "namespace": "AWS/Route53",
+      "statistic": "Minimum",
+      "period": 60,
+      "evaluationPeriods": 2,
+      "threshold": 1,
+      "comparisonOperator": "LessThanThreshold",
+      "alarmActions": [
+        "arn:aws:sns:us-east-1:ACCOUNT_ID:bvester-alerts"
+      ]
+    }
+  ]
+}

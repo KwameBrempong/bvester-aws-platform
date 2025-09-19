@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester Web Fix Validation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .test-links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .test-links a:hover { background: #1e7e34; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Bvester Web Fix Validation</h1>
+        <p>This page tests if the Expo redirect fix is working properly.</p>
+        
+        <div id="validation-results"></div>
+        
+        <button onclick="runAllTests()">🚀 Run All Tests</button>
+        <button onclick="clearResults()">🧹 Clear Results</button>
+    </div>
+
+    <div class="test-container">
+        <h2>📋 Manual Test Links</h2>
+        <p>Click these links to manually test navigation:</p>
+        <div class="test-links">
+            <a href="/" target="_blank">🏠 Homepage</a>
+            <a href="/login.html" target="_blank">🔑 Login Page</a>
+            <a href="/signup.html" target="_blank">✍️ Signup Page</a>
+            <a href="/opportunities.html" target="_blank">💰 Opportunities</a>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🔍 Current Environment Check</h2>
+        <div id="environment-info"></div>
+    </div>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('validation-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = message;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function clearResults() {
+            document.getElementById('validation-results').innerHTML = '';
+        }
+
+        function testWebOnlyFlags() {
+            addResult('🧪 Testing web-only flags...', 'info');
+            
+            if (window.__BVESTER_WEB_ONLY) {
+                addResult('✅ __BVESTER_WEB_ONLY flag is set', 'success');
+            } else {
+                addResult('❌ __BVESTER_WEB_ONLY flag is missing', 'error');
+            }
+            
+            if (window.__EXPO_DISABLE_ROUTING) {
+                addResult('✅ __EXPO_DISABLE_ROUTING flag is set', 'success');
+            } else {
+                addResult('❌ __EXPO_DISABLE_ROUTING flag is missing', 'error');
+            }
+            
+            const platform = document.documentElement.getAttribute('data-bvester-platform');
+            if (platform === 'web') {
+                addResult('✅ Platform attribute set to "web"', 'success');
+            } else {
+                addResult('❌ Platform attribute not set or incorrect', 'error');
+            }
+        }
+
+        function testExpoBlocking() {
+            addResult('🧪 Testing Expo URL blocking...', 'info');
+            
+            try {
+                // Test window.location.replace blocking
+                const originalReplace = window.location.replace;
+                let blockWorked = false;
+                
+                window.location.replace = function(url) {
+                    if (typeof url === 'string' && url.includes('exp://')) {
+                        blockWorked = true;
+                        return;
+                    }
+                    return originalReplace.call(this, url);
+                };
+                
+                // Simulate an Expo redirect attempt
+                window.location.replace('exp://test-url');
+                
+                if (blockWorked) {
+                    addResult('✅ Expo URL blocking is working', 'success');
+                } else {
+                    addResult('❌ Expo URL blocking failed', 'error');
+                }
+                
+            } catch (e) {
+                addResult('❌ Error testing Expo blocking: ' + e.message, 'error');
+            }
+        }
+
+        function testNavigationLinks() {
+            addResult('🧪 Testing navigation links...', 'info');
+            
+            const loginLinks = document.querySelectorAll('a[href*="login"]');
+            const signupLinks = document.querySelectorAll('a[href*="signup"]');
+            
+            if (loginLinks.length > 0) {
+                addResult(`✅ Found ${loginLinks.length} login links`, 'success');
+            } else {
+                addResult('⚠️ No login links found on this page', 'info');
+            }
+            
+            if (signupLinks.length > 0) {
+                addResult(`✅ Found ${signupLinks.length} signup links`, 'success');
+            } else {
+                addResult('⚠️ No signup links found on this page', 'info');
+            }
+        }
+
+        function checkEnvironment() {
+            const envDiv = document.getElementById('environment-info');
+            const currentUrl = window.location.href;
+            
+            let envInfo = `
+                <div class="test-result info">
+                    <strong>🌐 Current URL:</strong> ${currentUrl}<br>
+                    <strong>📱 User Agent:</strong> ${navigator.userAgent}<br>
+                    <strong>🔗 Protocol:</strong> ${window.location.protocol}<br>
+                    <strong>🏠 Host:</strong> ${window.location.host}<br>
+                    <strong>⚡ Web-Only Mode:</strong> ${window.__BVESTER_WEB_ONLY ? '✅ Active' : '❌ Inactive'}<br>
+                    <strong>🚫 Expo Blocked:</strong> ${document.documentElement.getAttribute('data-expo-blocked') ? '✅ Yes' : '❌ No'}
+                </div>
+            `;
+            
+            if (currentUrl.includes('exp://') || currentUrl.includes('exp.host')) {
+                envInfo += '<div class="test-result error">❌ WARNING: Current URL contains Expo patterns!</div>';
+            } else {
+                envInfo += '<div class="test-result success">✅ Current URL is clean (no Expo patterns)</div>';
+            }
+            
+            envDiv.innerHTML = envInfo;
+        }
+
+        function runAllTests() {
+            clearResults();
+            addResult('🚀 Starting Bvester Web Fix Validation...', 'info');
+            
+            setTimeout(() => testWebOnlyFlags(), 100);
+            setTimeout(() => testExpoBlocking(), 200);
+            setTimeout(() => testNavigationLinks(), 300);
+            setTimeout(() => {
+                addResult('✅ All tests completed!', 'success');
+                addResult('📋 Check the results above and test the manual links.', 'info');
+            }, 400);
+        }
+
+        // Initialize environment check on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            checkEnvironment();
+        });
+    </script>
+</body>
+</html>

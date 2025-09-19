@@ -1,0 +1,177 @@
+# 🚫 BVESTER BACKEND - DOCKER IGNORE
+# Backend-specific files to exclude from Docker build context
+
+# ============================================================================
+# NODE.JS & DEPENDENCIES
+# ============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================================================
+# ENVIRONMENT & SECRETS
+# ============================================================================
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Service account keys (CRITICAL SECURITY)
+*service-account*.json
+*credentials*.json
+*key*.json
+*secret*.json
+firebase-adminsdk-*.json
+serviceAccountKey.json
+
+# ============================================================================
+# TESTING & COVERAGE
+# ============================================================================
+coverage/
+*.lcov
+.nyc_output
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+test-*.js
+
+# ============================================================================
+# BUILD ARTIFACTS & CACHE
+# ============================================================================
+build/Release
+dist/
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist
+.serverless/
+.fusebox/
+*.tsbuildinfo
+
+# NPM/Yarn cache
+.npm
+.yarn-integrity
+*.tgz
+
+# ============================================================================
+# DEVELOPMENT TOOLS & IDE
+# ============================================================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vscode-test
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# LOGS & TEMPORARY FILES
+# ============================================================================
+logs/
+*.log
+tmp/
+temp/
+.tmp/
+uploads/
+*.tmp
+
+# ============================================================================
+# OS GENERATED FILES
+# ============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================================================
+# DOCUMENTATION
+# ============================================================================
+*.md
+!README.md
+docs/
+DEPLOYMENT_GUIDE.md
+gcp-deploy-guide.md
+railway-deploy-guide.md
+
+# ============================================================================
+# CONFIGURATION FILES
+# ============================================================================
+.eslintrc*
+.prettierrc*
+jest.config.*
+*.config.js
+!babel.config.js
+
+# ============================================================================
+# DOCKER & DEPLOYMENT
+# ============================================================================
+Dockerfile*
+docker-compose*
+.dockerignore
+cloudbuild.yaml
+.gcloudignore
+deploy/
+deployment/
+
+# Platform configs
+vercel.json
+netlify.toml
+Procfile
+railway.json
+
+# ============================================================================
+# CI/CD
+# ============================================================================
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# ============================================================================
+# FIREBASE
+# ============================================================================
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# ============================================================================
+# BACKUP & ARCHIVE FILES
+# ============================================================================
+*.bak
+*.backup
+*.old
+*.zip
+*.tar.gz
+*.tar.bz2
+*.rar
+*.7z
+
+# ============================================================================
+# CLOUD PLATFORMS
+# ============================================================================
+# Google Cloud
+.gcloudignore
+gcp-*.json
+
+# AWS
+.aws/
+aws-*.json
+
+# Azure
+.azure/

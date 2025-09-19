@@ -1,0 +1,286 @@
+{
+  "version": "1.0",
+  "region": "us-east-1",
+  "services": {
+    "amplify": {
+      "appName": "bvester",
+      "repositoryUrl": "https://github.com/KwameBrempong/bvesteroriginal.git",
+      "branch": "main",
+      "framework": "React",
+      "buildSettings": {
+        "commands": {
+          "preBuild": ["npm install"],
+          "build": ["npm run build:web"],
+          "postBuild": ["echo 'Build completed successfully'"]
+        },
+        "artifacts": {
+          "baseDirectory": "dist",
+          "files": ["**/*"]
+        },
+        "cache": {
+          "paths": ["node_modules/**/*"]
+        }
+      },
+      "environmentVariables": {
+        "EXPO_PUBLIC_API_URL": "https://api.bvester.com",
+        "NODE_ENV": "production"
+      }
+    },
+    "apiGateway": {
+      "apiName": "bvester-api",
+      "stageName": "prod",
+      "customDomain": {
+        "domainName": "api.bvester.com",
+        "certificateArn": "arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/CERTIFICATE_ID"
+      },
+      "cors": {
+        "allowOrigins": ["https://bvester.com", "https://www.bvester.com"],
+        "allowHeaders": ["Content-Type", "Authorization", "X-Amz-Date", "X-Api-Key"],
+        "allowMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+      }
+    },
+    "lambda": {
+      "functions": [
+        {
+          "name": "bvester-api-handler",
+          "runtime": "nodejs18.x",
+          "handler": "api/index.handler",
+          "timeout": 30,
+          "memory": 512,
+          "environment": {
+            "NODE_ENV": "production",
+            "DYNAMODB_REGION": "us-east-1"
+          }
+        },
+        {
+          "name": "bvester-chat-processor",
+          "runtime": "nodejs18.x",
+          "handler": "api/chat-processor.handler",
+          "timeout": 15,
+          "memory": 256
+        },
+        {
+          "name": "bvester-assessment-engine",
+          "runtime": "nodejs18.x",
+          "handler": "api/assessment-engine.handler",
+          "timeout": 30,
+          "memory": 512
+        }
+      ]
+    },
+    "dynamodb": {
+      "tables": [
+        {
+          "tableName": "bvester-users",
+          "partitionKey": "id",
+          "attributes": [
+            { "name": "id", "type": "S" },
+            { "name": "email", "type": "S" },
+            { "name": "createdAt", "type": "S" }
+          ],
+          "globalSecondaryIndexes": [
+            {
+              "indexName": "email-index",
+              "partitionKey": "email"
+            }
+          ],
+          "billingMode": "PAY_PER_REQUEST"
+        },
+        {
+          "tableName": "bvester-businesses",
+          "partitionKey": "id",
+          "attributes": [
+            { "name": "id", "type": "S" },
+            { "name": "ownerId", "type": "S" },
+            { "name": "industry", "type": "S" },
+            { "name": "createdAt", "type": "S" }
+          ],
+          "globalSecondaryIndexes": [
+            {
+              "indexName": "ownerId-index",
+              "partitionKey": "ownerId"
+            },
+            {
+              "indexName": "industry-index",
+              "partitionKey": "industry"
+            }
+          ],
+          "billingMode": "PAY_PER_REQUEST"
+        },
+        {
+          "tableName": "bvester-transactions",
+          "partitionKey": "id",
+          "sortKey": "createdAt",
+          "attributes": [
+            { "name": "id", "type": "S" },
+            { "name": "userId", "type": "S" },
+            { "name": "createdAt", "type": "S" },
+            { "name": "type", "type": "S" },
+            { "name": "category", "type": "S" }
+          ],
+          "globalSecondaryIndexes": [
+            {
+              "indexName": "userId-createdAt-index",
+              "partitionKey": "userId",
+              "sortKey": "createdAt"
+            },
+            {
+              "indexName": "type-index",
+              "partitionKey": "type"
+            }
+          ],
+          "billingMode": "PAY_PER_REQUEST"
+        },
+        {
+          "tableName": "bvester-business-health-assessments",
+          "partitionKey": "id",
+          "sortKey": "completedAt",
+          "attributes": [
+            { "name": "id", "type": "S" },
+            { "name": "userId", "type": "S" },
+            { "name": "completedAt", "type": "S" },
+            { "name": "overallScore", "type": "N" }
+          ],
+          "globalSecondaryIndexes": [
+            {
+              "indexName": "userId-completedAt-index",
+              "partitionKey": "userId",
+              "sortKey": "completedAt"
+            }
+          ],
+          "billingMode": "PAY_PER_REQUEST"
+        },
+        {
+          "tableName": "bvester-chat-messages",
+          "partitionKey": "id",
+          "sortKey": "createdAt",
+          "attributes": [
+            { "name": "id", "type": "S" },
+            { "name": "userId", "type": "S" },
+            { "name": "createdAt", "type": "S" }
+          ],
+          "globalSecondaryIndexes": [
+            {
+              "indexName": "userId-createdAt-index",
+              "partitionKey": "userId",
+              "sortKey": "createdAt"
+            }
+          ],
+          "billingMode": "PAY_PER_REQUEST"
+        },
+        {
+          "tableName": "bvester-notifications",
+          "partitionKey": "id",
+          "sortKey": "createdAt",
+          "attributes": [
+            { "name": "id", "type": "S" },
+            { "name": "userId", "type": "S" },
+            { "name": "createdAt", "type": "S" },
+            { "name": "read", "type": "BOOL" }
+          ],
+          "globalSecondaryIndexes": [
+            {
+              "indexName": "userId-createdAt-index",
+              "partitionKey": "userId",
+              "sortKey": "createdAt"
+            }
+          ],
+          "billingMode": "PAY_PER_REQUEST"
+        }
+      ]
+    },
+    "s3": {
+      "buckets": [
+        {
+          "name": "bvester-web-assets",
+          "region": "us-east-1",
+          "publicAccess": true,
+          "staticWebsite": true,
+          "indexDocument": "index.html",
+          "errorDocument": "index.html"
+        },
+        {
+          "name": "bvester-user-documents",
+          "region": "us-east-1",
+          "publicAccess": false,
+          "encryption": true
+        }
+      ]
+    },
+    "cloudfront": {
+      "distributions": [
+        {
+          "comment": "Bvester Main Website",
+          "origins": [
+            {
+              "domainName": "bvester-web-assets.s3.amazonaws.com",
+              "originPath": "",
+              "s3OriginConfig": {}
+            }
+          ],
+          "defaultCacheBehavior": {
+            "targetOriginId": "S3-bvester-web-assets",
+            "viewerProtocolPolicy": "redirect-to-https",
+            "compress": true
+          },
+          "aliases": ["bvester.com", "www.bvester.com"],
+          "viewerCertificate": {
+            "acmCertificateArn": "arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/CERTIFICATE_ID"
+          }
+        }
+      ]
+    },
+    "cognito": {
+      "userPool": {
+        "poolName": "bvester-users",
+        "aliasAttributes": ["email"],
+        "passwordPolicy": {
+          "minimumLength": 8,
+          "requireUppercase": true,
+          "requireLowercase": true,
+          "requireNumbers": true,
+          "requireSymbols": false
+        },
+        "mfaConfiguration": "OPTIONAL",
+        "verificationMessageTemplate": {
+          "defaultEmailOption": "CONFIRM_WITH_CODE"
+        }
+      },
+      "userPoolClient": {
+        "clientName": "bvester-web-client",
+        "generateSecret": false,
+        "authFlows": ["ADMIN_NO_SRP_AUTH", "USER_PASSWORD_AUTH"]
+      }
+    },
+    "route53": {
+      "hostedZone": "bvester.com",
+      "records": [
+        {
+          "name": "bvester.com",
+          "type": "A",
+          "aliasTarget": "CLOUDFRONT_DISTRIBUTION"
+        },
+        {
+          "name": "www.bvester.com",
+          "type": "A",
+          "aliasTarget": "CLOUDFRONT_DISTRIBUTION"
+        },
+        {
+          "name": "api.bvester.com",
+          "type": "A",
+          "aliasTarget": "API_GATEWAY"
+        }
+      ]
+    }
+  },
+  "deployment": {
+    "stages": ["dev", "staging", "prod"],
+    "cicd": {
+      "buildSpec": "buildspec.yml",
+      "artifacts": {
+        "files": ["**/*"],
+        "baseDirectory": "dist"
+      }
+    }
+  }
+}

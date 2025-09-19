@@ -1,0 +1,51 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bvester.com/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::ACCOUNT_ID:distribution/DISTRIBUTION_ID"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFrontListBucket",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::bvester.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::ACCOUNT_ID:distribution/DISTRIBUTION_ID"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDirectAccess",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::bvester.com",
+        "arn:aws:s3:::bvester.com/*"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": [
+            "arn:aws:cloudfront::ACCOUNT_ID:distribution/DISTRIBUTION_ID",
+            "arn:aws:iam::ACCOUNT_ID:role/BVesterDeploymentRole"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Dashboard - Bvester</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background: #f5f5f5; }
+        
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 1rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .logout-btn { 
+            background: rgba(255,255,255,0.2); 
+            border: none; 
+            color: white; 
+            padding: 0.5rem 1rem; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        
+        .main-content { 
+            max-width: 1200px; 
+            margin: 2rem auto; 
+            padding: 0 2rem; 
+        }
+        
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 2rem; 
+        }
+        
+        .card { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+        }
+        
+        .card h3 { 
+            color: #667eea; 
+            margin-bottom: 1rem; 
+            font-size: 1.5rem; 
+        }
+        
+        .stat-number { 
+            font-size: 2rem; 
+            font-weight: bold; 
+            color: #333; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .investment-list { 
+            list-style: none; 
+            padding: 0; 
+        }
+        
+        .investment-item { 
+            padding: 1rem; 
+            border-bottom: 1px solid #eee; 
+            display: flex; 
+            justify-content: between; 
+            align-items: center; 
+        }
+        
+        .investment-item:last-child { border-bottom: none; }
+        
+        .btn-primary { 
+            background: #667eea; 
+            color: white; 
+            padding: 0.75rem 1.5rem; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+        }
+        
+        .btn-primary:hover { background: #5a67d8; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Bvester</h1>
+            <span>Investor Dashboard</span>
+        </div>
+        <div class="user-info">
+            <span id="userName">Welcome back!</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>💰 Portfolio Value</h3>
+                <div class="stat-number">$12,500</div>
+                <p>Total invested across 5 SMEs</p>
+            </div>
+            
+            <div class="card">
+                <h3>📈 Returns</h3>
+                <div class="stat-number">+8.5%</div>
+                <p>Average return this quarter</p>
+            </div>
+            
+            <div class="card">
+                <h3>🏢 Active Investments</h3>
+                <div class="stat-number">5</div>
+                <p>SMEs in your portfolio</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🔍 Investment Opportunities</h3>
+            <p>Discover vetted African SMEs looking for funding</p>
+            <ul class="investment-list">
+                <li class="investment-item">
+                    <div>
+                        <strong>TechCorp Ghana</strong><br>
+                        <small>Fintech startup seeking $50,000</small>
+                    </div>
+                    <a href="#" class="btn-primary">View Details</a>
+                </li>
+                <li class="investment-item">
+                    <div>
+                        <strong>AgriSolutions Kenya</strong><br>
+                        <small>Agricultural tech company seeking $75,000</small>
+                    </div>
+                    <a href="#" class="btn-primary">View Details</a>
+                </li>
+                <li class="investment-item">
+                    <div>
+                        <strong>EduTech Nigeria</strong><br>
+                        <small>Online education platform seeking $30,000</small>
+                    </div>
+                    <a href="#" class="btn-primary">View Details</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>📊 Your Investments</h3>
+            <ul class="investment-list">
+                <li class="investment-item">
+                    <div>
+                        <strong>Solar Power Co.</strong><br>
+                        <small>Invested: $5,000 | Current: $5,420 (+8.4%)</small>
+                    </div>
+                    <span style="color: green;">📈</span>
+                </li>
+                <li class="investment-item">
+                    <div>
+                        <strong>MedTech Solutions</strong><br>
+                        <small>Invested: $3,000 | Current: $3,250 (+8.3%)</small>
+                    </div>
+                    <span style="color: green;">📈</span>
+                </li>
+                <li class="investment-item">
+                    <div>
+                        <strong>GreenFarms Ltd</strong><br>
+                        <small>Invested: $4,500 | Current: $4,880 (+8.4%)</small>
+                    </div>
+                    <span style="color: green;">📈</span>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        // Check if user is logged in
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const userName = localStorage.getItem('userName');
+        const userType = localStorage.getItem('userType');
+
+        if (!isLoggedIn || isLoggedIn !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Verify this is the right dashboard for the user type
+        if (userType && userType !== 'investor') {
+            // Redirect to appropriate dashboard
+            if (userType === 'sme') {
+                window.location.href = 'sme-dashboard.html';
+            } else if (userType === 'premium') {
+                window.location.href = 'premium-dashboard.html';
+            }
+        }
+
+        if (userName) {
+            document.getElementById('userName').textContent = `Welcome, ${userName}!`;
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userType');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

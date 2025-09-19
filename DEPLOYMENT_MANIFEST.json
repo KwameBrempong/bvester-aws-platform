@@ -1,0 +1,33 @@
+{
+  "appName": "BizInvest Hub",
+  "version": "1.0.0",
+  "buildDate": "2025-07-24T10:39:53.796Z",
+  "environment": "production",
+  "features": {
+    "animations": "React Native Animated API with 60fps performance",
+    "persistence": "AsyncStorage for user preferences and progress",
+    "validation": "Real-time form validation with helpful feedback",
+    "navigation": "Smooth transitions between onboarding steps",
+    "customization": "Role-based flows for SMEs and investors"
+  },
+  "deploymentId": "deploy_1753353593805",
+  "components": {
+    "welcomeScreen": "Enhanced 4-slide animated carousel",
+    "userTypeSelection": "Interactive card-based selection",
+    "businessOnboarding": "6-step progressive profiling",
+    "investorOnboarding": "8-step comprehensive setup",
+    "tutorial": "Context-aware interactive tutorials",
+    "achievements": "Gamification with 8+ achievements per type",
+    "registration": "4-step validated registration flow"
+  },
+  "metrics": {
+    "expectedCompletionRate": "85%+",
+    "expectedUserSatisfaction": "90%+",
+    "performanceTarget": "<300ms transitions",
+    "supportedPlatforms": [
+      "iOS",
+      "Android",
+      "Web"
+    ]
+  }
+}

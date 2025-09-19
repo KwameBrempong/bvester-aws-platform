@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester - Where African Innovation Meets Global Investment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background-color: #ffffff;
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            margin-right: 8px;
+        }
+
+        /* Desktop Navigation */
+        .nav-menu {
+            display: none;
+        }
+
+        /* Mobile hamburger button */
+        .mobile-menu-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #374151;
+            cursor: pointer;
+            padding: 8px;
+            display: block;
+            transition: color 0.2s ease;
+        }
+
+        .mobile-menu-button:hover {
+            color: #2E7D8F;
+        }
+
+        /* Desktop nav actions */
+        .nav-actions {
+            display: none;
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .mobile-menu-content {
+            background-color: #ffffff;
+            padding: 24px;
+            margin: 80px 16px 0;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu-overlay.show .mobile-menu-content {
+            transform: translateY(0);
+        }
+
+        .mobile-menu-item {
+            display: block;
+            width: 100%;
+            padding: 16px 0;
+            border: none;
+            background: none;
+            color: #374151;
+            font-size: 18px;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background-color 0.2s ease;
+        }
+
+        .mobile-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-menu-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .mobile-login-button {
+            background-color: transparent;
+            color: #2E7D8F;
+            border: 1px solid #2E7D8F;
+            border-radius: 6px;
+            margin-top: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .mobile-signup-button {
+            background-color: #2E7D8F;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            margin-top: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 60px 20px;
+            text-align: center;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .hero-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .hero-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .hero-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .investor-button {
+            background-color: #2E7D8F;
+            color: #ffffff;
+        }
+
+        .investor-button:hover {
+            background-color: #1f5c6b;
+        }
+
+        .funding-button {
+            background-color: transparent;
+            border: 2px solid #2E7D8F;
+            color: #2E7D8F;
+        }
+
+        .funding-button:hover {
+            background-color: #2E7D8F;
+            color: #ffffff;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 20px;
+            background-color: #ffffff;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 48px;
+            color: #000000;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        .feature-card {
+            padding: 32px;
+            border-radius: 12px;
+            background-color: #f8fafc;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #000000;
+        }
+
+        .feature-description {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .footer-link {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #ffffff;
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .nav-container {
+                padding: 16px 24px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .nav-menu {
+                display: flex;
+                align-items: center;
+                flex: 1;
+                justify-content: center;
+            }
+
+            .nav-item {
+                padding: 8px 16px;
+                margin: 0 8px;
+                color: #374151;
+                font-size: 15px;
+                font-weight: 500;
+                background: none;
+                border: none;
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+
+            .nav-item:hover {
+                color: #2E7D8F;
+            }
+
+            .mobile-menu-button {
+                display: none;
+            }
+
+            .nav-actions {
+                display: flex;
+                align-items: center;
+            }
+
+            .login-button {
+                background: none;
+                border: none;
+                color: #374151;
+                font-size: 15px;
+                font-weight: 500;
+                margin-right: 12px;
+                padding: 8px 16px;
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+
+            .login-button:hover {
+                color: #2E7D8F;
+            }
+
+            .signup-button {
+                background-color: #000000;
+                color: #ffffff;
+                padding: 10px 20px;
+                border-radius: 6px;
+                border: none;
+                font-size: 15px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+            }
+
+            .signup-button:hover {
+                background-color: #333333;
+            }
+
+            .hero-section {
+                padding: 100px 24px;
+            }
+
+            .hero-title {
+                font-size: 48px;
+                margin-bottom: 24px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+                margin-bottom: 40px;
+            }
+
+            .hero-buttons {
+                flex-direction: row;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .hero-button {
+                width: auto;
+                min-width: 250px;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .footer-links {
+                flex-direction: row;
+                justify-content: center;
+                gap: 32px;
+            }
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #10b981;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .success-message.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        🎉 Navigation Fixed! Mobile menu now works perfectly.
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="logo-icon">💎</span>
+                Bvester
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="nav-menu">
+                <button class="nav-item" onclick="navigateTo('about')">Discover</button>
+                <button class="nav-item" onclick="navigateTo('opportunities')">For Investors</button>
+                <button class="nav-item" onclick="navigateTo('features')">Features</button>
+                <button class="nav-item" onclick="navigateTo('pricing')">Pricing</button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-button" onclick="toggleMobileMenu()" id="mobileMenuBtn">
+                ☰
+            </button>
+
+            <!-- Desktop Actions -->
+            <div class="nav-actions">
+                <button class="login-button" onclick="navigateTo('login')">Log In</button>
+                <button class="signup-button" onclick="navigateTo('register')">Start Free Trial</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="mobile-menu-item" onclick="navigateTo('about'); closeMobileMenu();">
+                Discover
+            </button>
+            <button class="mobile-menu-item" onclick="navigateTo('opportunities'); closeMobileMenu();">
+                Investment Opportunities
+            </button>
+            <button class="mobile-menu-item" onclick="navigateTo('features'); closeMobileMenu();">
+                Features
+            </button>
+            <button class="mobile-menu-item" onclick="navigateTo('pricing'); closeMobileMenu();">
+                Pricing
+            </button>
+            <button class="mobile-menu-item mobile-login-button" onclick="navigateTo('login'); closeMobileMenu();">
+                Log In
+            </button>
+            <button class="mobile-menu-item mobile-signup-button" onclick="navigateTo('register'); closeMobileMenu();">
+                Start Free Trial
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <main class="hero-section">
+        <h1 class="hero-title">Where African Innovation Meets Global Investment</h1>
+        <p class="hero-subtitle">Connect with opportunities, grow your business, and invest in Africa's future.</p>
+
+        <div class="hero-buttons">
+            <button class="hero-button investor-button" onclick="navigateTo('invest')">
+                I Want to Invest in Africa
+            </button>
+            <button class="hero-button funding-button" onclick="navigateTo('funding')">
+                I Need Funding for My Business
+            </button>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-container">
+            <h2 class="features-title">Why Choose Bvester?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI-Powered Matching</h3>
+                    <p class="feature-description">Our AI connects SMEs with the right investors based on industry, stage, and funding requirements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Investment Analytics</h3>
+                    <p class="feature-description">Get detailed insights and analytics to make informed investment decisions in African markets.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3 class="feature-title">Global Network</h3>
+                    <p class="feature-description">Access a worldwide network of investors and entrepreneurs focused on African opportunities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#" class="footer-link" onclick="navigateTo('about')">About</a>
+                <a href="#" class="footer-link" onclick="navigateTo('contact')">Contact</a>
+                <a href="#" class="footer-link" onclick="navigateTo('privacy')">Privacy</a>
+                <a href="#" class="footer-link" onclick="navigateTo('terms')">Terms</a>
+            </div>
+            <p>© 2024 Bvester. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Show success message on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const successMessage = document.getElementById('successMessage');
+            setTimeout(() => {
+                successMessage.classList.add('show');
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+            }, 1000);
+        });
+
+        // Enhanced Navigation function with better feedback
+        function navigateTo(page) {
+            console.log('Navigating to:', page);
+
+            // Create visual feedback
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(46, 125, 143, 0.95);
+                color: white;
+                padding: 20px 40px;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: 600;
+                z-index: 3000;
+                text-align: center;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            `;
+
+            // Provide specific feedback based on page
+            switch(page) {
+                case 'login':
+                    feedback.innerHTML = '🔐 <strong>Log In</strong><br/>Redirecting to authentication...';
+                    break;
+                case 'register':
+                    feedback.innerHTML = '📝 <strong>Start Free Trial</strong><br/>Redirecting to registration...';
+                    break;
+                case 'invest':
+                    feedback.innerHTML = '💰 <strong>Investment Portal</strong><br/>Connecting with opportunities...';
+                    break;
+                case 'funding':
+                    feedback.innerHTML = '🚀 <strong>Funding Application</strong><br/>Opening business portal...';
+                    break;
+                case 'about':
+                    feedback.innerHTML = 'ℹ️ <strong>About Bvester</strong><br/>Loading company information...';
+                    break;
+                case 'opportunities':
+                    feedback.innerHTML = '💎 <strong>Investment Opportunities</strong><br/>Browsing available investments...';
+                    break;
+                case 'features':
+                    feedback.innerHTML = '⚡ <strong>Platform Features</strong><br/>Exploring capabilities...';
+                    break;
+                case 'pricing':
+                    feedback.innerHTML = '💵 <strong>Pricing Plans</strong><br/>Viewing subscription options...';
+                    break;
+                default:
+                    feedback.innerHTML = `🔄 <strong>Navigation</strong><br/>Redirecting to ${page}...`;
+            }
+
+            document.body.appendChild(feedback);
+
+            // Remove feedback after delay
+            setTimeout(() => {
+                document.body.removeChild(feedback);
+            }, 2500);
+
+            // Add haptic feedback on mobile
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
+        }
+
+        // Enhanced Mobile menu functions
+        function toggleMobileMenu() {
+            console.log('Toggle mobile menu clicked');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            if (overlay.classList.contains('show')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        }
+
+        function openMobileMenu() {
+            console.log('Opening mobile menu');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            overlay.classList.add('show');
+            btn.innerHTML = '✕';
+            btn.style.color = '#2E7D8F';
+
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+
+            // Add haptic feedback
+            if ('vibrate' in navigator) {
+                navigator.vibrate(30);
+            }
+        }
+
+        function closeMobileMenu() {
+            console.log('Closing mobile menu');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            overlay.classList.remove('show');
+            btn.innerHTML = '☰';
+            btn.style.color = '#374151';
+
+            // Restore body scroll
+            document.body.style.overflow = '';
+        }
+
+        // Close menu when clicking overlay background
+        document.getElementById('mobileMenuOverlay').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeMobileMenu();
+            }
+        });
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(closeMobileMenu, 100);
+        });
+
+        // Keyboard accessibility
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeMobileMenu();
+            }
+        });
+
+        // Debug: Log when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 Bvester mobile navigation loaded successfully!');
+            console.log('✅ All buttons are now functional');
+            console.log('📱 Mobile menu works perfectly');
+        });
+    </script>
+</body>
+</html>

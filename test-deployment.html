@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester Deployment Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #28a745;
+            color: white;
+        }
+        .status.error {
+            background: #dc3545;
+            color: white;
+        }
+        .status.pending {
+            background: #ffc107;
+            color: #333;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5a67d8;
+        }
+        .result-box {
+            background: #f1f3f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Bvester Deployment Test Suite</h1>
+        
+        <div class="test-section">
+            <h2>1. Backend API Tests</h2>
+            
+            <div class="test-item">
+                <span>Local Backend (http://localhost:8080)</span>
+                <span class="status pending" id="local-status">PENDING</span>
+            </div>
+            <button onclick="testLocalBackend()">Test Local Backend</button>
+            <div id="local-result" class="result-box" style="display:none;"></div>
+            
+            <div class="test-item">
+                <span>AWS Backend (Elastic Beanstalk)</span>
+                <span class="status pending" id="aws-status">PENDING</span>
+            </div>
+            <button onclick="testAWSBackend()">Test AWS Backend</button>
+            <div id="aws-result" class="result-box" style="display:none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Authentication Tests</h2>
+            
+            <div class="test-item">
+                <span>User Registration</span>
+                <span class="status pending" id="register-status">PENDING</span>
+            </div>
+            <button onclick="testRegistration()">Test Registration</button>
+            <div id="register-result" class="result-box" style="display:none;"></div>
+            
+            <div class="test-item">
+                <span>User Login</span>
+                <span class="status pending" id="login-status">PENDING</span>
+            </div>
+            <button onclick="testLogin()">Test Login</button>
+            <div id="login-result" class="result-box" style="display:none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Business Operations Tests</h2>
+            
+            <div class="test-item">
+                <span>Create Business</span>
+                <span class="status pending" id="business-status">PENDING</span>
+            </div>
+            <button onclick="testBusinessCreation()">Test Business Creation</button>
+            <div id="business-result" class="result-box" style="display:none;"></div>
+            
+            <div class="test-item">
+                <span>Investment Readiness Score</span>
+                <span class="status pending" id="score-status">PENDING</span>
+            </div>
+            <button onclick="testReadinessScore()">Test Readiness Score</button>
+            <div id="score-result" class="result-box" style="display:none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. Frontend Tests</h2>
+            
+            <div class="test-item">
+                <span>CloudFront Homepage</span>
+                <span class="status pending" id="frontend-status">PENDING</span>
+            </div>
+            <button onclick="testFrontend()">Test Frontend</button>
+            
+            <div class="test-item">
+                <span>New Pages Deployment</span>
+                <span class="status pending" id="pages-status">PENDING</span>
+            </div>
+            <button onclick="testNewPages()">Test New Pages</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>5. Run All Tests</h2>
+            <button onclick="runAllTests()" style="background: #28a745;">Run Complete Test Suite</button>
+            <div id="summary" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Test configuration
+        const LOCAL_API = 'http://localhost:8080';
+        const AWS_API = 'http://bvester-backend-env.eba-ivjm3qsc.eu-west-2.elasticbeanstalk.com';
+        const CLOUDFRONT_URL = 'https://d2aiw6luoykrcn.cloudfront.net';
+        
+        let authToken = null;
+        let testUser = {
+            email: `test${Date.now()}@demo.com`,
+            password: 'Test123!Demo'
+        };
+        
+        // Helper function to update status
+        function updateStatus(elementId, status, message) {
+            const statusElement = document.getElementById(elementId);
+            statusElement.className = `status ${status}`;
+            statusElement.textContent = status.toUpperCase();
+            
+            const resultId = elementId.replace('-status', '-result');
+            const resultElement = document.getElementById(resultId);
+            if (resultElement && message) {
+                resultElement.style.display = 'block';
+                resultElement.textContent = message;
+            }
+        }
+        
+        // Test local backend
+        async function testLocalBackend() {
+            try {
+                const response = await fetch(`${LOCAL_API}/`);
+                const data = await response.json();
+                updateStatus('local-status', 'success', JSON.stringify(data, null, 2));
+            } catch (error) {
+                updateStatus('local-status', 'error', `Error: ${error.message}`);
+            }
+        }
+        
+        // Test AWS backend
+        async function testAWSBackend() {
+            try {
+                const response = await fetch(`${AWS_API}/`);
+                if (response.status === 502) {
+                    updateStatus('aws-status', 'pending', 'Backend is deploying... This can take 5-10 minutes. Please wait.');
+                    return;
+                }
+                const data = await response.json();
+                updateStatus('aws-status', 'success', JSON.stringify(data, null, 2));
+            } catch (error) {
+                updateStatus('aws-status', 'error', `Error: ${error.message}`);
+            }
+        }
+        
+        // Test registration
+        async function testRegistration() {
+            try {
+                const response = await fetch(`${LOCAL_API}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: testUser.email,
+                        password: testUser.password,
+                        fullName: 'Test User',
+                        role: 'sme',
+                        country: 'Ghana'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    authToken = data.token;
+                    updateStatus('register-status', 'success', 
+                        `User created: ${testUser.email}\nToken: ${authToken.substring(0, 20)}...`);
+                } else {
+                    updateStatus('register-status', 'error', data.error);
+                }
+            } catch (error) {
+                updateStatus('register-status', 'error', `Error: ${error.message}`);
+            }
+        }
+        
+        // Test login
+        async function testLogin() {
+            try {
+                const response = await fetch(`${LOCAL_API}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: testUser.email,
+                        password: testUser.password
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    authToken = data.token;
+                    updateStatus('login-status', 'success', 
+                        `Login successful!\nUser: ${data.user.fullName}\nRole: ${data.user.role}`);
+                } else {
+                    updateStatus('login-status', 'error', data.error);
+                }
+            } catch (error) {
+                updateStatus('login-status', 'error', `Error: ${error.message}`);
+            }
+        }
+        
+        // Test business creation
+        async function testBusinessCreation() {
+            if (!authToken) {
+                updateStatus('business-status', 'error', 'Please login first');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${LOCAL_API}/api/businesses`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        businessName: 'Test Business ' + Date.now(),
+                        industry: 'Technology',
+                        country: 'Ghana',
+                        description: 'Test business for deployment verification',
+                        monthlyRevenue: 50000,
+                        employeeCount: 10
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    updateStatus('business-status', 'success', 
+                        `Business created!\nID: ${data.business.businessId}\nName: ${data.business.businessName}`);
+                } else {
+                    updateStatus('business-status', 'error', data.error);
+                }
+            } catch (error) {
+                updateStatus('business-status', 'error', `Error: ${error.message}`);
+            }
+        }
+        
+        // Test readiness score
+        async function testReadinessScore() {
+            if (!authToken) {
+                updateStatus('score-status', 'error', 'Please login first');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${LOCAL_API}/api/analytics/readiness-score`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        businessAge: 2,
+                        monthlyRevenue: 50000,
+                        employeeCount: 10,
+                        hasFinancialRecords: true,
+                        hasBusinessPlan: true,
+                        hasTaxCompliance: false,
+                        hasInsurance: false
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    updateStatus('score-status', 'success', 
+                        `Score: ${data.score}/100\nLevel: ${data.readinessLevel}\nRecommendations:\n${data.recommendations.join('\n')}`);
+                } else {
+                    updateStatus('score-status', 'error', data.error);
+                }
+            } catch (error) {
+                updateStatus('score-status', 'error', `Error: ${error.message}`);
+            }
+        }
+        
+        // Test frontend
+        async function testFrontend() {
+            try {
+                const response = await fetch(CLOUDFRONT_URL);
+                if (response.ok) {
+                    updateStatus('frontend-status', 'success', 'CloudFront is serving the homepage');
+                } else {
+                    updateStatus('frontend-status', 'error', `Status: ${response.status}`);
+                }
+            } catch (error) {
+                updateStatus('frontend-status', 'error', `Error: ${error.message}`);
+            }
+        }
+        
+        // Test new pages
+        async function testNewPages() {
+            const pages = ['/auth.html', '/sme-dashboard.html', '/investor-dashboard.html'];
+            let results = [];
+            
+            for (const page of pages) {
+                try {
+                    const response = await fetch(CLOUDFRONT_URL + page);
+                    results.push(`${page}: ${response.ok ? '✓' : '✗ (404)'}`);
+                } catch (error) {
+                    results.push(`${page}: ✗ (Error)`);
+                }
+            }
+            
+            const allSuccess = results.every(r => r.includes('✓'));
+            updateStatus('pages-status', 
+                allSuccess ? 'success' : 'error',
+                results.join('\n'));
+        }
+        
+        // Run all tests
+        async function runAllTests() {
+            document.getElementById('summary').innerHTML = '<h3>Running all tests...</h3>';
+            
+            await testLocalBackend();
+            await testAWSBackend();
+            await testRegistration();
+            await testLogin();
+            await testBusinessCreation();
+            await testReadinessScore();
+            await testFrontend();
+            await testNewPages();
+            
+            // Generate summary
+            const statuses = document.querySelectorAll('.status');
+            let passed = 0, failed = 0, pending = 0;
+            
+            statuses.forEach(status => {
+                if (status.classList.contains('success')) passed++;
+                else if (status.classList.contains('error')) failed++;
+                else pending++;
+            });
+            
+            document.getElementById('summary').innerHTML = `
+                <h3>Test Summary</h3>
+                <p>✅ Passed: ${passed}</p>
+                <p>❌ Failed: ${failed}</p>
+                <p>⏳ Pending: ${pending}</p>
+                <p><strong>Overall: ${failed === 0 ? '🎉 All tests passed!' : '⚠️ Some tests failed'}</strong></p>
+            `;
+        }
+    </script>
+</body>
+</html>

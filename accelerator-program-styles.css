@@ -1,0 +1,442 @@
+/* ACCELERATOR PROGRAM - DEDICATED CSS */
+/* This file ensures text visibility without global CSS conflicts */
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #FFFFFF !important;
+}
+
+/* Color Variables */
+:root {
+    --text-primary: #FFFFFF;
+    --text-secondary: #F0F0F0;
+    --off-white: #F8F8F8;
+    --primary-black: #0A0A0A;
+    --rich-black: #1A1A1A;
+    --soft-black: #2D2D2D;
+    --primary-gold: #FFD700;
+    --premium-gold: #FFA500;
+    --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    background: #0A0A0A !important;
+    color: #FFFFFF !important;
+    line-height: 1.6 !important;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    color: #FFFFFF !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+}
+
+h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem) !important;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+h2 {
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+    margin-bottom: 1.5rem !important;
+    color: #FFFFFF !important;
+}
+
+h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem) !important;
+    margin-bottom: 1rem !important;
+    color: #FFFFFF !important;
+}
+
+p {
+    margin-bottom: 1rem !important;
+    color: #F0F0F0 !important;
+    opacity: 1 !important;
+}
+
+/* Header */
+.header {
+    background: #1A1A1A !important;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1) !important;
+    padding: 1rem 2rem !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+}
+
+.header-content {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.logo {
+    font-size: 1.5rem !important;
+    font-weight: bold !important;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-decoration: none !important;
+}
+
+/* Hero Section */
+.hero {
+    min-height: 50vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4rem 2rem !important;
+    text-align: center !important;
+}
+
+.hero-content {
+    max-width: 800px !important;
+    margin: 0 auto !important;
+}
+
+.hero-subtitle {
+    color: #E8E8E8 !important;
+    font-size: 1.25rem !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Stats Section */
+.stats-section {
+    padding: 4rem 2rem !important;
+    background: #1A1A1A !important;
+}
+
+.stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 2rem !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+.stat-card {
+    background: #2D2D2D !important;
+    border: 1px solid rgba(255, 215, 0, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    text-align: center !important;
+    transition: all 0.3s ease !important;
+}
+
+.stat-number {
+    font-size: 3rem !important;
+    font-weight: bold !important;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.stat-label {
+    color: #E0E0E0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-size: 0.875rem !important;
+}
+
+/* Testimonials */
+.testimonials-section {
+    padding: 4rem 2rem !important;
+    background: #0A0A0A !important;
+}
+
+.testimonial-card {
+    background: #1A1A1A !important;
+    border: 1px solid rgba(255, 215, 0, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.testimonial-text {
+    color: #F0F0F0 !important;
+    font-style: italic !important;
+    margin-bottom: 1rem !important;
+    font-size: 1.125rem !important;
+}
+
+.testimonial-author {
+    color: #FFD700 !important;
+    font-weight: bold !important;
+}
+
+.testimonial-role {
+    color: #E0E0E0 !important;
+    font-size: 0.875rem !important;
+}
+
+/* FAQ Section */
+.faq-section {
+    padding: 4rem 2rem !important;
+    background: #1A1A1A !important;
+}
+
+.faq-item {
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1) !important;
+    padding: 1.5rem 0 !important;
+}
+
+.faq-question {
+    color: #FFFFFF !important;
+    font-weight: bold !important;
+    font-size: 1.125rem !important;
+    margin-bottom: 1rem !important;
+    cursor: pointer !important;
+}
+
+.faq-answer {
+    color: #F0F0F0 !important;
+    line-height: 1.6 !important;
+}
+
+/* Pricing Section */
+.pricing-section {
+    padding: 4rem 2rem !important;
+    background: #0A0A0A !important;
+}
+
+.pricing-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 2rem !important;
+    max-width: 1000px !important;
+    margin: 0 auto !important;
+}
+
+.pricing-card {
+    background: #1A1A1A !important;
+    border: 1px solid rgba(255, 215, 0, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    text-align: center !important;
+    position: relative !important;
+}
+
+.pricing-card.featured {
+    border-color: #FFD700 !important;
+    transform: scale(1.05) !important;
+}
+
+.pricing-header h3 {
+    color: #FFFFFF !important;
+    font-size: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.pricing-price {
+    font-size: 3rem !important;
+    font-weight: bold !important;
+    color: #FFD700 !important;
+    margin-bottom: 1rem !important;
+}
+
+.pricing-description {
+    color: #E8E8E8 !important;
+    margin-bottom: 2rem !important;
+    line-height: 1.6 !important;
+}
+
+.pricing-features {
+    list-style: none !important;
+    padding: 0 !important;
+    margin-bottom: 2rem !important;
+}
+
+.pricing-features li {
+    color: #F0F0F0 !important;
+    padding: 0.5rem 0 !important;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1) !important;
+}
+
+.pricing-features li:before {
+    content: '✓' !important;
+    color: #FFD700 !important;
+    font-weight: bold !important;
+    margin-right: 0.5rem !important;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    padding: 1rem 2rem !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    text-decoration: none !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+    color: #000000 !important;
+    box-shadow: 0 10px 30px -5px rgba(255, 215, 0, 0.3) !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 15px 40px -5px rgba(255, 215, 0, 0.4) !important;
+}
+
+.btn-secondary {
+    background: transparent !important;
+    color: #FFD700 !important;
+    border: 2px solid #FFD700 !important;
+}
+
+.btn-secondary:hover {
+    background: #FFD700 !important;
+    color: #000000 !important;
+}
+
+/* Cards */
+.card {
+    background: #1A1A1A !important;
+    border: 1px solid rgba(255, 215, 0, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.card:hover {
+    transform: translateY(-5px) !important;
+    border-color: #FFD700 !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.1) !important;
+}
+
+/* Content Sections */
+.content-section {
+    padding: 4rem 2rem !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+.content-section h2 {
+    text-align: center !important;
+    margin-bottom: 3rem !important;
+}
+
+.content-section p {
+    color: #F0F0F0 !important;
+    line-height: 1.8 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Lists */
+ul, ol {
+    color: #F0F0F0 !important;
+    margin-bottom: 1.5rem !important;
+    padding-left: 2rem !important;
+}
+
+li {
+    color: #F0F0F0 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Links */
+a {
+    color: #FFD700 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+}
+
+a:hover {
+    color: #FFA500 !important;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5) !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .hero {
+        padding: 2rem 1rem !important;
+    }
+
+    .content-section {
+        padding: 2rem 1rem !important;
+    }
+
+    .stats-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .pricing-card.featured {
+        transform: none !important;
+    }
+
+    h1 {
+        font-size: 2.5rem !important;
+    }
+
+    h2 {
+        font-size: 2rem !important;
+    }
+
+    .hero-subtitle {
+        font-size: 1.125rem !important;
+    }
+}
+
+/* Additional Overrides for Stubborn Elements */
+.section-title,
+.section-subtitle,
+.feature-title,
+.feature-description,
+.benefit-title,
+.benefit-description {
+    color: #FFFFFF !important;
+}
+
+.feature-description,
+.benefit-description {
+    color: #F0F0F0 !important;
+}
+
+/* Form Elements */
+input, textarea, select {
+    background: #2D2D2D !important;
+    border: 1px solid rgba(255, 215, 0, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 1rem !important;
+    color: #FFFFFF !important;
+    font-size: 1rem !important;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none !important;
+    border-color: #FFD700 !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2) !important;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #888888 !important;
+}

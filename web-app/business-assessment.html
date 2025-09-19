@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Investment Readiness Assessment - Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .assessment-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .assessment-header {
+            background: #2E7D8F;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .assessment-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: white;
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .assessment-body {
+            padding: 40px;
+        }
+
+        .question-section {
+            display: none;
+        }
+
+        .question-section.active {
+            display: block;
+        }
+
+        .question-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .question-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #2E7D8F;
+        }
+
+        .radio-group {
+            display: grid;
+            gap: 15px;
+        }
+
+        .radio-option {
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            border-color: #2E7D8F;
+            background: #f8fafb;
+        }
+
+        .radio-option.selected {
+            border-color: #2E7D8F;
+            background: #e8f4f8;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-prev {
+            background: transparent;
+            color: #2E7D8F;
+            border: 2px solid #2E7D8F;
+        }
+
+        .btn-prev:hover {
+            background: #2E7D8F;
+            color: white;
+        }
+
+        .btn-next {
+            background: #2E7D8F;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-next:hover {
+            background: #1d5a6b;
+        }
+
+        .btn-next:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-excellent { background: linear-gradient(135deg, #10b981, #059669); }
+        .score-good { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .score-fair { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .score-poor { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+        .score-label {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .score-description {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .recommendations {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .recommendations h3 {
+            color: #2E7D8F;
+            margin-bottom: 20px;
+        }
+
+        .recommendation-item {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2E7D8F;
+        }
+
+        .recommendation-priority {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .priority-low {
+            background: #dcfce7;
+            color: #059669;
+        }
+
+        /* Upgrade Prompt */
+        .upgrade-prompt {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .upgrade-prompt h3 {
+            margin-bottom: 15px;
+        }
+
+        .upgrade-features {
+            margin: 20px 0;
+        }
+
+        .upgrade-features li {
+            margin-bottom: 10px;
+        }
+
+        .btn-upgrade {
+            background: white;
+            color: #667eea;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-upgrade:hover {
+            background: #f3f4f6;
+        }
+
+        .download-section {
+            margin-top: 30px;
+        }
+
+        .btn-download {
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-download:hover {
+            background: #059669;
+        }
+
+        .btn-download:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .locked-overlay {
+            position: relative;
+        }
+
+        .locked-overlay::after {
+            content: '🔒 Upgrade to Growth Tier to Unlock';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="assessment-container">
+        <div class="assessment-header">
+            <h1>Investment Readiness Assessment</h1>
+            <p>Discover your business's investment potential in 5 minutes</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="assessment-body">
+            <!-- Section 1: Business Basics -->
+            <div class="question-section active" data-section="1">
+                <h2 class="question-title">Business Information</h2>
+                <p class="question-subtitle">Tell us about your business</p>
+
+                <div class="form-group">
+                    <label class="form-label">Business Name</label>
+                    <input type="text" class="form-input" id="businessName" placeholder="Enter your business name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Industry</label>
+                    <select class="form-select" id="industry">
+                        <option value="">Select your industry</option>
+                        <option value="agriculture">Agriculture</option>
+                        <option value="technology">Technology</option>
+                        <option value="manufacturing">Manufacturing</option>
+                        <option value="retail">Retail & E-commerce</option>
+                        <option value="services">Services</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="education">Education</option>
+                        <option value="finance">Finance</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Years in Operation</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="years" value="0-1">
+                            <span>Less than 1 year</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="years" value="1-3">
+                            <span>1-3 years</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="years" value="3-5">
+                            <span>3-5 years</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="years" value="5+">
+                            <span>More than 5 years</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-prev" style="visibility: hidden;">Previous</button>
+                    <button class="btn btn-next" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 2: Financial Health -->
+            <div class="question-section" data-section="2">
+                <h2 class="question-title">Financial Health</h2>
+                <p class="question-subtitle">Help us understand your financial position</p>
+
+                <div class="form-group">
+                    <label class="form-label">Monthly Revenue (Average)</label>
+                    <select class="form-select" id="revenue">
+                        <option value="">Select revenue range</option>
+                        <option value="0-1000">Less than ₵1,000</option>
+                        <option value="1000-5000">₵1,000 - ₵5,000</option>
+                        <option value="5000-20000">₵5,000 - ₵20,000</option>
+                        <option value="20000-50000">₵20,000 - ₵50,000</option>
+                        <option value="50000+">More than ₵50,000</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Do you keep financial records?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="records" value="digital">
+                            <span>Yes, digital accounting system</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="records" value="manual">
+                            <span>Yes, manual records</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="records" value="basic">
+                            <span>Basic records only</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="records" value="none">
+                            <span>No formal records</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Growth Rate (Last 12 months)</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="growth" value="declining">
+                            <span>Declining</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="growth" value="stable">
+                            <span>Stable (0-10%)</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="growth" value="moderate">
+                            <span>Moderate (10-30%)</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="growth" value="high">
+                            <span>High (30%+)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-prev" onclick="prevSection()">Previous</button>
+                    <button class="btn btn-next" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Market & Customers -->
+            <div class="question-section" data-section="3">
+                <h2 class="question-title">Market & Customers</h2>
+                <p class="question-subtitle">Tell us about your market presence</p>
+
+                <div class="form-group">
+                    <label class="form-label">Number of Active Customers</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="customers" value="0-50">
+                            <span>Less than 50</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="customers" value="50-200">
+                            <span>50-200</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="customers" value="200-1000">
+                            <span>200-1000</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="customers" value="1000+">
+                            <span>More than 1000</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Market Competition</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="competition" value="low">
+                            <span>Low - Few competitors</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="competition" value="moderate">
+                            <span>Moderate - Some competitors</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="competition" value="high">
+                            <span>High - Many competitors</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Unique Value Proposition</label>
+                    <textarea class="form-input" id="proposition" rows="3"
+                        placeholder="What makes your business unique?"></textarea>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-prev" onclick="prevSection()">Previous</button>
+                    <button class="btn btn-next" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 4: Investment Goals -->
+            <div class="question-section" data-section="4">
+                <h2 class="question-title">Investment Goals</h2>
+                <p class="question-subtitle">What are your funding objectives?</p>
+
+                <div class="form-group">
+                    <label class="form-label">Funding Amount Needed</label>
+                    <select class="form-select" id="fundingAmount">
+                        <option value="">Select amount range</option>
+                        <option value="0-10000">Less than ₵10,000</option>
+                        <option value="10000-50000">₵10,000 - ₵50,000</option>
+                        <option value="50000-100000">₵50,000 - ₵100,000</option>
+                        <option value="100000-500000">₵100,000 - ₵500,000</option>
+                        <option value="500000+">More than ₵500,000</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Use of Funds</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="checkbox" name="use" value="equipment">
+                            <span>Equipment & Assets</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="checkbox" name="use" value="inventory">
+                            <span>Inventory</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="checkbox" name="use" value="marketing">
+                            <span>Marketing & Sales</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="checkbox" name="use" value="expansion">
+                            <span>Business Expansion</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="checkbox" name="use" value="working">
+                            <span>Working Capital</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Timeline for Funding</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="timeline" value="immediate">
+                            <span>Immediate (Within 1 month)</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="timeline" value="3months">
+                            <span>Within 3 months</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="timeline" value="6months">
+                            <span>Within 6 months</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="timeline" value="planning">
+                            <span>Just planning ahead</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-prev" onclick="prevSection()">Previous</button>
+                    <button class="btn btn-next" onclick="calculateScore()">Get My Score</button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection">
+                <div class="score-circle" id="scoreCircle">
+                    <span id="scoreValue">0</span>
+                </div>
+                <h2 class="score-label" id="scoreLabel">Calculating...</h2>
+                <p class="score-description" id="scoreDescription">
+                    Analyzing your business data...
+                </p>
+
+                <div class="recommendations" id="recommendations">
+                    <h3>Personalized Recommendations</h3>
+                    <div id="recommendationsList"></div>
+                </div>
+
+                <!-- Tier-based Access Control -->
+                <div id="tierAccessControl">
+                    <!-- This will be populated based on user tier -->
+                </div>
+
+                <div class="download-section" id="downloadSection">
+                    <!-- Download button will be added here based on tier -->
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-prev" onclick="location.href='index.html'">Back to Home</button>
+                    <button class="btn btn-next" onclick="location.href='login.html'">Access Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 4;
+        let assessmentData = {};
+
+        // Radio option selection
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const input = this.querySelector('input[type="radio"]');
+                if (input) {
+                    const radioGroup = document.getElementsByName(input.name);
+                    document.querySelectorAll(`input[name="${input.name}"]`).forEach(radio => {
+                        radio.closest('.radio-option').classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    input.checked = true;
+                }
+
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    this.classList.toggle('selected');
+                }
+            });
+        });
+
+        function nextSection() {
+            if (validateSection(currentSection)) {
+                saveCurrentSection();
+                document.querySelector(`[data-section="${currentSection}"]`).classList.remove('active');
+                currentSection++;
+                document.querySelector(`[data-section="${currentSection}"]`).classList.add('active');
+                updateProgressBar();
+            }
+        }
+
+        function prevSection() {
+            saveCurrentSection();
+            document.querySelector(`[data-section="${currentSection}"]`).classList.remove('active');
+            currentSection--;
+            document.querySelector(`[data-section="${currentSection}"]`).classList.add('active');
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function validateSection(section) {
+            // Add validation logic here
+            return true;
+        }
+
+        function saveCurrentSection() {
+            // Save data from current section
+            switch(currentSection) {
+                case 1:
+                    assessmentData.businessName = document.getElementById('businessName').value;
+                    assessmentData.industry = document.getElementById('industry').value;
+                    assessmentData.years = document.querySelector('input[name="years"]:checked')?.value;
+                    break;
+                case 2:
+                    assessmentData.revenue = document.getElementById('revenue').value;
+                    assessmentData.records = document.querySelector('input[name="records"]:checked')?.value;
+                    assessmentData.growth = document.querySelector('input[name="growth"]:checked')?.value;
+                    break;
+                case 3:
+                    assessmentData.customers = document.querySelector('input[name="customers"]:checked')?.value;
+                    assessmentData.competition = document.querySelector('input[name="competition"]:checked')?.value;
+                    assessmentData.proposition = document.getElementById('proposition').value;
+                    break;
+                case 4:
+                    assessmentData.fundingAmount = document.getElementById('fundingAmount').value;
+                    assessmentData.timeline = document.querySelector('input[name="timeline"]:checked')?.value;
+                    break;
+            }
+        }
+
+        function calculateScore() {
+            saveCurrentSection();
+
+            // Hide questions, show results
+            document.querySelector(`[data-section="${currentSection}"]`).classList.remove('active');
+            document.getElementById('resultsSection').classList.add('active');
+            updateProgressBar();
+
+            // Calculate score based on answers
+            let score = 0;
+            let maxScore = 100;
+
+            // Business maturity
+            if (assessmentData.years === '5+') score += 15;
+            else if (assessmentData.years === '3-5') score += 10;
+            else if (assessmentData.years === '1-3') score += 5;
+
+            // Financial health
+            if (assessmentData.revenue === '50000+') score += 20;
+            else if (assessmentData.revenue === '20000-50000') score += 15;
+            else if (assessmentData.revenue === '5000-20000') score += 10;
+            else if (assessmentData.revenue === '1000-5000') score += 5;
+
+            // Record keeping
+            if (assessmentData.records === 'digital') score += 20;
+            else if (assessmentData.records === 'manual') score += 15;
+            else if (assessmentData.records === 'basic') score += 8;
+
+            // Growth rate
+            if (assessmentData.growth === 'high') score += 15;
+            else if (assessmentData.growth === 'moderate') score += 10;
+            else if (assessmentData.growth === 'stable') score += 5;
+
+            // Customer base
+            if (assessmentData.customers === '1000+') score += 15;
+            else if (assessmentData.customers === '200-1000') score += 10;
+            else if (assessmentData.customers === '50-200') score += 5;
+
+            // Competition advantage
+            if (assessmentData.proposition && assessmentData.proposition.length > 50) score += 10;
+
+            // Display results
+            displayResults(score);
+        }
+
+        function displayResults(score) {
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreLabel = document.getElementById('scoreLabel');
+            const scoreDescription = document.getElementById('scoreDescription');
+
+            // Animate score
+            let currentScore = 0;
+            const increment = score / 50;
+            const timer = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= score) {
+                    currentScore = score;
+                    clearInterval(timer);
+                }
+                scoreValue.textContent = Math.round(currentScore);
+            }, 30);
+
+            // Set score color and label
+            if (score >= 75) {
+                scoreCircle.className = 'score-circle score-excellent';
+                scoreLabel.textContent = 'Excellent Investment Readiness!';
+                scoreDescription.textContent = 'Your business shows strong fundamentals and is well-positioned for investment.';
+            } else if (score >= 50) {
+                scoreCircle.className = 'score-circle score-good';
+                scoreLabel.textContent = 'Good Investment Potential';
+                scoreDescription.textContent = 'Your business has solid foundations with some areas for improvement.';
+            } else if (score >= 25) {
+                scoreCircle.className = 'score-circle score-fair';
+                scoreLabel.textContent = 'Fair Investment Readiness';
+                scoreDescription.textContent = 'Your business needs significant improvements to attract investors.';
+            } else {
+                scoreCircle.className = 'score-circle score-poor';
+                scoreLabel.textContent = 'Needs Improvement';
+                scoreDescription.textContent = 'Your business requires substantial development before seeking investment.';
+            }
+
+            // Generate recommendations
+            generateRecommendations(score);
+
+            // Check user tier and show appropriate options
+            checkUserTierAccess();
+        }
+
+        function generateRecommendations(score) {
+            const recommendationsList = document.getElementById('recommendationsList');
+            let recommendations = [];
+
+            // Add recommendations based on assessment answers
+            if (assessmentData.records !== 'digital') {
+                recommendations.push({
+                    priority: 'high',
+                    title: 'Digitize Financial Records',
+                    description: 'Implement a digital accounting system to track finances accurately'
+                });
+            }
+
+            if (assessmentData.growth === 'declining' || assessmentData.growth === 'stable') {
+                recommendations.push({
+                    priority: 'high',
+                    title: 'Develop Growth Strategy',
+                    description: 'Create a clear plan to increase revenue and market share'
+                });
+            }
+
+            if (assessmentData.customers === '0-50') {
+                recommendations.push({
+                    priority: 'medium',
+                    title: 'Expand Customer Base',
+                    description: 'Implement marketing strategies to attract more customers'
+                });
+            }
+
+            if (!assessmentData.proposition || assessmentData.proposition.length < 50) {
+                recommendations.push({
+                    priority: 'medium',
+                    title: 'Define Unique Value Proposition',
+                    description: 'Clearly articulate what makes your business unique'
+                });
+            }
+
+            recommendations.push({
+                priority: 'low',
+                title: 'Build Investor Relationships',
+                description: 'Start networking with potential investors in your industry'
+            });
+
+            // Display recommendations
+            recommendationsList.innerHTML = recommendations.map(rec => `
+                <div class="recommendation-item">
+                    <span class="recommendation-priority priority-${rec.priority}">${rec.priority.toUpperCase()} PRIORITY</span>
+                    <h4>${rec.title}</h4>
+                    <p>${rec.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function checkUserTierAccess() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userType = localStorage.getItem('userType');
+            const userTier = localStorage.getItem('userTier') || 'starter'; // Default to starter
+            const tierAccessControl = document.getElementById('tierAccessControl');
+            const downloadSection = document.getElementById('downloadSection');
+
+            if (userTier === 'growth' || userTier === 'scale') {
+                // User has Growth or Scale tier - full access
+                tierAccessControl.innerHTML = `
+                    <div class="upgrade-prompt" style="background: #10b981;">
+                        <h3>✅ Full Analytics Report Available</h3>
+                        <p>As a ${userTier.charAt(0).toUpperCase() + userTier.slice(1)} tier member, you have full access to:</p>
+                        <ul class="upgrade-features">
+                            <li>✅ Complete 20-page investment readiness report</li>
+                            <li>✅ Detailed financial analysis</li>
+                            <li>✅ Custom growth strategies</li>
+                            <li>✅ Investor pitch templates</li>
+                            <li>✅ Monthly progress tracking</li>
+                        </ul>
+                    </div>
+                `;
+
+                downloadSection.innerHTML = `
+                    <button class="btn-download" onclick="downloadReport()">
+                        📊 Download Complete Report (PDF)
+                    </button>
+                `;
+            } else {
+                // User is on Starter tier or not logged in
+                tierAccessControl.innerHTML = `
+                    <div class="upgrade-prompt">
+                        <h3>🚀 Unlock Your Complete Investment Report</h3>
+                        <p>Upgrade to Growth Tier to get:</p>
+                        <ul class="upgrade-features">
+                            <li>✨ Complete 20-page investment readiness report</li>
+                            <li>📊 Advanced business analytics dashboard</li>
+                            <li>🎯 Personalized growth strategies</li>
+                            <li>📈 Monthly investor reports</li>
+                            <li>💬 Daily AI coaching via WhatsApp</li>
+                            <li>🏦 Advanced WhatsApp banking integration</li>
+                        </ul>
+                        <button class="btn-upgrade" onclick="upgradeToGrowth()">
+                            Upgrade to Growth Tier - ₵87/month
+                        </button>
+                        <p style="text-align: center; margin-top: 10px; opacity: 0.9;">
+                            🎁 Limited offer: 60% off for first 3 months
+                        </p>
+                    </div>
+                `;
+
+                downloadSection.innerHTML = `
+                    <div class="locked-overlay">
+                        <button class="btn-download" disabled>
+                            📊 Download Complete Report (PDF)
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function upgradeToGrowth() {
+            // Store assessment data
+            localStorage.setItem('pendingAssessment', JSON.stringify(assessmentData));
+            localStorage.setItem('assessmentScore', document.getElementById('scoreValue').textContent);
+
+            // Redirect to signup/upgrade page
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                window.location.href = 'upgrade-subscription.html';
+            } else {
+                window.location.href = 'signup.html?plan=growth&source=assessment';
+            }
+        }
+
+        function downloadReport() {
+            // Generate and download the report
+            alert('Generating your comprehensive investment readiness report...\n\nThis feature will create a detailed PDF with:\n- Executive summary\n- Financial analysis\n- Market positioning\n- Growth strategies\n- Investor pitch guidelines\n- Implementation roadmap');
+
+            // In production, this would generate an actual PDF
+            console.log('Report data:', assessmentData);
+        }
+
+        // Initialize
+        updateProgressBar();
+    </script>
+</body>
+</html>

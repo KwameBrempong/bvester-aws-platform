@@ -1,0 +1,34 @@
+# 📱 TWILIO PRODUCTION CREDENTIALS
+# Get these from Twilio Console Dashboard
+
+TWILIO_ACCOUNT_SID=ACyour_account_sid_here
+TWILIO_AUTH_TOKEN=your_auth_token_here
+
+# Instructions:
+# 1. Create Twilio account and verify phone
+# 2. Go to Console Dashboard
+# 3. Copy Account SID (starts with AC)
+# 4. Copy Auth Token (click View to reveal)
+
+# Optional: Get Twilio Phone Number
+# 1. Phone Numbers → Manage → Buy a number
+# 2. Choose country and capabilities
+# 3. Cost: $1-15/month depending on location
+
+# SMS Pricing (approximate):
+# - US/Canada: $0.0075 per SMS
+# - UK: $0.04 per SMS  
+# - Nigeria: $0.09 per SMS
+# - Kenya: $0.05 per SMS
+# - South Africa: $0.02 per SMS
+
+# For Development:
+# - Verify test phone numbers in console
+# - Use trial credits for testing
+# - Upgrade to paid account for production
+
+# Features Available:
+# - SMS messaging
+# - Voice calls
+# - WhatsApp API (advanced)
+# - Verify API (2FA)

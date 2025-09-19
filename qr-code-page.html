@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile QR Access</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            text-align: center;
+            background: #f0f0f0;
+        }
+        .qr-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            max-width: 400px;
+        }
+        .url-box {
+            background: #e5e7eb;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+        .important {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="qr-container">
+        <h1>📱 Mobile Access</h1>
+        
+        <div class="important">
+            ⚠️ IMPORTANT: Make sure to use HTTP (not HTTPS)
+        </div>
+        
+        <h3>Copy this URL to your phone:</h3>
+        <div class="url-box">
+            http://192.168.8.101:9002/test
+        </div>
+        
+        <h3>Alternative URL:</h3>
+        <div class="url-box">
+            http://172.23.16.1:9002/test
+        </div>
+        
+        <div style="margin: 30px 0;">
+            <h3>📋 Instructions:</h3>
+            <p style="text-align: left;">
+                1. Open web browser on your phone<br>
+                2. Type the URL exactly as shown above<br>
+                3. Make sure it starts with "http://" not "https://"<br>
+                4. Press Enter/Go<br>
+                5. If you see SSL error, clear browser cache and try again
+            </p>
+        </div>
+        
+        <p><strong>Need help?</strong> Make sure both devices are on the same WiFi network!</p>
+    </div>
+    
+    <script>
+        // Auto-open this page when server starts
+        console.log('QR code page loaded for mobile access');
+    </script>
+</body>
+</html>

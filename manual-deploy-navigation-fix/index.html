@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester - Where African Innovation Meets Global Investment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: #ffffff;
+            padding: 12px 24px;
+            border-bottom: 1px solid #f3f4f6;
+            position: relative;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            margin: 0 8px;
+            text-decoration: none;
+            color: #374151;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .nav-item:hover {
+            color: #2E7D8F;
+        }
+
+        .dropdown-container {
+            position: relative;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 4px;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            color: #374151;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .login-button {
+            padding: 8px 16px;
+            margin-right: 12px;
+            background: none;
+            border: none;
+            color: #374151;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            color: #2E7D8F;
+        }
+
+        .signup-button {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .signup-button:hover {
+            background-color: #333333;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #374151;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+
+        .mobile-menu-overlay.show {
+            display: block;
+        }
+
+        .mobile-menu-content {
+            background-color: #ffffff;
+            padding: 20px 24px;
+            margin: 60px 16px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .mobile-menu-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            background: none;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .mobile-menu-item:hover {
+            color: #2E7D8F;
+        }
+
+        .mobile-signup-button {
+            background-color: #000000;
+            color: #ffffff;
+            border-radius: 6px;
+            margin-top: 8px;
+            border: none;
+            text-align: center;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 24px;
+            min-height: 500px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .hero-button {
+            padding: 16px 32px;
+            border-radius: 8px;
+            min-width: 250px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+        }
+
+        .investor-button {
+            background-color: #2E7D8F;
+            color: #ffffff;
+        }
+
+        .investor-button:hover {
+            background-color: #1f5c6b;
+        }
+
+        .funding-button {
+            background-color: transparent;
+            border: 2px solid #2E7D8F;
+            color: #2E7D8F;
+        }
+
+        .funding-button:hover {
+            background-color: #2E7D8F;
+            color: #ffffff;
+        }
+
+        /* Footer */
+        .footer-container {
+            background-color: #111827;
+            padding: 80px 24px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 48px;
+        }
+
+        .footer-section {
+            flex: 1;
+            margin-right: 32px;
+        }
+
+        .footer-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .footer-link {
+            display: block;
+            padding: 6px 0;
+            color: #9ca3af;
+            font-size: 15px;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #ffffff;
+        }
+
+        .footer-bottom {
+            padding-top: 32px;
+            border-top: 1px solid #374151;
+            text-align: center;
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+                padding: 0 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .hero-button {
+                min-width: 100%;
+            }
+
+            .login-button {
+                padding: 6px 12px;
+                margin-right: 8px;
+            }
+
+            .signup-button {
+                padding: 8px 16px;
+            }
+
+            .footer-grid {
+                flex-direction: column;
+                margin-bottom: 32px;
+            }
+
+            .footer-section {
+                margin-bottom: 24px;
+                margin-right: 0;
+            }
+
+            .footer-container {
+                padding: 60px 16px;
+            }
+
+            .footer-bottom {
+                padding-top: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="logo-icon">💎</span>
+                <span class="logo-text">Bvester</span>
+            </a>
+
+            <div class="nav-menu">
+                <button class="nav-item" onclick="navigate('about')">Discover</button>
+
+                <div class="dropdown-container">
+                    <button class="nav-item" onclick="toggleDropdown()">For Investors ▼</button>
+                    <div class="dropdown" id="dropdown">
+                        <button class="dropdown-item" onclick="navigate('register')">Investment Opportunities</button>
+                        <button class="dropdown-item" onclick="navigate('login')">Portfolio Management</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="mobile-menu-button" onclick="toggleMobileMenu()">☰</button>
+
+            <div class="nav-actions">
+                <button class="login-button" onclick="navigate('login')">Sign In</button>
+                <button class="signup-button" onclick="navigate('register')">Sign up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <button class="mobile-menu-item" onclick="navigate('about'); closeMobileMenu();">Discover</button>
+            <button class="mobile-menu-item" onclick="navigate('register'); closeMobileMenu();">Investment Opportunities</button>
+            <button class="mobile-menu-item" onclick="navigate('login'); closeMobileMenu();">Portfolio Management</button>
+            <button class="mobile-menu-item" onclick="navigate('login'); closeMobileMenu();">Sign In</button>
+            <button class="mobile-menu-item mobile-signup-button" onclick="navigate('register'); closeMobileMenu();">Sign up</button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <h1 class="hero-title">Where African Innovation Meets Global Investment</h1>
+        <p class="hero-subtitle">Connect with opportunities, grow your business, and invest in Africa's future.</p>
+
+        <div class="hero-buttons">
+            <button class="hero-button investor-button" onclick="navigate('register')">I Want to Invest in Africa</button>
+            <button class="hero-button funding-button" onclick="navigate('register')">I Need Funding for My Business</button>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3 class="footer-section-title">For Investors</h3>
+                    <a href="#" class="footer-link" onclick="navigate('register')">Investment Opportunities</a>
+                    <a href="#" class="footer-link" onclick="navigate('login')">Portfolio Management</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-section-title">For Startups</h3>
+                    <a href="#" class="footer-link" onclick="navigate('register')">Raise Funding</a>
+                    <a href="#" class="footer-link" onclick="navigate('about')">Business Valuation</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2024 Bvester. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        function navigate(page) {
+            console.log(`Navigating to ${page}`);
+            switch(page) {
+                case 'login':
+                    alert('Login page - This would normally navigate to the login screen');
+                    break;
+                case 'register':
+                    alert('Register page - This would normally navigate to the registration screen');
+                    break;
+                case 'about':
+                    alert('About page - This would normally navigate to the about screen');
+                    break;
+                default:
+                    console.log('Unknown page:', page);
+            }
+        }
+
+        // Dropdown functionality
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Mobile menu functionality
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('show');
+        }
+
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.remove('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('dropdown');
+            const dropdownContainer = event.target.closest('.dropdown-container');
+
+            if (!dropdownContainer) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Close mobile menu when clicking overlay
+        document.getElementById('mobileMenu').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeMobileMenu();
+            }
+        });
+    </script>
+</body>
+</html>

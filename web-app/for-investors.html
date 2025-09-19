@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Investors - Unlock Africa's Investment Potential | Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            line-height: 1.6;
+            color: #ffffff;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: #000000;
+            padding: 12px 16px;
+            border-bottom: 1px solid #ffd700;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+        }
+
+        .signup-btn {
+            background: #ffd700;
+            color: #000000;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .signup-btn:hover {
+            background: #ffed4a;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 80px 16px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            line-height: 56px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 24px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            line-height: 30px;
+            color: #cccccc;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .secondary-btn {
+            padding: 16px 32px;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            color: #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 16px;
+            background: #0a0a0a;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #111111 100%);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 215, 0, 0.4);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            font-size: 16px;
+            color: #cccccc;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-benefits {
+            list-style: none;
+        }
+
+        .feature-benefits li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #cccccc;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .feature-benefits li::before {
+            content: "✓";
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 80px 16px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+        }
+
+        .stats-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #cccccc;
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 16px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .cta-subtitle {
+            font-size: 18px;
+            color: #cccccc;
+            margin-bottom: 32px;
+        }
+
+        /* Footer */
+        .footer-container {
+            background: #000000;
+            border-top: 2px solid #ffd700;
+            padding: 40px 16px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #cccccc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-link:hover {
+            color: #ffd700;
+        }
+
+        .footer-copyright {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 32px;
+                line-height: 40px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+                line-height: 24px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .primary-btn, .secondary-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <div class="nav-actions">
+                <a href="for-businesses.html" class="nav-link">For Businesses</a>
+                <a href="login.html" class="nav-link">Login</a>
+                <a href="signup.html" class="signup-btn">Start Investing</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>🏆</span>
+                Africa's #1 Investment Platform
+            </div>
+            <h1 class="hero-title">
+                Unlock Africa's Most<br>
+                <span style="color: #ffd700;">Profitable Investment Opportunities</span>
+            </h1>
+            <p class="hero-subtitle">
+                Join elite investors earning 15-35% annual returns by funding Africa's fastest-growing SMEs. 
+                Access exclusive deals, comprehensive due diligence, and diversified portfolios that outperform traditional markets.
+            </p>
+            <div class="hero-cta">
+                <a href="signup.html" class="primary-btn">Start Investing Today</a>
+                <a href="opportunities.html" class="secondary-btn">View Opportunities</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <div class="features-container">
+            <div class="section-header">
+                <h2 class="section-title">Revolutionary Investment Features</h2>
+                <p class="section-subtitle">
+                    Every tool you need to build wealth through strategic African investments
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">AI-Powered Deal Matching</h3>
+                    <p class="feature-description">
+                        Our proprietary AI analyzes thousands of data points to match you with investment opportunities that align perfectly with your risk profile and return expectations.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Personalized investment recommendations</li>
+                        <li>Advanced risk assessment algorithms</li>
+                        <li>Real-time market opportunity alerts</li>
+                        <li>Automated portfolio rebalancing</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Professional Due Diligence</h3>
+                    <p class="feature-description">
+                        Every investment opportunity undergoes rigorous vetting by our team of financial experts, ensuring you only see businesses with verified growth potential.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Comprehensive financial analysis</li>
+                        <li>Market validation reports</li>
+                        <li>Management team assessment</li>
+                        <li>Competitive landscape analysis</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3 class="feature-title">Exclusive Investment Access</h3>
+                    <p class="feature-description">
+                        Gain early access to Africa's most promising SMEs before they become available to the general public. Join the inner circle of successful investors.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Pre-IPO investment opportunities</li>
+                        <li>Exclusive startup funding rounds</li>
+                        <li>VIP investor community access</li>
+                        <li>Direct entrepreneur communication</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Real-Time Portfolio Tracking</h3>
+                    <p class="feature-description">
+                        Monitor your investments with professional-grade analytics, real-time performance updates, and detailed growth projections.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Live portfolio performance dashboard</li>
+                        <li>Detailed ROI analytics and projections</li>
+                        <li>Investment milestone notifications</li>
+                        <li>Automated dividend distribution</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">Institutional-Grade Security</h3>
+                    <p class="feature-description">
+                        Your investments and personal data are protected by bank-level security protocols, ensuring complete peace of mind.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Multi-layer encryption protection</li>
+                        <li>Regulatory compliance across Africa</li>
+                        <li>Secure payment processing</li>
+                        <li>24/7 fraud monitoring</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3 class="feature-title">Pan-African Market Access</h3>
+                    <p class="feature-description">
+                        Diversify across multiple African markets with opportunities spanning Nigeria, Kenya, Ghana, South Africa, and beyond.
+                    </p>
+                    <ul class="feature-benefits">
+                        <li>Multi-country investment opportunities</li>
+                        <li>Currency hedging options</li>
+                        <li>Local market expertise</li>
+                        <li>Cross-border payment facilitation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+        <div class="stats-container">
+            <div class="section-header">
+                <h2 class="section-title">Proven Investment Results</h2>
+                <p class="section-subtitle">
+                    Join thousands of investors building wealth through African opportunities
+                </p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">24.7%</div>
+                    <div class="stat-label">Average Annual Returns</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$127M</div>
+                    <div class="stat-label">Total Investments Facilitated</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2,847</div>
+                    <div class="stat-label">Active Investors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">94%</div>
+                    <div class="stat-label">Investor Satisfaction Rate</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Build Generational Wealth?</h2>
+            <p class="cta-subtitle">
+                Join elite investors who are already capturing Africa's extraordinary growth. 
+                Start with as little as $1,000 and watch your money work harder than ever before.
+            </p>
+            <div class="hero-cta">
+                <a href="signup.html" class="primary-btn">Create Investor Account</a>
+                <a href="opportunities.html" class="secondary-btn">Browse Opportunities</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html" class="footer-link">Home</a>
+                <a href="for-businesses.html" class="footer-link">For Businesses</a>
+                <a href="about.html" class="footer-link">About</a>
+                <a href="#" class="footer-link">Contact</a>
+                <a href="#" class="footer-link">Privacy</a>
+            </div>
+            <div class="footer-copyright">
+                © 2025 Bvester. All rights reserved.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

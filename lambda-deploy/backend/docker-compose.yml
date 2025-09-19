@@ -1,0 +1,147 @@
+# 🚀 BVESTER BACKEND - DOCKER COMPOSE CONFIGURATION
+# Complete development and production setup
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # BVESTER API SERVER
+  # ============================================================================
+  bvester-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: bvester-backend
+    restart: unless-stopped
+    ports:
+      - "${PORT:-5000}:5000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=5000
+      - APP_BASE_URL=${APP_BASE_URL}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_ADMIN_PRIVATE_KEY=${FIREBASE_ADMIN_PRIVATE_KEY}
+      - FIREBASE_ADMIN_CLIENT_EMAIL=${FIREBASE_ADMIN_CLIENT_EMAIL}
+      - FIREBASE_ADMIN_CLIENT_ID=${FIREBASE_ADMIN_CLIENT_ID}
+      - FIREBASE_ADMIN_PRIVATE_KEY_ID=${FIREBASE_ADMIN_PRIVATE_KEY_ID}
+      - FIREBASE_DATABASE_URL=${FIREBASE_DATABASE_URL}
+      - FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - FLUTTERWAVE_SECRET_KEY=${FLUTTERWAVE_SECRET_KEY}
+      - FLUTTERWAVE_PUBLIC_KEY=${FLUTTERWAVE_PUBLIC_KEY}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+    networks:
+      - bvester-network
+    labels:
+      - "com.bvester.service=backend-api"
+      - "com.bvester.environment=${NODE_ENV:-production}"
+
+  # ============================================================================
+  # REDIS CACHE
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: bvester-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+    networks:
+      - bvester-network
+    labels:
+      - "com.bvester.service=redis-cache"
+
+  # ============================================================================
+  # NGINX REVERSE PROXY (Optional)
+  # ============================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: bvester-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - bvester-api
+    networks:
+      - bvester-network
+    labels:
+      - "com.bvester.service=reverse-proxy"
+
+  # ============================================================================
+  # MONITORING (Optional)
+  # ============================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: bvester-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - bvester-network
+    labels:
+      - "com.bvester.service=monitoring"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: bvester-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - bvester-network
+    labels:
+      - "com.bvester.service=dashboard"
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+networks:
+  bvester-network:
+    driver: bridge
+    labels:
+      - "com.bvester.network=main"
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+volumes:
+  redis_data:
+    driver: local
+    labels:
+      - "com.bvester.volume=redis-data"
+  
+  prometheus_data:
+    driver: local
+    labels:
+      - "com.bvester.volume=prometheus-data"
+  
+  grafana_data:
+    driver: local
+    labels:
+      - "com.bvester.volume=grafana-data"

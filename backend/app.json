@@ -1,0 +1,32 @@
+{
+  "name": "bvester-backend",
+  "description": "Bvester Platform Backend - African SME Investment Platform",
+  "image": "heroku/nodejs",
+  "repository": "https://github.com/bvester/platform-backend",
+  "keywords": ["investment", "africa", "sme", "fintech", "nodejs"],
+  "env": {
+    "NODE_ENV": {
+      "description": "Node.js environment (production/development)",
+      "value": "production"
+    },
+    "JWT_SECRET": {
+      "description": "JWT token secret key",
+      "value": "de58d5108737ca37748806925f302e9de801f01947cbfae733924819d72e1231a03191580aae2f63aa721bafaf23cd8842a245889a58890f2fcc32ce8f65d006"
+    },
+    "ENCRYPTION_KEY": {
+      "description": "Data encryption key",
+      "value": "307c3fc86aceed9fde5e354ef4e95241da0790cc0fe0604c059a17d0023308c0"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}

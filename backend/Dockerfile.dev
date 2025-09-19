@@ -1,0 +1,48 @@
+# 🛠️ BVESTER BACKEND - DEVELOPMENT DOCKERFILE
+# Development-optimized container with hot reload and debugging
+
+FROM node:18-alpine AS development
+
+# Install development tools and debugging utilities
+RUN apk add --no-cache \
+    curl \
+    git \
+    bash \
+    vim \
+    procps \
+    && npm install -g nodemon
+
+# Create app user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S bvester -u 1001 -G nodejs
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm ci && npm cache clean --force
+
+# Create necessary directories with proper permissions
+RUN mkdir -p logs uploads temp && \
+    chown -R bvester:nodejs /app
+
+# Switch to non-root user
+USER bvester
+
+# Expose application port and debugger port
+EXPOSE 3000 9229
+
+# Health check for development
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Development environment variables
+ENV NODE_ENV=development \
+    DEBUG=bvester:* \
+    PORT=3000
+
+# Start application with nodemon for hot reload and debugging
+CMD ["nodemon", "--inspect=0.0.0.0:9229", "server.js"]

@@ -1,0 +1,28 @@
+{
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "bvester.com",
+        "Type": "A",
+        "AliasTarget": {
+          "DNSName": "s3-website.eu-west-2.amazonaws.com",
+          "EvaluateTargetHealth": false,
+          "HostedZoneId": "Z3GKZC51ZF0DB4"
+        }
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "www.bvester.com",
+        "Type": "A",
+        "AliasTarget": {
+          "DNSName": "s3-website.eu-west-2.amazonaws.com",
+          "EvaluateTargetHealth": false,
+          "HostedZoneId": "Z3GKZC51ZF0DB4"
+        }
+      }
+    }
+  ]
+}

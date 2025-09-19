@@ -1,0 +1,107 @@
+name: 🐳 Build and Push Docker Images
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Manual trigger
+
+env:
+  REGISTRY: docker.io
+  BACKEND_IMAGE: bvester-backend
+  WEB_IMAGE: bvester-web-vercel
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: 🔑 Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: 🏷️ Extract metadata for Backend
+      id: backend_meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=raw,value=latest,enable={{is_default_branch}}
+          type=raw,value=v2.0.0-vercel,enable={{is_default_branch}}
+    
+    - name: 🏷️ Extract metadata for Web
+      id: web_meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.WEB_IMAGE }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=raw,value=latest,enable={{is_default_branch}}
+          type=raw,value=v2.0.0,enable={{is_default_branch}}
+    
+    - name: 🏗️ Build and push Backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        file: ./backend/Dockerfile
+        push: true
+        tags: ${{ steps.backend_meta.outputs.tags }}
+        labels: ${{ steps.backend_meta.outputs.labels }}
+        platforms: linux/amd64,linux/arm64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    - name: 🌐 Build and push Web image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile.web.vercel
+        push: true
+        tags: ${{ steps.web_meta.outputs.tags }}
+        labels: ${{ steps.web_meta.outputs.labels }}
+        platforms: linux/amd64,linux/arm64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    - name: 🚀 Build and push Dev Backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        file: ./backend/Dockerfile.dev
+        push: true
+        tags: |
+          ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/bvester-backend-dev:latest
+          ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/bvester-backend-dev:v2.0.0-vercel
+        platforms: linux/amd64,linux/arm64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    - name: 📝 Image digest
+      run: |
+        echo "Backend digest: ${{ steps.backend_meta.outputs.digest }}"
+        echo "Web digest: ${{ steps.web_meta.outputs.digest }}"
+    
+    - name: 🎉 Success notification
+      run: |
+        echo "✅ Docker images built and pushed successfully!"
+        echo "🐳 Backend: docker pull ${{ secrets.DOCKER_USERNAME }}/bvester-backend:latest"
+        echo "🌐 Web: docker pull ${{ secrets.DOCKER_USERNAME }}/bvester-web-vercel:latest"
+        echo "🔧 Dev: docker pull ${{ secrets.DOCKER_USERNAME }}/bvester-backend-dev:latest"
