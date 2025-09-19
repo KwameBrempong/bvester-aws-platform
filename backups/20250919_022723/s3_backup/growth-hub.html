@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Hub - Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: #000000;
+            padding: 16px 24px;
+            border-bottom: 1px solid #ffd700;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #ffed4a;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #ffd700 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: #cccccc;
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Layout */
+        .content-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 32px;
+        }
+
+        @media (max-width: 1024px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 215, 0, 0.1);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            color: #cccccc;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+        }
+
+        /* Featured Section */
+        .featured-section {
+            margin-bottom: 40px;
+        }
+
+        .featured-banner {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .featured-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 12px;
+        }
+
+        .featured-description {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .featured-btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .featured-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-description {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        /* Resource Grid */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .resource-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ffd700, #ffed4a);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .resource-card:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .resource-card:hover::before {
+            opacity: 1;
+        }
+
+        .resource-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .resource-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .resource-description {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .resource-type {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .resource-duration {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Course Progress */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4a);
+            transition: width 0.3s ease;
+        }
+
+        /* Article List */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .article-item:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .article-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .article-date {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .article-excerpt {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .article-tag {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Tool Grid */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .tool-card:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tool-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .tool-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .tool-description {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .tool-btn {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tool-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+        }
+
+        /* Event Card */
+        .event-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .event-date-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .event-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .event-description {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .event-details {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 16px;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .event-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .event-btn.primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #000000;
+        }
+
+        .event-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* Search Bar */
+        .search-section {
+            margin-bottom: 32px;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1);
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 24px 16px;
+            }
+            
+            .glass-card {
+                padding: 24px;
+            }
+            
+            .sidebar-nav {
+                position: static;
+                margin-bottom: 32px;
+            }
+            
+            .nav-items {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <a href="startup-dashboard.html" class="back-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">🚀 Growth Hub</h1>
+            <p class="page-subtitle">
+                Your comprehensive resource center for business growth, fundraising strategies, and investment success
+            </p>
+        </div>
+
+        <div class="content-layout">
+            <!-- Sidebar Navigation -->
+            <div class="glass-card sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">
+                        📚 Learning
+                    </div>
+                    <div class="nav-items">
+                        <a href="#" class="nav-item active" onclick="showSection('courses', this)">
+                            🎓 Courses
+                        </a>
+                        <a href="#" class="nav-item" onclick="showSection('articles', this)">
+                            📄 Articles
+                        </a>
+                        <a href="#" class="nav-item" onclick="showSection('webinars', this)">
+                            🎥 Webinars
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">
+                        🛠️ Tools
+                    </div>
+                    <div class="nav-items">
+                        <a href="#" class="nav-item" onclick="showSection('calculators', this)">
+                            🧮 Calculators
+                        </a>
+                        <a href="#" class="nav-item" onclick="showSection('templates', this)">
+                            📋 Templates
+                        </a>
+                        <a href="#" class="nav-item" onclick="showSection('generators', this)">
+                            ⚡ Generators
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">
+                        🌐 Community
+                    </div>
+                    <div class="nav-items">
+                        <a href="#" class="nav-item" onclick="showSection('events', this)">
+                            📅 Events
+                        </a>
+                        <a href="#" class="nav-item" onclick="showSection('forum', this)">
+                            💬 Forum
+                        </a>
+                        <a href="#" class="nav-item" onclick="showSection('mentors', this)">
+                            👨‍🏫 Mentors
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="glass-card">
+                <!-- Featured Section -->
+                <div class="featured-section">
+                    <div class="featured-banner">
+                        <div class="featured-title">🎯 Featured: Fundraising Masterclass</div>
+                        <div class="featured-description">
+                            Learn proven strategies to raise capital for your African startup from successful entrepreneurs and VCs
+                        </div>
+                        <button class="featured-btn" onclick="startMasterclass()">
+                            ▶️ Start Learning
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="search-section">
+                    <input type="text" class="search-bar" placeholder="🔍 Search courses, articles, tools..." id="search-input">
+                </div>
+
+                <!-- Courses Section -->
+                <div class="content-section active" id="courses-section">
+                    <div class="section-title">
+                        🎓 Business Courses
+                    </div>
+                    <div class="section-description">
+                        Comprehensive courses designed specifically for African entrepreneurs and global investors
+                    </div>
+
+                    <div class="resource-grid">
+                        <div class="resource-card" onclick="openCourse('fundraising-101')">
+                            <span class="resource-icon">💰</span>
+                            <div class="resource-title">Fundraising 101</div>
+                            <div class="resource-description">
+                                Master the fundamentals of raising capital, from pitch deck creation to investor negotiations
+                            </div>
+                            <div class="resource-meta">
+                                <span class="resource-type">Course</span>
+                                <span class="resource-duration">⏱️ 4 hours</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card" onclick="openCourse('financial-modeling')">
+                            <span class="resource-icon">📊</span>
+                            <div class="resource-title">Financial Modeling</div>
+                            <div class="resource-description">
+                                Build compelling financial models that attract investors and guide business decisions
+                            </div>
+                            <div class="resource-meta">
+                                <span class="resource-type">Course</span>
+                                <span class="resource-duration">⏱️ 6 hours</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card" onclick="openCourse('investor-relations')">
+                            <span class="resource-icon">🤝</span>
+                            <div class="resource-title">Investor Relations</div>
+                            <div class="resource-description">
+                                Learn how to build and maintain strong relationships with your investors
+                            </div>
+                            <div class="resource-meta">
+                                <span class="resource-type">Course</span>
+                                <span class="resource-duration">⏱️ 3 hours</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card" onclick="openCourse('scaling-strategies')">
+                            <span class="resource-icon">📈</span>
+                            <div class="resource-title">Scaling Strategies</div>
+                            <div class="resource-description">
+                                Proven methods to scale your business across African markets and beyond
+                            </div>
+                            <div class="resource-meta">
+                                <span class="resource-type">Course</span>
+                                <span class="resource-duration">⏱️ 5 hours</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card" onclick="openCourse('due-diligence')">
+                            <span class="resource-icon">🔍</span>
+                            <div class="resource-title">Due Diligence Mastery</div>
+                            <div class="resource-description">
+                                Comprehensive guide to conducting and preparing for investment due diligence
+                            </div>
+                            <div class="resource-meta">
+                                <span class="resource-type">Course</span>
+                                <span class="resource-duration">⏱️ 4 hours</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card" onclick="openCourse('market-analysis')">
+                            <span class="resource-icon">🌍</span>
+                            <div class="resource-title">African Market Analysis</div>
+                            <div class="resource-description">
+                                Deep dive into African markets, opportunities, and investment landscapes
+                            </div>
+                            <div class="resource-meta">
+                                <span class="resource-type">Course</span>
+                                <span class="resource-duration">⏱️ 7 hours</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Articles Section -->
+                <div class="content-section" id="articles-section">
+                    <div class="section-title">
+                        📄 Expert Articles
+                    </div>
+                    <div class="section-description">
+                        Latest insights and strategies from successful entrepreneurs and investors
+                    </div>
+
+                    <div class="article-list">
+                        <div class="article-item" onclick="readArticle('funding-trends-2025')">
+                            <div class="article-header">
+                                <div>
+                                    <div class="article-title">African Startup Funding Trends 2025</div>
+                                    <div class="article-date">January 25, 2025</div>
+                                </div>
+                            </div>
+                            <div class="article-excerpt">
+                                Comprehensive analysis of funding patterns, sector preferences, and emerging opportunities in the African startup ecosystem for 2025...
+                            </div>
+                            <div class="article-tags">
+                                <span class="article-tag">Funding</span>
+                                <span class="article-tag">Trends</span>
+                                <span class="article-tag">Africa</span>
+                            </div>
+                        </div>
+
+                        <div class="article-item" onclick="readArticle('pitch-deck-secrets')">
+                            <div class="article-header">
+                                <div>
+                                    <div class="article-title">10 Pitch Deck Secrets from Successful Founders</div>
+                                    <div class="article-date">January 22, 2025</div>
+                                </div>
+                            </div>
+                            <div class="article-excerpt">
+                                Learn the insider tips and strategies that helped African startups raise millions in funding with compelling pitch presentations...
+                            </div>
+                            <div class="article-tags">
+                                <span class="article-tag">Pitch Deck</span>
+                                <span class="article-tag">Fundraising</span>
+                                <span class="article-tag">Tips</span>
+                            </div>
+                        </div>
+
+                        <div class="article-item" onclick="readArticle('investor-psychology')">
+                            <div class="article-header">
+                                <div>
+                                    <div class="article-title">Understanding Investor Psychology in Africa</div>
+                                    <div class="article-date">January 20, 2025</div>
+                                </div>
+                            </div>
+                            <div class="article-excerpt">
+                                Decode what investors really look for when evaluating African startups and how to position your business for success...
+                            </div>
+                            <div class="article-tags">
+                                <span class="article-tag">Psychology</span>
+                                <span class="article-tag">Investors</span>
+                                <span class="article-tag">Strategy</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculators Section -->
+                <div class="content-section" id="calculators-section">
+                    <div class="section-title">
+                        🧮 Business Calculators
+                    </div>
+                    <div class="section-description">
+                        Essential tools to help you make data-driven business and investment decisions
+                    </div>
+
+                    <div class="tool-grid">
+                        <div class="tool-card" onclick="openCalculator('valuation')">
+                            <span class="tool-icon">💎</span>
+                            <div class="tool-name">Valuation Calculator</div>
+                            <div class="tool-description">
+                                Calculate your company's valuation using multiple methods and industry benchmarks
+                            </div>
+                            <button class="tool-btn">Launch Calculator</button>
+                        </div>
+
+                        <div class="tool-card" onclick="openCalculator('runway')">
+                            <span class="tool-icon">⏳</span>
+                            <div class="tool-name">Cash Runway Calculator</div>
+                            <div class="tool-description">
+                                Determine how long your funding will last and plan your next fundraising round
+                            </div>
+                            <button class="tool-btn">Launch Calculator</button>
+                        </div>
+
+                        <div class="tool-card" onclick="openCalculator('roi')">
+                            <span class="tool-icon">📈</span>
+                            <div class="tool-name">ROI Calculator</div>
+                            <div class="tool-description">
+                                Calculate return on investment for various business initiatives and projects
+                            </div>
+                            <button class="tool-btn">Launch Calculator</button>
+                        </div>
+
+                        <div class="tool-card" onclick="openCalculator('equity')">
+                            <span class="tool-icon">🥧</span>
+                            <div class="tool-name">Equity Split Calculator</div>
+                            <div class="tool-description">
+                                Model equity distribution scenarios for founders, employees, and investors
+                            </div>
+                            <button class="tool-btn">Launch Calculator</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Section -->
+                <div class="content-section" id="events-section">
+                    <div class="section-title">
+                        📅 Upcoming Events
+                    </div>
+                    <div class="section-description">
+                        Connect with the African startup ecosystem through our curated events and networking opportunities
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date-badge">Feb 15</div>
+                        <div class="event-title">African FinTech Summit 2025</div>
+                        <div class="event-description">
+                            Join 500+ founders, investors, and industry leaders for the premier FinTech event in Africa
+                        </div>
+                        <div class="event-details">
+                            <span>📍 Lagos, Nigeria</span>
+                            <span>⏰ 9:00 AM - 6:00 PM</span>
+                            <span>👥 500+ Attendees</span>
+                        </div>
+                        <div class="event-actions">
+                            <button class="event-btn primary" onclick="registerEvent('fintech-summit')">Register</button>
+                            <button class="event-btn secondary" onclick="learnMore('fintech-summit')">Learn More</button>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date-badge">Feb 22</div>
+                        <div class="event-title">Investor Pitch Day</div>
+                        <div class="event-description">
+                            Virtual pitch event where selected startups present to a panel of leading African VCs
+                        </div>
+                        <div class="event-details">
+                            <span>📍 Virtual Event</span>
+                            <span>⏰ 2:00 PM - 5:00 PM</span>
+                            <span>👥 20 Startups</span>
+                        </div>
+                        <div class="event-actions">
+                            <button class="event-btn primary" onclick="registerEvent('pitch-day')">Apply to Pitch</button>
+                            <button class="event-btn secondary" onclick="learnMore('pitch-day')">Watch Live</button>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date-badge">Mar 5</div>
+                        <div class="event-title">Women in Tech Leadership Forum</div>
+                        <div class="event-description">
+                            Celebrating and empowering women leaders in the African tech ecosystem
+                        </div>
+                        <div class="event-details">
+                            <span>📍 Cape Town, South Africa</span>
+                            <span>⏰ 10:00 AM - 4:00 PM</span>
+                            <span>👥 200+ Women Leaders</span>
+                        </div>
+                        <div class="event-actions">
+                            <button class="event-btn primary" onclick="registerEvent('women-tech')">Register</button>
+                            <button class="event-btn secondary" onclick="learnMore('women-tech')">Learn More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        function showSection(sectionName, element) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.add('active');
+            element.classList.add('active');
+        }
+
+        // Course functions
+        function openCourse(courseId) {
+            alert(`🎓 Opening Course: ${courseId.toUpperCase()}\\n\\nThis comprehensive course includes:\\n\\n• Video lessons with industry experts\\n• Interactive exercises and quizzes\\n• Downloadable resources and templates\\n• Community discussion forums\\n• Certificate of completion\\n\\nLaunching course player...`);
+        }
+
+        function startMasterclass() {
+            alert('🎯 Fundraising Masterclass\\n\\nThis premium course covers:\\n\\n• Pre-fundraising preparation\\n• Pitch deck optimization\\n• Investor targeting strategies\\n• Negotiation tactics\\n• Due diligence process\\n• Post-funding best practices\\n\\nStarting your learning journey...');
+        }
+
+        // Article functions
+        function readArticle(articleId) {
+            alert(`📄 Opening Article: ${articleId}\\n\\nThis expert article provides:\\n\\n• In-depth analysis and insights\\n• Real-world case studies\\n• Actionable strategies\\n• Industry data and trends\\n• Expert commentary\\n\\nOpening full article...`);
+        }
+
+        // Calculator functions
+        function openCalculator(calculatorType) {
+            alert(`🧮 ${calculatorType.toUpperCase()} Calculator\\n\\nThis interactive tool helps you:\\n\\n• Input your business metrics\\n• Apply industry benchmarks\\n• Generate detailed reports\\n• Export results to Excel\\n• Save calculations for later\\n\\nLaunching calculator interface...`);
+        }
+
+        // Event functions
+        function registerEvent(eventId) {
+            alert(`📅 Event Registration: ${eventId}\\n\\nRegistration includes:\\n\\n• Full event access\\n• Networking opportunities\\n• Speaker presentations\\n• Resource materials\\n• Certificate of attendance\\n\\nCompleting registration...`);
+        }
+
+        function learnMore(eventId) {
+            alert(`ℹ️ Event Details: ${eventId}\\n\\nDetailed information about:\\n\\n• Speaker lineup and bios\\n• Event agenda and schedule\\n• Venue and logistics\\n• Networking opportunities\\n• Sponsorship information\\n\\nOpening event details...`);
+        }
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            // Simple search simulation
+            if (searchTerm.length > 2) {
+                console.log(`Searching for: ${searchTerm}`);
+                // In a real implementation, this would filter content
+            }
+        });
+
+        console.log('Bvester Growth Hub - Comprehensive Business Learning Platform');
+    </script>
+</body>
+</html>

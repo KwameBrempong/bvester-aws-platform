@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Dashboard - Bvester</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background: #f5f5f5; }
+        
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 1rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .logout-btn { 
+            background: rgba(255,255,255,0.2); 
+            border: none; 
+            color: white; 
+            padding: 0.5rem 1rem; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        
+        .main-content { 
+            max-width: 1200px; 
+            margin: 2rem auto; 
+            padding: 0 2rem; 
+        }
+        
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 2rem; 
+        }
+        
+        .card { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+        }
+        
+        .premium-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .card h3 { 
+            color: #667eea; 
+            margin-bottom: 1rem; 
+            font-size: 1.5rem; 
+        }
+        
+        .premium-card h3 { color: white; }
+        
+        .stat-number { 
+            font-size: 2rem; 
+            font-weight: bold; 
+            color: #333; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .premium-card .stat-number { color: white; }
+        
+        .btn-primary { 
+            background: #667eea; 
+            color: white; 
+            padding: 0.75rem 1.5rem; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+            margin-top: 1rem;
+        }
+        
+        .btn-white { 
+            background: white; 
+            color: #667eea; 
+        }
+        
+        .btn-primary:hover { background: #5a67d8; }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Bvester</h1>
+            <span>Premium Dashboard</span>
+        </div>
+        <div class="user-info">
+            <span id="userName">Welcome back!</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="premium-card card">
+            <h3>🌟 Premium Features Unlocked</h3>
+            <p>You have access to advanced analytics, AI insights, and priority support</p>
+            <a href="#" class="btn-primary btn-white">Explore All Features</a>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>🤖 AI Market Analysis</h3>
+                <div class="stat-number">95%</div>
+                <p>Accuracy rate of AI predictions</p>
+                <a href="#" class="btn-primary">Run AI Analysis</a>
+            </div>
+            
+            <div class="card">
+                <h3>📊 Portfolio Analytics</h3>
+                <div class="stat-number">$45,000</div>
+                <p>Total portfolio value tracked</p>
+                <a href="#" class="btn-primary">View Analytics</a>
+            </div>
+            
+            <div class="card">
+                <h3>🎯 Investment Insights</h3>
+                <div class="stat-number">12</div>
+                <p>AI-recommended opportunities</p>
+                <a href="#" class="btn-primary">See Recommendations</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📈 Advanced Market Intelligence</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1rem;">
+                <div>
+                    <h4>African Market Trends</h4>
+                    <ul class="feature-list">
+                        <li>✅ Fintech sector growing 25% YoY</li>
+                        <li>✅ AgriTech investments up 40%</li>
+                        <li>✅ EdTech adoption accelerating</li>
+                        <li>✅ Healthcare tech expanding</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Risk Assessment</h4>
+                    <ul class="feature-list">
+                        <li>🟢 Low risk: Nigerian fintech</li>
+                        <li>🟡 Medium risk: Kenyan agritech</li>
+                        <li>🟢 Low risk: South African edtech</li>
+                        <li>🟡 Medium risk: Ghana renewable</li>
+                    </ul>
+                </div>
+            </div>
+            <a href="#" class="btn-primary">Access Full Market Report</a>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>🔬 Due Diligence Tools</h3>
+                <p>AI-powered business analysis and risk assessment for SMEs</p>
+                <ul class="feature-list">
+                    <li>📊 Financial health scoring</li>
+                    <li>📈 Growth potential analysis</li>
+                    <li>🔍 Market opportunity assessment</li>
+                    <li>⚠️ Risk factor identification</li>
+                </ul>
+                <a href="#" class="btn-primary">Analyze Business</a>
+            </div>
+
+            <div class="card">
+                <h3>💼 Portfolio Optimization</h3>
+                <p>Advanced tools to optimize your investment portfolio</p>
+                <ul class="feature-list">
+                    <li>🎯 Diversification recommendations</li>
+                    <li>⚖️ Risk-return optimization</li>
+                    <li>📅 Exit strategy planning</li>
+                    <li>🔄 Rebalancing suggestions</li>
+                </ul>
+                <a href="#" class="btn-primary">Optimize Portfolio</a>
+            </div>
+
+            <div class="card">
+                <h3>📞 Priority Support</h3>
+                <p>Get expert guidance from our investment advisors</p>
+                <ul class="feature-list">
+                    <li>📞 Direct phone support</li>
+                    <li>💬 Priority chat assistance</li>
+                    <li>📧 Email response within 2 hours</li>
+                    <li>🎥 Video consultation sessions</li>
+                </ul>
+                <a href="#" class="btn-primary">Contact Support</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📈 Real-time Alerts</h3>
+            <p>Stay informed with intelligent notifications about your investments and market opportunities</p>
+            <div style="background: #f7fafc; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                <p><strong>Recent Alert:</strong> TechCorp Ghana showing 15% revenue growth this quarter - Consider increasing position</p>
+            </div>
+            <a href="#" class="btn-primary">Manage Alerts</a>
+        </div>
+    </main>
+
+    <script>
+        // Check if user is logged in
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const userName = localStorage.getItem('userName');
+        const userType = localStorage.getItem('userType');
+
+        if (!isLoggedIn || isLoggedIn !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Verify this is the right dashboard for the user type
+        if (userType && userType !== 'premium') {
+            // Redirect to appropriate dashboard
+            if (userType === 'sme') {
+                window.location.href = 'sme-dashboard.html';
+            } else if (userType === 'investor') {
+                window.location.href = 'investor-dashboard.html';
+            }
+        }
+
+        if (userName) {
+            document.getElementById('userName').textContent = `Welcome, ${userName}!`;
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userType');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

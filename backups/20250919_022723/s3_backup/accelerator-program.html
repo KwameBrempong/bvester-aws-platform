@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30-Day Investment Readiness Bootcamp - Bvester</title>
+    <link rel="stylesheet" href="css/global-design-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --primary-gold: #FFD700;
+            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0A0A0A;
+            color: #FFFFFF !important;
+            line-height: 1.6;
+        }
+
+        /* Dark theme with proper contrast */
+        .hero {
+            background: linear-gradient(135deg, #1A1A1A 0%, #252525 50%, #1A1A1A 100%) !important;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.2) !important;
+        }
+
+        .content-section {
+            background: #1A1A1A !important;
+            padding: 3rem 2rem !important;
+            margin: 2rem auto !important;
+            border-radius: 12px !important;
+            border: 1px solid rgba(255, 215, 0, 0.2) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .card {
+            background: rgba(30, 30, 30, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .stat-card {
+            background: #252525 !important;
+            border: 1px solid rgba(255, 215, 0, 0.5) !important;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.1) !important;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 215, 0, 0.05) !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
+        }
+
+        .pricing-card {
+            background: #1E1E1E !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .pricing-card.featured {
+            background: rgba(255, 215, 0, 0.1) !important;
+            border: 2px solid #FFD700 !important;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2) !important;
+        }
+
+        .faq-item {
+            background: rgba(30, 30, 30, 0.8) !important;
+            padding: 1.5rem !important;
+            margin-bottom: 1rem !important;
+            border-radius: 8px !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* White text for dark backgrounds */
+        h1, h2, h3, h4, h5, h6 {
+            color: #FFFFFF !important;
+        }
+
+        p, span, div, label, li {
+            color: #E0E0E0 !important;
+        }
+
+        .hero-subtitle {
+            color: #B0B0B0 !important;
+        }
+
+        .stat-label {
+            color: #A0A0A0 !important;
+        }
+
+        .testimonial-text {
+            color: #D0D0D0 !important;
+        }
+
+        .faq-question {
+            color: #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
+        .faq-answer {
+            color: #4A4A4A !important;
+        }
+
+        .pricing-description {
+            color: #666666 !important;
+        }
+
+        .pricing-features li {
+            color: #333333 !important;
+        }
+
+        /* Keep special elements as designed */
+        .btn-primary {
+            color: #000000 !important;
+        }
+
+        .stat-number {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '';
+            width: 32px;
+            height: 32px;
+            background-image: url('images/bvester-logo.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-cta {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 50%, #1A1A1A 100%);
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cohort-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            font-weight: 900;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #FAFAFA;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        /* Urgency Bar */
+        .urgency-bar {
+            background: rgba(255, 215, 0, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .urgency-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .urgency-icon {
+            font-size: 1.5rem;
+            color: #FFD700;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .urgency-text {
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .spots-left {
+            background: rgba(255, 215, 0, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: #FFD700;
+            font-weight: 700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 3rem auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1.5rem;
+            background: #1A1A1A;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: #4A4A4A;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #FFD700;
+        }
+
+        /* Curriculum */
+        .curriculum-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .week-card {
+            background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .week-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+        }
+
+        .week-card:hover {
+            transform: translateY(-5px);
+            border-color: #FFD700;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .week-number {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 0.875rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .week-title {
+            font-size: 1.5rem;
+            margin: 0.5rem 0 1rem;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .week-topics {
+            list-style: none;
+            padding: 0;
+        }
+
+        .week-topics li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #4A4A4A;
+        }
+
+        .week-topics li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #FFD700;
+        }
+
+        /* Pricing Tiers */
+        .pricing-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto 3rem;
+        }
+
+        .pricing-card {
+            background: #1A1A1A;
+            border: 2px solid rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            border-color: #FFD700;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+            padding: 0.25rem 1rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: #FFD700;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .tier-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #FFD700;
+        }
+
+        .tier-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #1A1A1A;
+        }
+
+        .tier-price span {
+            font-size: 1rem;
+            color: #4A4A4A;
+        }
+
+        .tier-description {
+            color: #4A4A4A;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .tier-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .tier-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.05);
+            color: #4A4A4A;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tier-features li::before {
+            content: '✓';
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: #1A1A1A;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .testimonial-card {
+            background: #2D2D2D;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #FFD700;
+        }
+
+        .testimonial-text {
+            color: #4A4A4A;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            color: #1A1A1A;
+            font-weight: bold;
+        }
+
+        .testimonial-role {
+            color: #FFD700;
+            font-size: 0.875rem;
+        }
+
+        /* FAQs */
+        .faqs {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: #1A1A1A;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .faq-question h3 {
+            color: #1A1A1A;
+            font-size: 1.125rem;
+            margin: 0;
+        }
+
+        .faq-icon {
+            color: #FFD700;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(212, 175, 55, 0.1) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #FFD700;
+        }
+
+        .cta-subtitle {
+            color: #4A4A4A;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #FFD700;
+            color: #FFD700;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Countdown Timer */
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            display: block;
+        }
+
+        .countdown-label {
+            font-size: 0.875rem;
+            color: #4A4A4A;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 1rem;
+            }
+
+            .header-cta {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 3rem 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                line-height: 1.1;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .urgency-bar {
+                padding: 1rem;
+                margin: 1.5rem auto;
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .urgency-text {
+                font-size: 1rem;
+            }
+
+            .content-section {
+                padding: 3rem 1rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .curriculum-grid,
+            .pricing-container,
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .week-card {
+                padding: 1.25rem;
+            }
+
+            .countdown {
+                gap: 1rem;"
+            }
+
+            .countdown-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <button class="header-cta" onclick="scrollToEnrollment()">Enroll Now</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="cohort-badge">🚀 Next Cohort Starts January 15, 2025</div>
+            <h1>30-Day Investment Readiness Bootcamp</h1>
+            <p class="hero-subtitle">
+                Transform your business from overlooked to oversubscribed with proven systems
+                that attract serious investors
+            </p>
+
+            <div class="urgency-bar">
+                <span class="urgency-icon">🔥</span>
+                <span class="urgency-text">Only <span class="spots-left">12 spots</span> remaining for January cohort</span>
+            </div>
+
+            <div class="countdown" id="countdown">
+                <div class="countdown-item">
+                    <span class="countdown-number" id="days">00</span>
+                    <span class="countdown-label">Days</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="hours">00</span>
+                    <span class="countdown-label">Hours</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="minutes">00</span>
+                    <span class="countdown-label">Minutes</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="seconds">00</span>
+                    <span class="countdown-label">Seconds</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">87%</div>
+                    <div class="stat-label">Get Funded</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4 Weeks</div>
+                    <div class="stat-label">To Transform</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">₵2.3M</div>
+                    <div class="stat-label">Raised by Alumni</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Businesses Transformed</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Curriculum Section -->
+    <section class="content-section">
+        <h2 class="section-title">Your 30-Day Transformation Journey</h2>
+
+        <div class="curriculum-grid">
+            <div class="week-card">
+                <div class="week-number">Week 1</div>
+                <h3 class="week-title">Financial Foundations</h3>
+                <ul class="week-topics">
+                    <li>Clean up your books in 48 hours</li>
+                    <li>Build investor-grade financial statements</li>
+                    <li>Master cash flow forecasting</li>
+                    <li>Create unit economics that impress</li>
+                    <li>Fix your burn rate calculation</li>
+                </ul>
+            </div>
+
+            <div class="week-card">
+                <div class="week-number">Week 2</div>
+                <h3 class="week-title">Growth Systems</h3>
+                <ul class="week-topics">
+                    <li>Design scalable sales processes</li>
+                    <li>Build customer acquisition funnels</li>
+                    <li>Implement retention strategies</li>
+                    <li>Create predictable revenue models</li>
+                    <li>Develop growth metrics dashboard</li>
+                </ul>
+            </div>
+
+            <div class="week-card">
+                <div class="week-number">Week 3</div>
+                <h3 class="week-title">Investment Package</h3>
+                <ul class="week-topics">
+                    <li>Craft compelling pitch deck</li>
+                    <li>Build realistic financial projections</li>
+                    <li>Create data room documents</li>
+                    <li>Design executive summary</li>
+                    <li>Prepare due diligence materials</li>
+                </ul>
+            </div>
+
+            <div class="week-card">
+                <div class="week-number">Week 4</div>
+                <h3 class="week-title">Investor Connections</h3>
+                <ul class="week-topics">
+                    <li>Practice with mock pitch sessions</li>
+                    <li>Get warm introductions to investors</li>
+                    <li>Master negotiation tactics</li>
+                    <li>Understand term sheets</li>
+                    <li>Close your first investor meeting</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="content-section" id="enrollment">
+        <h2 class="section-title">Choose Your Acceleration Path</h2>
+
+        <div class="pricing-container">
+            <div class="pricing-card">
+                <h3 class="tier-name">Self-Paced</h3>
+                <div class="tier-price">₵497</div>
+                <p class="tier-description">Learn at your own speed</p>
+                <ul class="tier-features">
+                    <li>All course materials & templates</li>
+                    <li>Recorded video lessons</li>
+                    <li>Community forum access</li>
+                    <li>Email support</li>
+                    <li>Lifetime updates</li>
+                </ul>
+                <button class="btn btn-secondary" onclick="enrollNow('self-paced', 497)">
+                    Enroll Self-Paced
+                </button>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3 class="tier-name">Group Cohort</h3>
+                <div class="tier-price">₵997</div>
+                <p class="tier-description">Learn with peers</p>
+                <ul class="tier-features">
+                    <li>Everything in Self-Paced</li>
+                    <li>Live weekly sessions</li>
+                    <li>Peer accountability group</li>
+                    <li>Group office hours</li>
+                    <li>Certificate of completion</li>
+                    <li>Alumni network access</li>
+                </ul>
+                <button class="btn btn-primary" onclick="enrollNow('group', 997)">
+                    Join Group Cohort
+                </button>
+            </div>
+
+            <div class="pricing-card">
+                <h3 class="tier-name">VIP Track</h3>
+                <div class="tier-price">₵2,497</div>
+                <p class="tier-description">Maximum transformation</p>
+                <ul class="tier-features">
+                    <li>Everything in Group Cohort</li>
+                    <li>1-on-1 weekly coaching</li>
+                    <li>Custom growth strategy</li>
+                    <li>Direct investor introductions</li>
+                    <li>Pitch deck review & refinement</li>
+                    <li>90-day post-program support</li>
+                </ul>
+                <button class="btn btn-secondary" onclick="enrollNow('vip', 2497)">
+                    Apply for VIP
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="content-section">
+        <div class="testimonials">
+            <h2 class="section-title">Success Stories from Our Alumni</h2>
+
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "Before the bootcamp, investors wouldn't even return my calls.
+                        Now I have 3 term sheets and choosing the best partner for growth."
+                    </p>
+                    <div class="testimonial-author">Kwame Mensah</div>
+                    <div class="testimonial-role">CEO, AgriTech Solutions - Raised ₵850,000</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "The financial foundations week alone saved my business.
+                        I discovered ₵50,000 in hidden revenue just by fixing my books."
+                    </p>
+                    <div class="testimonial-author">Ama Darko</div>
+                    <div class="testimonial-role">Founder, EduPlatform - 3x Revenue Growth</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "The mock pitch sessions were brutal but necessary.
+                        When I faced real investors, I was completely prepared."
+                    </p>
+                    <div class="testimonial-author">Kofi Asante</div>
+                    <div class="testimonial-role">CEO, HealthTech Pro - Raised ₵1.2M</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQs -->
+    <section class="content-section">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+
+        <div class="faqs">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Do I need to have revenue to join?</h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>No, but you should have a validated business idea with at least a few customers or strong market research. The program works best for businesses that have some traction.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>How much time commitment is required?</h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Plan for 5-7 hours per week: 2 hours for live sessions (Group/VIP), 2-3 hours for assignments, and 1-2 hours for peer collaboration. Self-paced students can adjust to their schedule.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Is there a money-back guarantee?</h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! If you complete all assignments in the first week and don't see value, we'll refund 100% of your investment. We're confident in our program's transformation power.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Can I upgrade my tier later?</h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely! You can upgrade from Self-Paced to Group or VIP at any time by paying the difference. Many students start with Self-Paced and upgrade when they see the value.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Do you actually introduce us to investors?</h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>VIP track members get warm introductions to 3-5 relevant investors from our network. Group cohort members can earn introductions based on their progress and readiness.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="content-section">
+        <div class="cta-section">
+            <h2 class="cta-title">Your Business Transformation Starts Now</h2>
+            <p class="cta-subtitle">
+                Don't let another year pass watching others get funded while you struggle.
+                Join 156+ African SMEs who transformed their businesses in just 30 days.
+            </p>
+
+            <div class="urgency-bar" style="max-width: 400px; margin: 2rem auto;">
+                <span class="urgency-icon">⏰</span>
+                <span class="urgency-text">Registration closes in <span id="closeTime">48 hours</span></span>
+            </div>
+
+            <button class="btn btn-primary" onclick="scrollToEnrollment()" style="font-size: 1.25rem; padding: 1.25rem 2.5rem;">
+                Secure Your Spot Now →
+            </button>
+
+            <p style="margin-top: 1rem; color: #4A4A4A; font-size: 0.875rem;">
+                🔒 Secure payment · 7-day money-back guarantee · Instant access
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Countdown Timer
+        function startCountdown() {
+            // Set target date (January 15, 2025)
+            const targetDate = new Date('January 15, 2025 00:00:00').getTime();
+
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    clearInterval(timer);
+                    document.getElementById('countdown').innerHTML = '<p style="color: #FFD700; font-size: 1.5rem;">Cohort in session!</p>';
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }, 1000);
+        }
+
+        // Registration Closing Timer
+        function startCloseTimer() {
+            let hoursLeft = 48;
+            const timer = setInterval(() => {
+                hoursLeft--;
+                if (hoursLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('closeTime').textContent = 'NOW!';
+                    document.getElementById('closeTime').style.color = '#EF4444';
+                } else if (hoursLeft === 1) {
+                    document.getElementById('closeTime').textContent = '1 hour';
+                } else {
+                    document.getElementById('closeTime').textContent = `${hoursLeft} hours`;
+                }
+            }, 3600000); // Update every hour
+        }
+
+        // Toggle FAQ
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('active');
+        }
+
+        // Scroll to enrollment
+        function scrollToEnrollment() {
+            document.getElementById('enrollment').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Enroll Now
+        function enrollNow(tier, price) {
+            // Check if coming from assessment
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromAssessment = urlParams.get('from') === 'assessment';
+
+            // Get assessment results if available
+            const assessmentResults = JSON.parse(localStorage.getItem('assessmentResults') || '{}');
+
+            // Store enrollment data
+            const enrollmentData = {
+                tier: tier,
+                price: price,
+                fromAssessment: fromAssessment,
+                assessmentScore: assessmentResults.score || null,
+                timestamp: new Date().toISOString()
+            };
+
+            localStorage.setItem('acceleratorEnrollment', JSON.stringify(enrollmentData));
+
+            // Check if user is logged in
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+            if (!currentUser.email) {
+                // Not logged in - redirect to signup with accelerator parameters
+                window.location.href = `signup.html?accelerator=${tier}&price=${price}`;
+            } else {
+                // Logged in - show payment modal
+                showAcceleratorPayment(tier, price);
+            }
+        }
+
+        // Show Enhanced Enrollment Modal
+        function showAcceleratorPayment(tier, price) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                overflow-y: auto;
+            `;
+
+            const tierNames = {
+                'self-paced': 'Self-Paced Track',
+                'group': 'Group Cohort',
+                'vip': 'VIP Track'
+            };
+
+            modal.innerHTML = `
+                <div style="
+                    background: #1A1A1A;
+                    border: 2px solid #FFD700;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    max-width: 600px;
+                    width: 90%;
+                    color: #FFFFFF;
+                    position: relative;
+                    margin: 2rem;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                ">
+                    <button onclick="closePaymentModal()" style="
+                        position: absolute;
+                        top: 1rem;
+                        right: 1rem;
+                        background: none;
+                        border: none;
+                        color: #FFD700;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                    ">×</button>
+
+                    <h3 style="color: #FFD700; margin-bottom: 1rem; text-align: center;">
+                        Enroll in ${tierNames[tier] || tier}
+                    </h3>
+
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #FFD700;">
+                            ₵${price}
+                        </div>
+                        <p style="color: #B0B0B0; margin-top: 0.5rem;">One-time payment</p>
+                    </div>
+
+                    <form id="enrollmentForm" style="margin-bottom: 2rem;">
+                        <h4 style="color: #FFD700; margin-bottom: 1rem;">Contact Information</h4>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">First Name *</label>
+                                <input type="text" id="firstName" required style="
+                                    width: 100%;
+                                    padding: 0.75rem;
+                                    background: #2D2D2D;
+                                    border: 1px solid rgba(255, 215, 0, 0.3);
+                                    border-radius: 8px;
+                                    color: #FFFFFF;
+                                ">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Last Name *</label>
+                                <input type="text" id="lastName" required style="
+                                    width: 100%;
+                                    padding: 0.75rem;
+                                    background: #2D2D2D;
+                                    border: 1px solid rgba(255, 215, 0, 0.3);
+                                    border-radius: 8px;
+                                    color: #FFFFFF;
+                                ">
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Email Address *</label>
+                            <input type="email" id="email" required style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: #2D2D2D;
+                                border: 1px solid rgba(255, 215, 0, 0.3);
+                                border-radius: 8px;
+                                color: #FFFFFF;
+                            ">
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Phone Number *</label>
+                            <input type="tel" id="phone" required style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: #2D2D2D;
+                                border: 1px solid rgba(255, 215, 0, 0.3);
+                                border-radius: 8px;
+                                color: #FFFFFF;
+                            ">
+                        </div>
+
+                        <h4 style="color: #FFD700; margin: 1.5rem 0 1rem 0;">Business Information</h4>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Company Name *</label>
+                            <input type="text" id="company" required style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: #2D2D2D;
+                                border: 1px solid rgba(255, 215, 0, 0.3);
+                                border-radius: 8px;
+                                color: #FFFFFF;
+                            ">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Industry</label>
+                                <select id="industry" style="
+                                    width: 100%;
+                                    padding: 0.75rem;
+                                    background: #2D2D2D;
+                                    border: 1px solid rgba(255, 215, 0, 0.3);
+                                    border-radius: 8px;
+                                    color: #FFFFFF;
+                                ">
+                                    <option value="">Select Industry</option>
+                                    <option value="agriculture">Agriculture</option>
+                                    <option value="fintech">FinTech</option>
+                                    <option value="healthtech">HealthTech</option>
+                                    <option value="edtech">EdTech</option>
+                                    <option value="ecommerce">E-commerce</option>
+                                    <option value="logistics">Logistics</option>
+                                    <option value="renewable">Renewable Energy</option>
+                                    <option value="manufacturing">Manufacturing</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Business Stage</label>
+                                <select id="stage" style="
+                                    width: 100%;
+                                    padding: 0.75rem;
+                                    background: #2D2D2D;
+                                    border: 1px solid rgba(255, 215, 0, 0.3);
+                                    border-radius: 8px;
+                                    color: #FFFFFF;
+                                ">
+                                    <option value="">Select Stage</option>
+                                    <option value="idea">Idea Stage</option>
+                                    <option value="prototype">Prototype</option>
+                                    <option value="mvp">MVP/Early Revenue</option>
+                                    <option value="growth">Growth Stage</option>
+                                    <option value="scale">Scaling</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h4 style="color: #FFD700; margin: 1.5rem 0 1rem 0;">Payment Method</h4>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                            <button type="button" onclick="selectPaymentMethod('momo')" id="momoBtn" style="
+                                padding: 1rem;
+                                background: rgba(255, 215, 0, 0.1);
+                                border: 2px solid rgba(255, 215, 0, 0.3);
+                                border-radius: 8px;
+                                color: #FFFFFF;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            ">
+                                📱 Mobile Money
+                            </button>
+                            <button type="button" onclick="selectPaymentMethod('card')" id="cardBtn" style="
+                                padding: 1rem;
+                                background: rgba(255, 215, 0, 0.1);
+                                border: 2px solid rgba(255, 215, 0, 0.3);
+                                border-radius: 8px;
+                                color: #FFFFFF;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            ">
+                                💳 Credit/Debit Card
+                            </button>
+                        </div>
+
+                        <div id="paymentDetails" style="display: none;"></div>
+                    </form>
+
+                    <div style="background: rgba(255, 215, 0, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <p style="color: #E0E0E0; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                            ✅ Instant access to all materials<br>
+                            ✅ 30-day transformation program<br>
+                            ✅ 7-day money-back guarantee<br>
+                            ${tier === 'vip' ? '✅ Direct investor introductions' : ''}
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button onclick="closePaymentModal()" style="
+                            flex: 1;
+                            padding: 0.75rem;
+                            background: transparent;
+                            border: 1px solid #FFD700;
+                            color: #FFD700;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">Cancel</button>
+
+                        <button onclick="processEnrollment('${tier}', ${price})" id="enrollBtn" style="
+                            flex: 2;
+                            padding: 0.75rem;
+                            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+                            border: none;
+                            color: #0A0A0A;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-weight: bold;
+                        ">Complete Enrollment</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.id = 'paymentModal';
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            if (modal) modal.remove();
+        }
+
+        // Payment Method Selection
+        function selectPaymentMethod(method) {
+            // Reset button styles
+            document.getElementById('momoBtn').style.background = 'rgba(255, 215, 0, 0.1)';
+            document.getElementById('cardBtn').style.background = 'rgba(255, 215, 0, 0.1)';
+
+            // Highlight selected method
+            const selectedBtn = method === 'momo' ? 'momoBtn' : 'cardBtn';
+            document.getElementById(selectedBtn).style.background = 'rgba(255, 215, 0, 0.3)';
+
+            const paymentDetails = document.getElementById('paymentDetails');
+            paymentDetails.style.display = 'block';
+
+            if (method === 'momo') {
+                paymentDetails.innerHTML = `
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Mobile Money Provider</label>
+                        <select id="momoProvider" style="
+                            width: 100%;
+                            padding: 0.75rem;
+                            background: #2D2D2D;
+                            border: 1px solid rgba(255, 215, 0, 0.3);
+                            border-radius: 8px;
+                            color: #FFFFFF;
+                        ">
+                            <option value="">Select Provider</option>
+                            <option value="mtn">MTN Mobile Money</option>
+                            <option value="vodafone">Vodafone Cash</option>
+                            <option value="airteltigo">AirtelTigo Money</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Mobile Money Number</label>
+                        <input type="tel" id="momoNumber" placeholder="e.g., 0244123456" style="
+                            width: 100%;
+                            padding: 0.75rem;
+                            background: #2D2D2D;
+                            border: 1px solid rgba(255, 215, 0, 0.3);
+                            border-radius: 8px;
+                            color: #FFFFFF;
+                        ">
+                    </div>
+                `;
+            } else if (method === 'card') {
+                paymentDetails.innerHTML = `
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Card Number</label>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" style="
+                            width: 100%;
+                            padding: 0.75rem;
+                            background: #2D2D2D;
+                            border: 1px solid rgba(255, 215, 0, 0.3);
+                            border-radius: 8px;
+                            color: #FFFFFF;
+                        ">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Expiry Date</label>
+                            <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: #2D2D2D;
+                                border: 1px solid rgba(255, 215, 0, 0.3);
+                                border-radius: 8px;
+                                color: #FFFFFF;
+                            ">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">CVV</label>
+                            <input type="text" id="cvv" placeholder="123" maxlength="4" style="
+                                width: 100%;
+                                padding: 0.75rem;
+                                background: #2D2D2D;
+                                border: 1px solid rgba(255, 215, 0, 0.3);
+                                border-radius: 8px;
+                                color: #FFFFFF;
+                            ">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #E0E0E0;">Cardholder Name</label>
+                        <input type="text" id="cardholderName" placeholder="Name on card" style="
+                            width: 100%;
+                            padding: 0.75rem;
+                            background: #2D2D2D;
+                            border: 1px solid rgba(255, 215, 0, 0.3);
+                            border-radius: 8px;
+                            color: #FFFFFF;
+                        ">
+                    </div>
+                `;
+            }
+
+            // Store selected payment method
+            window.selectedPaymentMethod = method;
+        }
+
+        // Form Validation
+        function validateEnrollmentForm() {
+            const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'company'];
+            const errors = [];
+
+            for (const field of requiredFields) {
+                const value = document.getElementById(field)?.value?.trim();
+                if (!value) {
+                    errors.push(`${field.replace(/([A-Z])/g, ' $1').toLowerCase()} is required`);
+                }
+            }
+
+            // Email validation
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                errors.push('Please enter a valid email address');
+            }
+
+            // Phone validation
+            const phone = document.getElementById('phone').value;
+            const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+            if (phone && !phoneRegex.test(phone)) {
+                errors.push('Please enter a valid phone number');
+            }
+
+            // Payment method validation
+            if (!window.selectedPaymentMethod) {
+                errors.push('Please select a payment method');
+            } else if (window.selectedPaymentMethod === 'momo') {
+                const provider = document.getElementById('momoProvider')?.value;
+                const number = document.getElementById('momoNumber')?.value;
+                if (!provider) errors.push('Please select a mobile money provider');
+                if (!number) errors.push('Please enter your mobile money number');
+            } else if (window.selectedPaymentMethod === 'card') {
+                const cardNumber = document.getElementById('cardNumber')?.value;
+                const expiryDate = document.getElementById('expiryDate')?.value;
+                const cvv = document.getElementById('cvv')?.value;
+                const cardholderName = document.getElementById('cardholderName')?.value;
+
+                if (!cardNumber) errors.push('Please enter card number');
+                if (!expiryDate) errors.push('Please enter expiry date');
+                if (!cvv) errors.push('Please enter CVV');
+                if (!cardholderName) errors.push('Please enter cardholder name');
+            }
+
+            return errors;
+        }
+
+        // Process Enrollment
+        function processEnrollment(tier, price) {
+            const errors = validateEnrollmentForm();
+
+            if (errors.length > 0) {
+                alert('Please fix the following errors:\\n\\n' + errors.join('\\n'));
+                return;
+            }
+
+            const btn = document.getElementById('enrollBtn');
+            btn.textContent = 'Processing Payment...';
+            btn.disabled = true;
+
+            // Collect form data
+            const enrollmentData = {
+                tier: tier,
+                price: price,
+                contact: {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value
+                },
+                business: {
+                    company: document.getElementById('company').value,
+                    industry: document.getElementById('industry').value,
+                    stage: document.getElementById('stage').value
+                },
+                payment: {
+                    method: window.selectedPaymentMethod,
+                    ...(window.selectedPaymentMethod === 'momo' ? {
+                        provider: document.getElementById('momoProvider').value,
+                        number: document.getElementById('momoNumber').value
+                    } : {
+                        cardNumber: document.getElementById('cardNumber').value.replace(/\s/g, ''),
+                        expiryDate: document.getElementById('expiryDate').value,
+                        cvv: document.getElementById('cvv').value,
+                        cardholderName: document.getElementById('cardholderName').value
+                    })
+                },
+                enrolledAt: new Date().toISOString()
+            };
+
+            // Simulate payment processing
+            setTimeout(() => {
+                if (window.selectedPaymentMethod === 'momo') {
+                    processMobileMoneyPayment(enrollmentData);
+                } else {
+                    processCardPayment(enrollmentData);
+                }
+            }, 2000);
+        }
+
+        // Mobile Money Payment Processing
+        function processMobileMoneyPayment(enrollmentData) {
+            // Simulate mobile money prompt
+            const btn = document.getElementById('enrollBtn');
+            btn.textContent = 'Check your phone for payment prompt...';
+
+            setTimeout(() => {
+                // Simulate successful payment
+                completeEnrollment(enrollmentData);
+            }, 3000);
+        }
+
+        // Card Payment Processing
+        function processCardPayment(enrollmentData) {
+            // Simulate card processing
+            const btn = document.getElementById('enrollBtn');
+            btn.textContent = 'Processing card payment...';
+
+            setTimeout(() => {
+                // Simulate successful payment
+                completeEnrollment(enrollmentData);
+            }, 2000);
+        }
+
+        // Complete Enrollment
+        function completeEnrollment(enrollmentData) {
+            // Store enrollment data
+            const enrollments = JSON.parse(localStorage.getItem('enrollments') || '[]');
+            enrollments.push(enrollmentData);
+            localStorage.setItem('enrollments', JSON.stringify(enrollments));
+
+            // Update current user if exists
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            currentUser.acceleratorEnrollment = {
+                tier: enrollmentData.tier,
+                enrolledAt: enrollmentData.enrolledAt,
+                cohortStart: 'January 15, 2025',
+                status: 'active'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            closePaymentModal();
+            showSuccessMessage(enrollmentData);
+        }
+
+        function showSuccessMessage(enrollmentData) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+            `;
+
+            const tierNames = {
+                'self-paced': 'Self-Paced Track',
+                'group': 'Group Cohort',
+                'vip': 'VIP Track'
+            };
+
+            modal.innerHTML = `
+                <div style="
+                    background: #1A1A1A;
+                    border: 2px solid #FFD700;
+                    border-radius: 12px;
+                    padding: 3rem;
+                    max-width: 500px;
+                    width: 90%;
+                    color: #FFFFFF;
+                    text-align: center;
+                ">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+                    <h2 style="color: #FFD700; margin-bottom: 1rem;">Welcome to Bvester!</h2>
+                    <p style="color: #E0E0E0; margin-bottom: 1.5rem; font-size: 1.1rem;">
+                        Congratulations! You're now enrolled in the <strong>${tierNames[enrollmentData.tier]}</strong>.
+                    </p>
+
+                    <div style="background: rgba(255, 215, 0, 0.1); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                        <h3 style="color: #FFD700; margin-bottom: 1rem;">What's Next?</h3>
+                        <ul style="text-align: left; color: #E0E0E0; line-height: 1.6;">
+                            <li>📧 Check your email for access details and login credentials</li>
+                            <li>📚 Access your course materials in the SME Dashboard</li>
+                            <li>🗓️ Mark your calendar: Cohort starts January 15, 2025</li>
+                            <li>👥 Join our exclusive WhatsApp group for updates</li>
+                        </ul>
+                    </div>
+
+                    <button onclick="goToDashboard()" style="
+                        width: 100%;
+                        padding: 1rem;
+                        background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+                        border: none;
+                        color: #0A0A0A;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: bold;
+                        font-size: 1.1rem;
+                    ">Access Your Dashboard</button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        }
+
+        function goToDashboard() {
+            window.location.href = 'sme-dashboard.html';
+        }
+
+        // Input Formatting Functions
+        function formatCardNumber(input) {
+            let value = input.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            const formattedValue = value.match(/.{1,4}/g)?.join(' ');
+            input.value = formattedValue || value;
+        }
+
+        function formatExpiryDate(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0,2) + '/' + value.substring(2,4);
+            }
+            input.value = value;
+        }
+
+        function formatPhoneNumber(input) {
+            let value = input.value.replace(/\D/g, '');
+            // Format as XXX XXX XXXX for Ghana numbers
+            if (value.length >= 10) {
+                value = value.substring(0,3) + ' ' + value.substring(3,6) + ' ' + value.substring(6,10);
+            } else if (value.length >= 6) {
+                value = value.substring(0,3) + ' ' + value.substring(3,6) + ' ' + value.substring(6);
+            } else if (value.length >= 3) {
+                value = value.substring(0,3) + ' ' + value.substring(3);
+            }
+            input.value = value;
+        }
+
+        // Add event listeners for input formatting when payment modal is shown
+        function addInputFormatting() {
+            // Card number formatting
+            const cardNumberInput = document.getElementById('cardNumber');
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', () => formatCardNumber(cardNumberInput));
+            }
+
+            // Expiry date formatting
+            const expiryInput = document.getElementById('expiryDate');
+            if (expiryInput) {
+                expiryInput.addEventListener('input', () => formatExpiryDate(expiryInput));
+            }
+
+            // Phone number formatting
+            const phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', () => formatPhoneNumber(phoneInput));
+            }
+
+            // CVV only numbers
+            const cvvInput = document.getElementById('cvv');
+            if (cvvInput) {
+                cvvInput.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                });
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            startCountdown();
+            startCloseTimer();
+
+            // Update spots dynamically
+            const spotsLeft = 12 - Math.floor(Math.random() * 3);
+            const spotsElement = document.querySelector('.spots-left');
+            if (spotsElement) {
+                spotsElement.textContent = `${spotsLeft} spots`;
+            }
+
+            // Check if user just signed up for accelerator
+            const urlParams = new URLSearchParams(window.location.search);
+            const enrolledNew = urlParams.get('enrolled');
+            const tier = urlParams.get('tier');
+            const price = urlParams.get('price');
+
+            if (enrolledNew === 'new' && tier && price) {
+                // User just signed up, show payment modal automatically
+                const newUserInfo = JSON.parse(localStorage.getItem('newUserInfo') || '{}');
+
+                if (newUserInfo.email) {
+                    // Simulate logged in user for payment flow
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        email: newUserInfo.email,
+                        name: newUserInfo.name,
+                        userType: newUserInfo.userType
+                    }));
+
+                    // Clean up temporary data
+                    localStorage.removeItem('newUserInfo');
+                    localStorage.removeItem('pendingAcceleratorEnrollment');
+
+                    // Show payment modal after brief delay
+                    setTimeout(() => {
+                        showAcceleratorPayment(tier, parseInt(price));
+                    }, 1000);
+                }
+            }
+
+            // Add input formatting when modals are opened
+            document.addEventListener('click', function(e) {
+                setTimeout(addInputFormatting, 100);
+            });
+        });
+    </script>
+</body>
+</html>

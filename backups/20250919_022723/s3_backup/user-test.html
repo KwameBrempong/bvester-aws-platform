@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester - User Experience Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        .test-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #5a67d8;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .success {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+        .error {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        .info {
+            border-left-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-online { background: #10b981; }
+        .status-offline { background: #ef4444; }
+        .status-checking { background: #f59e0b; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .test-card {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .test-card.pass {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .test-card.fail {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Bvester User Experience Test</h1>
+
+        <!-- Backend Status -->
+        <div class="test-section">
+            <h3><span class="status-indicator" id="backend-status"></span>Backend Status</h3>
+            <div id="backend-result" class="result info">Checking backend status...</div>
+        </div>
+
+        <!-- Signup Test -->
+        <div class="test-section">
+            <h3>1️⃣ Test User Signup</h3>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="signup-name" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="signup-email" placeholder="user@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="signup-password" placeholder="Secure password" required>
+                </div>
+                <div class="form-group">
+                    <label>User Type:</label>
+                    <select id="signup-type" required>
+                        <option value="investor">Investor</option>
+                        <option value="sme">SME</option>
+                    </select>
+                </div>
+                <button type="submit">Create Account</button>
+            </form>
+            <div id="signup-result"></div>
+        </div>
+
+        <!-- Login Test -->
+        <div class="test-section">
+            <h3>2️⃣ Test User Login</h3>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="login-email" placeholder="user@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="login-password" placeholder="Your password" required>
+                </div>
+                <button type="submit">Log In</button>
+                <button type="button" onclick="testAdminLogin()">Test Admin Login</button>
+            </form>
+            <div id="login-result"></div>
+        </div>
+
+        <!-- Feature Tests -->
+        <div class="test-section">
+            <h3>3️⃣ Feature Tests</h3>
+            <div class="test-grid" id="feature-tests">
+                <div class="test-card">Investment Opportunities</div>
+                <div class="test-card">User Profile</div>
+                <div class="test-card">Dashboard Access</div>
+                <div class="test-card">Error Handling</div>
+            </div>
+            <button onclick="runFeatureTests()">Run All Tests</button>
+            <div id="feature-result"></div>
+        </div>
+
+        <!-- Navigation Test -->
+        <div class="test-section">
+            <h3>4️⃣ Quick Navigation</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button onclick="window.open('https://bvester.com', '_blank')">Homepage</button>
+                <button onclick="window.open('https://bvester.com/login.html', '_blank')">Login Page</button>
+                <button onclick="window.open('https://bvester.com/signup.html', '_blank')">Signup Page</button>
+                <button onclick="window.open('https://bvester.com/investor-dashboard.html', '_blank')">Investor Dashboard</button>
+                <button onclick="window.open('https://bvester.com/sme-dashboard.html', '_blank')">SME Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://lh4wi733jhjrlpz76bbwezpuea0drqzq.lambda-url.eu-west-2.on.aws';
+        let authToken = null;
+
+        // Check backend status on load
+        async function checkBackendStatus() {
+            const statusEl = document.getElementById('backend-status');
+            const resultEl = document.getElementById('backend-result');
+
+            statusEl.className = 'status-indicator status-checking';
+
+            try {
+                const response = await fetch(API_URL + '/health');
+                const data = await response.json();
+
+                if (data.status === 'healthy') {
+                    statusEl.className = 'status-indicator status-online';
+                    resultEl.className = 'result success';
+                    resultEl.innerHTML = `✅ Backend is ONLINE<br>
+                        Version: ${data.version}<br>
+                        Message: ${data.message}<br>
+                        Time: ${new Date(data.timestamp).toLocaleString()}`;
+                } else {
+                    throw new Error('Unhealthy status');
+                }
+            } catch (error) {
+                statusEl.className = 'status-indicator status-offline';
+                resultEl.className = 'result error';
+                resultEl.innerHTML = `❌ Backend is OFFLINE<br>Error: ${error.message}`;
+            }
+        }
+
+        // Signup form handler
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultEl = document.getElementById('signup-result');
+
+            const userData = {
+                name: document.getElementById('signup-name').value,
+                email: document.getElementById('signup-email').value,
+                password: document.getElementById('signup-password').value,
+                userType: document.getElementById('signup-type').value
+            };
+
+            resultEl.className = 'result info';
+            resultEl.innerHTML = '⏳ Creating account...';
+
+            try {
+                const response = await fetch(API_URL + '/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.token;
+                    resultEl.className = 'result success';
+                    resultEl.innerHTML = `✅ Account created successfully!<br>
+                        Email: ${data.user.email}<br>
+                        Name: ${data.user.name}<br>
+                        Type: ${data.user.userType}<br>
+                        Token: ${data.token ? data.token.substring(0, 20) + '...' : 'N/A'}`;
+
+                    // Auto-fill login form
+                    document.getElementById('login-email').value = userData.email;
+                    document.getElementById('login-password').value = userData.password;
+                } else {
+                    throw new Error(data.error || 'Signup failed');
+                }
+            } catch (error) {
+                resultEl.className = 'result error';
+                resultEl.innerHTML = `❌ Signup failed: ${error.message}`;
+            }
+        });
+
+        // Login form handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultEl = document.getElementById('login-result');
+
+            const credentials = {
+                email: document.getElementById('login-email').value,
+                password: document.getElementById('login-password').value
+            };
+
+            resultEl.className = 'result info';
+            resultEl.innerHTML = '⏳ Logging in...';
+
+            try {
+                const response = await fetch(API_URL + '/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(credentials)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.token;
+                    localStorage.setItem('bvesterToken', authToken);
+                    localStorage.setItem('bvesterUser', JSON.stringify(data.user));
+
+                    resultEl.className = 'result success';
+                    resultEl.innerHTML = `✅ Login successful!<br>
+                        Welcome back, ${data.user.name}!<br>
+                        Type: ${data.user.userType}<br>
+                        Email Verified: ${data.user.isEmailVerified ? 'Yes' : 'No'}`;
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+            } catch (error) {
+                resultEl.className = 'result error';
+                resultEl.innerHTML = `❌ Login failed: ${error.message}`;
+            }
+        });
+
+        // Test admin login
+        function testAdminLogin() {
+            document.getElementById('login-email').value = 'admin@bvester.com';
+            document.getElementById('login-password').value = 'admin123';
+            document.getElementById('login-form').dispatchEvent(new Event('submit'));
+        }
+
+        // Run feature tests
+        async function runFeatureTests() {
+            const cards = document.querySelectorAll('.test-card');
+            const resultEl = document.getElementById('feature-result');
+
+            resultEl.className = 'result info';
+            resultEl.innerHTML = '⏳ Running tests...';
+
+            const tests = [
+                { name: 'Investment Opportunities', endpoint: '/api/investments/opportunities' },
+                { name: 'User Profile', endpoint: '/api/user/profile' },
+                { name: 'Dashboard Access', endpoint: '/health' },
+                { name: 'Error Handling', endpoint: '/api/auth/login', method: 'POST', body: {} }
+            ];
+
+            let passed = 0;
+            let failed = 0;
+
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                const card = cards[i];
+
+                try {
+                    const options = {
+                        method: test.method || 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    };
+
+                    if (test.body) {
+                        options.body = JSON.stringify(test.body);
+                    }
+
+                    const response = await fetch(API_URL + test.endpoint, options);
+
+                    if ((test.endpoint === '/api/auth/login' && response.status === 400) ||
+                        (test.endpoint !== '/api/auth/login' && response.ok)) {
+                        card.className = 'test-card pass';
+                        card.innerHTML = test.name + '<br>✅ Pass';
+                        passed++;
+                    } else {
+                        throw new Error(`Status: ${response.status}`);
+                    }
+                } catch (error) {
+                    card.className = 'test-card fail';
+                    card.innerHTML = test.name + '<br>❌ Fail';
+                    failed++;
+                }
+            }
+
+            if (failed === 0) {
+                resultEl.className = 'result success';
+                resultEl.innerHTML = `✅ All tests passed! (${passed}/${tests.length})`;
+            } else {
+                resultEl.className = 'result error';
+                resultEl.innerHTML = `⚠️ Some tests failed. Passed: ${passed}, Failed: ${failed}`;
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            checkBackendStatus();
+            setInterval(checkBackendStatus, 30000); // Check every 30 seconds
+        });
+    </script>
+</body>
+</html>

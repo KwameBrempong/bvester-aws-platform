@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester Homepage Navigation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid;
+        }
+        .pass {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .fail {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Bvester Homepage Navigation Test</h1>
+        <p>Testing all navigation buttons and links on the homepage</p>
+
+        <button class="test-button" onclick="testHomepage()">Test Homepage</button>
+        <button class="test-button" onclick="testButtons()">Test Navigation Buttons</button>
+        <button class="test-button" onclick="testMobileResponsive()">Test Mobile View</button>
+        <button class="test-button" onclick="testAllLinks()">Test All Links</button>
+
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        const results = document.getElementById('test-results');
+
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+
+        function clearResults() {
+            results.innerHTML = '';
+        }
+
+        async function testHomepage() {
+            clearResults();
+            addResult('🏠 Testing Homepage Navigation...', 'info');
+
+            try {
+                // Test if homepage is accessible
+                const response = await fetch('/index.html');
+                if (response.ok) {
+                    addResult('✅ Homepage is accessible at /index.html', 'pass');
+                } else {
+                    addResult('❌ Homepage not accessible at /index.html', 'fail');
+                }
+            } catch (error) {
+                addResult('❌ Error accessing homepage: ' + error.message, 'fail');
+            }
+
+            // Test static elements
+            try {
+                const iframe = document.createElement('iframe');
+                iframe.src = '/index.html';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+
+                iframe.onload = function() {
+                    const doc = iframe.contentDocument;
+
+                    // Test header elements
+                    const header = doc.querySelector('.header');
+                    const logo = doc.querySelector('.logo');
+                    const navLinks = doc.querySelector('.nav-links');
+                    const navButtons = doc.querySelector('.nav-buttons');
+
+                    if (header) addResult('✅ Header section found', 'pass');
+                    else addResult('❌ Header section missing', 'fail');
+
+                    if (logo) addResult('✅ Logo found', 'pass');
+                    else addResult('❌ Logo missing', 'fail');
+
+                    if (navLinks) addResult('✅ Navigation links found', 'pass');
+                    else addResult('❌ Navigation links missing', 'fail');
+
+                    if (navButtons) addResult('✅ Navigation buttons found', 'pass');
+                    else addResult('❌ Navigation buttons missing', 'fail');
+
+                    // Test hero section
+                    const hero = doc.querySelector('.hero');
+                    const heroContent = doc.querySelector('.hero-content');
+                    const heroButtons = doc.querySelector('.hero-buttons');
+
+                    if (hero) addResult('✅ Hero section found', 'pass');
+                    else addResult('❌ Hero section missing', 'fail');
+
+                    if (heroContent) addResult('✅ Hero content found', 'pass');
+                    else addResult('❌ Hero content missing', 'fail');
+
+                    if (heroButtons) addResult('✅ Hero buttons found', 'pass');
+                    else addResult('❌ Hero buttons missing', 'fail');
+
+                    // Clean up
+                    document.body.removeChild(iframe);
+                };
+            } catch (error) {
+                addResult('❌ Error testing homepage elements: ' + error.message, 'fail');
+            }
+        }
+
+        function testButtons() {
+            clearResults();
+            addResult('🔘 Testing Navigation Buttons...', 'info');
+
+            const iframe = document.createElement('iframe');
+            iframe.src = '/index.html';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+
+                // Test header buttons
+                const loginBtn = doc.querySelector('.btn-login');
+                const getStartedBtn = doc.querySelector('.btn-get-started');
+
+                if (loginBtn) {
+                    addResult('✅ Login button found in header', 'pass');
+                    // Test if button has click handler
+                    if (loginBtn.onclick || loginBtn.addEventListener) {
+                        addResult('⚠️ Login button needs JavaScript functionality', 'info');
+                    } else {
+                        addResult('❌ Login button has no click handler', 'fail');
+                    }
+                } else {
+                    addResult('❌ Login button missing in header', 'fail');
+                }
+
+                if (getStartedBtn) {
+                    addResult('✅ Get Started button found in header', 'pass');
+                } else {
+                    addResult('❌ Get Started button missing in header', 'fail');
+                }
+
+                // Test hero buttons
+                const primaryBtn = doc.querySelector('.btn-primary');
+                const secondaryBtn = doc.querySelector('.btn-secondary');
+
+                if (primaryBtn) {
+                    addResult('✅ Primary button found in hero', 'pass');
+                    if (primaryBtn.textContent.includes('INVESTMENT SCORE')) {
+                        addResult('✅ Primary button has correct text', 'pass');
+                    } else {
+                        addResult('❌ Primary button text incorrect', 'fail');
+                    }
+                } else {
+                    addResult('❌ Primary button missing in hero', 'fail');
+                }
+
+                if (secondaryBtn) {
+                    addResult('✅ Secondary button found in hero', 'pass');
+                } else {
+                    addResult('❌ Secondary button missing in hero', 'fail');
+                }
+
+                // Clean up
+                document.body.removeChild(iframe);
+            };
+        }
+
+        function testMobileResponsive() {
+            clearResults();
+            addResult('📱 Testing Mobile Responsiveness...', 'info');
+
+            const iframe = document.createElement('iframe');
+            iframe.src = '/index.html';
+            iframe.style.width = '375px'; // iPhone width
+            iframe.style.height = '667px'; // iPhone height
+            iframe.style.border = '1px solid #ccc';
+            document.body.appendChild(iframe);
+
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                const window = iframe.contentWindow;
+
+                // Test viewport meta tag
+                const viewport = doc.querySelector('meta[name="viewport"]');
+                if (viewport) {
+                    addResult('✅ Viewport meta tag found', 'pass');
+                    if (viewport.content.includes('width=device-width')) {
+                        addResult('✅ Viewport correctly configured', 'pass');
+                    }
+                } else {
+                    addResult('❌ Viewport meta tag missing', 'fail');
+                }
+
+                // Test mobile-specific styles
+                const navLinks = doc.querySelector('.nav-links');
+                if (navLinks) {
+                    const computedStyle = window.getComputedStyle(navLinks);
+                    if (computedStyle.display === 'none') {
+                        addResult('✅ Navigation links hidden on mobile', 'pass');
+                    } else {
+                        addResult('⚠️ Navigation links may overlap on mobile', 'info');
+                    }
+                }
+
+                // Test hero grid on mobile
+                const hero = doc.querySelector('.hero');
+                if (hero) {
+                    const computedStyle = window.getComputedStyle(hero);
+                    if (computedStyle.gridTemplateColumns === '1fr') {
+                        addResult('✅ Hero grid adapts to mobile', 'pass');
+                    } else {
+                        addResult('⚠️ Hero grid may not be mobile optimized', 'info');
+                    }
+                }
+
+                // Keep iframe for visual inspection
+                addResult('📱 Mobile preview iframe added below for visual inspection', 'info');
+            };
+        }
+
+        function testAllLinks() {
+            clearResults();
+            addResult('🔗 Testing All Links...', 'info');
+
+            const iframe = document.createElement('iframe');
+            iframe.src = '/index.html';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+
+                // Test all anchor tags
+                const links = doc.querySelectorAll('a');
+                const results = [];
+
+                links.forEach((link, index) => {
+                    const href = link.getAttribute('href');
+                    const text = link.textContent.trim();
+
+                    if (href) {
+                        if (href.startsWith('#')) {
+                            results.push(`🔗 Anchor link: "${text}" → ${href} (internal)`);
+                        } else if (href.startsWith('http')) {
+                            results.push(`🌐 External link: "${text}" → ${href}`);
+                        } else {
+                            results.push(`📄 Internal link: "${text}" → ${href}`);
+                        }
+                    } else {
+                        results.push(`❌ Link missing href: "${text}"`);
+                    }
+                });
+
+                if (results.length === 0) {
+                    addResult('❌ No links found on homepage', 'fail');
+                } else {
+                    addResult(`✅ Found ${results.length} links on homepage`, 'pass');
+                    results.forEach(result => {
+                        addResult(result, 'info');
+                    });
+                }
+
+                // Test specific important links
+                const loginLink = doc.querySelector('a[href*="login"]');
+                const signupLink = doc.querySelector('a[href*="signup"]');
+
+                if (!loginLink && !signupLink) {
+                    addResult('❌ No login/signup links found in navigation', 'fail');
+                } else {
+                    if (loginLink) addResult('✅ Login link found', 'pass');
+                    if (signupLink) addResult('✅ Signup link found', 'pass');
+                }
+
+                // Clean up
+                document.body.removeChild(iframe);
+            };
+        }
+
+        // Auto-run basic test on load
+        window.onload = function() {
+            addResult('🚀 Bvester Homepage Navigation Test Ready', 'info');
+            addResult('Click the buttons above to run specific tests', 'info');
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Readiness Assessment - Bvester</title>
+
+    <style>
+        :root {
+            --primary-black: #0A0A0A;
+            --rich-black: #1A1A1A;
+            --soft-black: #2A2A2A;
+            --primary-gold: #FFD700;
+            --secondary-gold: #FFA500;
+            --pure-white: #FFFFFF;
+            --off-white: #F5F5F5;
+            --dark-gray: #666666;
+            --success-green: #00C853;
+            --error-red: #EF4444;
+            --info-blue: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-black);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--off-white);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--rich-black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .progress-percentage {
+            color: var(--primary-gold);
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: var(--soft-black);
+            height: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary-gold), var(--secondary-gold));
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-black);
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .step {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--dark-gray);
+        }
+
+        .step.active {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .step.completed {
+            color: var(--success-green);
+        }
+
+        /* Assessment Form */
+        .assessment-card {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            display: none;
+        }
+
+        .assessment-card.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .section-title {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--dark-gray);
+            margin-bottom: 2rem;
+        }
+
+        .question-group {
+            margin-bottom: 2rem;
+        }
+
+        .question-label {
+            display: block;
+            color: var(--off-white);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .radio-option {
+            background: var(--soft-black);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .radio-option:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .radio-option.selected {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        .radio-input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--dark-gray);
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .radio-option.selected .radio-circle {
+            border-color: var(--primary-gold);
+        }
+
+        .radio-option.selected .radio-circle::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checkbox-option {
+            background: var(--soft-black);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .checkbox-option:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .checkbox-option.checked {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        .checkbox-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--dark-gray);
+            border-radius: 4px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .checkbox-option.checked .checkbox-box {
+            background: var(--primary-gold);
+            border-color: var(--primary-gold);
+        }
+
+        .checkbox-option.checked .checkbox-box::after {
+            content: '✓';
+            position: absolute;
+            color: var(--primary-black);
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--soft-black);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            color: var(--off-white);
+            font-size: 1rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--soft-black);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            color: var(--off-white);
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary {
+            background: var(--soft-black);
+            color: var(--off-white);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .score-card {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .score-excellent { background: linear-gradient(135deg, #00C853, #00E676); }
+        .score-good { background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold)); }
+        .score-fair { background: linear-gradient(135deg, #FF9800, #FFA726); }
+        .score-poor { background: linear-gradient(135deg, #EF4444, #F87171); }
+
+        .score-label {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-desc {
+            color: var(--dark-gray);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            background: var(--soft-black);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .breakdown-score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .breakdown-label {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+        }
+
+        .recommendations {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .recommendation-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--soft-black);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .recommendation-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .recommendation-text {
+            flex: 1;
+        }
+
+        .recommendation-title {
+            color: var(--primary-gold);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .recommendation-desc {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .assessment-card {
+                padding: 1.5rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📊 Investment Readiness Assessment</h1>
+        <a href="#" class="back-btn" onclick="goBack()">← Back to Dashboard</a>
+    </header>
+
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span class="progress-title">Assessment Progress</span>
+                <span class="progress-percentage" id="progressText">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar">0%</div>
+            </div>
+            <div class="progress-steps">
+                <span class="step active">Business Info</span>
+                <span class="step">Financials</span>
+                <span class="step">Documentation</span>
+                <span class="step">Growth</span>
+                <span class="step">Results</span>
+            </div>
+        </div>
+
+        <!-- Section 1: Business Information -->
+        <div class="assessment-card active" id="section1">
+            <h2 class="section-title">Business Information</h2>
+            <p class="section-subtitle">Tell us about your business basics</p>
+
+            <div class="question-group">
+                <label class="question-label">1. How long has your business been operating?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="25" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>More than 3 years</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="20" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>2-3 years</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="15" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>1-2 years</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="10" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>6-12 months</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="5" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Less than 6 months</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <label class="question-label">2. Is your business formally registered?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="q2" value="25" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Yes, fully registered with all licenses</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2" value="15" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Partially registered</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2" value="5" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Registration in progress</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2" value="0" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Not yet registered</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <label class="question-label">3. How many employees does your business have?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="25" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>More than 20 employees</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="20" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>11-20 employees</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="15" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>6-10 employees</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="10" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>2-5 employees</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="5" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Just myself</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" disabled>Previous</button>
+                <button class="btn btn-primary" onclick="nextSection(2)">Next</button>
+            </div>
+        </div>
+
+        <!-- Section 2: Financial Health -->
+        <div class="assessment-card" id="section2">
+            <h2 class="section-title">Financial Health</h2>
+            <p class="section-subtitle">Assess your financial readiness</p>
+
+            <div class="question-group">
+                <label class="question-label">4. What is your current monthly revenue?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="25" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Above ₵50,000</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="20" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>₵20,000 - ₵50,000</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="15" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>₵10,000 - ₵20,000</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="10" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>₵5,000 - ₵10,000</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="5" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Below ₵5,000</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <label class="question-label">5. Do you maintain proper financial records?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="q5" value="25" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Yes, with professional accounting software</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q5" value="20" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Yes, using spreadsheets</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q5" value="10" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Basic records only</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q5" value="0" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>No formal records</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="nextSection(1)">Previous</button>
+                <button class="btn btn-primary" onclick="nextSection(3)">Next</button>
+            </div>
+        </div>
+
+        <!-- Section 3: Documentation -->
+        <div class="assessment-card" id="section3">
+            <h2 class="section-title">Documentation & Compliance</h2>
+            <p class="section-subtitle">Check your documentation readiness</p>
+
+            <div class="question-group">
+                <label class="question-label">6. Which documents do you have ready? (Select all that apply)</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-option">
+                        <span class="checkbox-box"></span>
+                        <span>Business Registration Certificate</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <span class="checkbox-box"></span>
+                        <span>Tax Clearance Certificate</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <span class="checkbox-box"></span>
+                        <span>Bank Statements (6 months)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <span class="checkbox-box"></span>
+                        <span>Business Plan</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <span class="checkbox-box"></span>
+                        <span>Financial Statements</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <span class="checkbox-box"></span>
+                        <span>Pitch Deck</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="nextSection(2)">Previous</button>
+                <button class="btn btn-primary" onclick="nextSection(4)">Next</button>
+            </div>
+        </div>
+
+        <!-- Section 4: Growth & Market -->
+        <div class="assessment-card" id="section4">
+            <h2 class="section-title">Growth & Market Position</h2>
+            <p class="section-subtitle">Evaluate your growth potential</p>
+
+            <div class="question-group">
+                <label class="question-label">7. What is your business growth rate?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="25" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Growing more than 20% monthly</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="20" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Growing 10-20% monthly</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="15" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Growing 5-10% monthly</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="10" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Stable/flat growth</span>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="0" class="radio-input">
+                        <span class="radio-label">
+                            <span class="radio-circle"></span>
+                            <span>Declining</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <label class="question-label">8. Briefly describe your business and growth strategy</label>
+                <textarea class="form-textarea" placeholder="Tell us about your business model and how you plan to grow..."></textarea>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="nextSection(3)">Previous</button>
+                <button class="btn btn-primary" onclick="calculateResults()">Get Results</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-container" id="results">
+            <div class="score-card">
+                <div class="score-circle" id="scoreCircle">
+                    <span id="scoreValue">0</span>
+                </div>
+                <h2 class="score-label" id="scoreLabel">Calculating...</h2>
+                <p class="score-desc" id="scoreDesc">Processing your assessment results...</p>
+
+                <div class="breakdown-grid">
+                    <div class="breakdown-item">
+                        <div class="breakdown-score" id="businessScore">0</div>
+                        <div class="breakdown-label">Business Maturity</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-score" id="financialScore">0</div>
+                        <div class="breakdown-label">Financial Health</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-score" id="documentScore">0</div>
+                        <div class="breakdown-label">Documentation</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-score" id="growthScore">0</div>
+                        <div class="breakdown-label">Growth Potential</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendations">
+                <h3 style="color: var(--primary-gold); margin-bottom: 1rem;">📈 Recommendations to Improve Your Score</h3>
+                <div id="recommendationsList"></div>
+            </div>
+
+            <div class="nav-buttons" style="margin-top: 2rem;">
+                <button class="btn btn-secondary" onclick="retakeAssessment()">Retake Assessment</button>
+                <button class="btn btn-primary" onclick="saveResults()">Save & Return to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get base URL
+        const BASE_URL = window.location.hostname === 'bvester.com' || window.location.hostname === 'www.bvester.com'
+            ? ''
+            : 'https://dhxakkhet5u0p.cloudfront.net';
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('bvesterToken');
+            if (!token) {
+                window.location.href = BASE_URL ? `${BASE_URL}/login.html` : '/login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Go back to dashboard
+        function goBack() {
+            const user = JSON.parse(localStorage.getItem('bvesterUser') || '{}');
+            const dashboardUrl = user.userType === 'investor'
+                ? '/investor-dashboard.html'
+                : '/sme-dashboard.html';
+            window.location.href = BASE_URL ? BASE_URL + dashboardUrl : dashboardUrl;
+        }
+
+        // Radio button handling
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const input = this.querySelector('.radio-input');
+                const name = input.name;
+
+                // Clear other selections in same group
+                document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                    radio.closest('.radio-option').classList.remove('selected');
+                });
+
+                // Select this option
+                this.classList.add('selected');
+                input.checked = true;
+            });
+        });
+
+        // Checkbox handling
+        document.querySelectorAll('.checkbox-option').forEach(option => {
+            option.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+
+        // Navigation
+        let currentSection = 1;
+        const totalSections = 4;
+
+        function nextSection(section) {
+            // Hide current section
+            document.getElementById(`section${currentSection}`).classList.remove('active');
+
+            // Update progress
+            currentSection = section;
+            updateProgress();
+
+            // Show new section
+            setTimeout(() => {
+                document.getElementById(`section${currentSection}`).classList.add('active');
+            }, 100);
+
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index < currentSection - 1) {
+                    step.classList.add('completed');
+                } else if (index === currentSection - 1) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        function updateProgress() {
+            const percentage = ((currentSection - 1) / totalSections) * 100;
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = Math.round(percentage) + '%';
+            progressText.textContent = Math.round(percentage) + '%';
+        }
+
+        // Calculate results
+        function calculateResults() {
+            // Hide assessment sections
+            document.getElementById(`section${currentSection}`).classList.remove('active');
+
+            // Calculate scores
+            let businessScore = 0;
+            let financialScore = 0;
+            let documentScore = 0;
+            let growthScore = 0;
+
+            // Business section scores
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+            if (q1) businessScore += parseInt(q1.value);
+            if (q2) businessScore += parseInt(q2.value);
+            if (q3) businessScore += parseInt(q3.value);
+
+            // Financial section scores
+            const q4 = document.querySelector('input[name="q4"]:checked');
+            const q5 = document.querySelector('input[name="q5"]:checked');
+            if (q4) financialScore += parseInt(q4.value);
+            if (q5) financialScore += parseInt(q5.value);
+
+            // Documentation score
+            const checkedDocs = document.querySelectorAll('.checkbox-option.checked').length;
+            documentScore = (checkedDocs / 6) * 100;
+
+            // Growth score
+            const q7 = document.querySelector('input[name="q7"]:checked');
+            if (q7) growthScore = parseInt(q7.value) * 4; // Scale to 100
+
+            // Calculate total score
+            const totalScore = Math.round((businessScore + financialScore + documentScore + growthScore) / 4);
+
+            // Show results
+            showResults(totalScore, businessScore, financialScore, Math.round(documentScore), growthScore);
+
+            // Update progress to 100%
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressBar').textContent = '100%';
+            document.getElementById('progressText').textContent = '100%';
+
+            // Mark all steps as completed
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+                step.classList.add('completed');
+            });
+        }
+
+        function showResults(total, business, financial, documentation, growth) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.classList.add('active');
+
+            // Animate score
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreLabel = document.getElementById('scoreLabel');
+            const scoreDesc = document.getElementById('scoreDesc');
+
+            // Set score color
+            if (total >= 80) {
+                scoreCircle.className = 'score-circle score-excellent';
+                scoreLabel.textContent = 'Excellent Investment Readiness!';
+                scoreDesc.textContent = 'Your business is highly prepared for investment. You meet most investor requirements.';
+            } else if (total >= 60) {
+                scoreCircle.className = 'score-circle score-good';
+                scoreLabel.textContent = 'Good Investment Readiness';
+                scoreDesc.textContent = 'Your business shows strong potential. A few improvements can make you investment-ready.';
+            } else if (total >= 40) {
+                scoreCircle.className = 'score-circle score-fair';
+                scoreLabel.textContent = 'Fair Investment Readiness';
+                scoreDesc.textContent = 'Your business needs some work to attract investors. Focus on the recommendations below.';
+            } else {
+                scoreCircle.className = 'score-circle score-poor';
+                scoreLabel.textContent = 'Needs Improvement';
+                scoreDesc.textContent = 'Your business needs significant preparation before seeking investment.';
+            }
+
+            // Animate score counter
+            let counter = 0;
+            const interval = setInterval(() => {
+                counter += 2;
+                if (counter >= total) {
+                    counter = total;
+                    clearInterval(interval);
+                }
+                scoreValue.textContent = counter;
+            }, 30);
+
+            // Set breakdown scores
+            document.getElementById('businessScore').textContent = business + '/75';
+            document.getElementById('financialScore').textContent = financial + '/50';
+            document.getElementById('documentScore').textContent = documentation + '/100';
+            document.getElementById('growthScore').textContent = growth + '/100';
+
+            // Generate recommendations
+            generateRecommendations(business, financial, documentation, growth);
+
+            // Store results
+            localStorage.setItem('investmentReadinessScore', total);
+            localStorage.setItem('assessmentDate', new Date().toISOString());
+            localStorage.setItem('assessmentScores', JSON.stringify({
+                business,
+                financial,
+                documentation,
+                growth
+            }));
+        }
+
+        function generateRecommendations(business, financial, documentation, growth) {
+            const recommendations = [];
+
+            if (business < 60) {
+                recommendations.push({
+                    icon: '🏢',
+                    title: 'Strengthen Business Foundation',
+                    desc: 'Focus on formalizing your business structure and building a stronger team.'
+                });
+            }
+
+            if (financial < 35) {
+                recommendations.push({
+                    icon: '💰',
+                    title: 'Improve Financial Management',
+                    desc: 'Implement proper bookkeeping and work on increasing revenue streams.'
+                });
+            }
+
+            if (documentation < 70) {
+                recommendations.push({
+                    icon: '📄',
+                    title: 'Complete Documentation',
+                    desc: 'Prepare all required documents including business plan and financial statements.'
+                });
+            }
+
+            if (growth < 60) {
+                recommendations.push({
+                    icon: '📈',
+                    title: 'Develop Growth Strategy',
+                    desc: 'Create a clear growth plan with measurable targets and milestones.'
+                });
+            }
+
+            const container = document.getElementById('recommendationsList');
+            container.innerHTML = recommendations.map(rec => `
+                <div class="recommendation-item">
+                    <span class="recommendation-icon">${rec.icon}</span>
+                    <div class="recommendation-text">
+                        <div class="recommendation-title">${rec.title}</div>
+                        <div class="recommendation-desc">${rec.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function retakeAssessment() {
+            location.reload();
+        }
+
+        function saveResults() {
+            alert('Results saved to your profile!');
+            goBack();
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                console.log('Assessment loaded');
+            }
+        });
+    </script>
+</body>
+</html>

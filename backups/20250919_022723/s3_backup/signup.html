@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2D2D2D 50%, #1A1A1A 75%, #0A0A0A 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .signup-container {
+            background: linear-gradient(135deg, #FAFAFA 0%, #FFFFFF 50%, #FFF9E6 100%);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .signup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 25%, #D4AF37 50%, #FFA500 75%, #FFD700 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10B981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo h1 {
+            color: #1A1A1A;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #4A4A4A;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1A1A1A;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #FFFFFF;
+            color: #1A1A1A;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:disabled {
+            background: #E0E0E0;
+            color: #888888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #DC2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563EB;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .links a {
+            color: #D4AF37;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #FFD700;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 2rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="status-indicator" id="statusIndicator"></div>
+
+        <div class="logo">
+            <h1>Bvester</h1>
+            <p>Join our investment community!</p>
+        </div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="6">
+            </div>
+
+            <div class="form-group">
+                <label for="userType">Account Type</label>
+                <select id="userType" name="userType" required>
+                    <option value="">Select account type</option>
+                    <option value="investor">Investor - Find and fund SMEs</option>
+                    <option value="sme">SME Owner - Seek funding for your business</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn" id="signupBtn">Create Account</button>
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <div class="links">
+            <a href="login.html">Already have an account?</a> |
+            <a href="index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // WORKING API GATEWAY URL - TESTED AND CONFIRMED!
+        const API_BASE = 'https://y06kgtou3i.execute-api.eu-west-2.amazonaws.com/prod';
+
+        function showMessage(text, type = 'info') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + type + ' show';
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const signupBtn = document.getElementById('signupBtn');
+            const originalText = signupBtn.textContent;
+
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                userType: document.getElementById('userType').value
+            };
+
+            // Disable button and show loading
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Creating Account...';
+            showMessage('Processing your request...', 'info');
+
+            try {
+                // Make API request to our WORKING API Gateway
+                const response = await fetch(`${API_BASE}/api/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok || response.status === 201) {
+                    // Success!
+                    showMessage('✓ Account created successfully! Redirecting to login...', 'success');
+
+                    // Store token
+                    if (data.token) {
+                        localStorage.setItem('bvesterToken', data.token);
+                        localStorage.setItem('bvesterUser', JSON.stringify(data.user));
+                    }
+
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+
+                } else {
+                    // Show error from server
+                    const errorMessage = data.error || data.message || 'Registration failed';
+                    showMessage(errorMessage, 'error');
+                }
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                showMessage('Connection error. Please try again.', 'error');
+            } finally {
+                // Reset button
+                signupBtn.disabled = false;
+                signupBtn.textContent = originalText;
+            }
+        });
+
+        // Test API connection on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/signup`, {
+                    method: 'OPTIONS'
+                });
+
+                if (response.ok) {
+                    console.log('✓ API Gateway connection successful');
+                    document.getElementById('statusIndicator').style.background = '#10B981';
+                } else {
+                    console.warn('API Gateway responded with:', response.status);
+                    document.getElementById('statusIndicator').style.background = '#F59E0B';
+                }
+            } catch (error) {
+                console.error('API Gateway connection test failed:', error);
+                document.getElementById('statusIndicator').style.background = '#EF4444';
+            }
+        });
+    </script>
+</body>
+</html>

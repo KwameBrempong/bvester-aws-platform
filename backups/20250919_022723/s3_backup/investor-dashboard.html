@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Dashboard - Bvester</title>
+    <link rel="stylesheet" href="css/global-design-system.css">
+    <style>
+        /* Core styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-black);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--rich-black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-gold);
+            color: var(--primary-black);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--rich-black);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .card h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Stats */
+        .stat-card {
+            background: var(--rich-black);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: var(--radius-lg);
+            border: 2px dashed rgba(255, 215, 0, 0.2);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--gold-gradient);
+            color: var(--primary-black);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Business Card */
+        .business-card {
+            background: var(--rich-black);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .business-card:hover {
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .business-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .business-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .business-industry {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .business-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 0.75rem;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: var(--radius-md);
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        /* Investment Status */
+        .investment-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-invested {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22C55E;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-watching {
+            background: rgba(251, 191, 36, 0.2);
+            color: #FBBF24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .status-considering {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* Search and Filter */
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            background: var(--soft-black);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            background: var(--soft-black);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-filters {
+                flex-direction: column;
+            }
+
+            .business-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Bvester</h1>
+            <span>Investor Dashboard</span>
+        </div>
+        <div class="user-info">
+            <span id="userName">Welcome!</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Investment Overview -->
+        <section>
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Investment Portfolio</h2>
+
+            <div class="dashboard-grid" id="portfolioStats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalInvested">₵0</div>
+                    <div class="stat-label">Total Invested</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeInvestments">0</div>
+                    <div class="stat-label">Active Investments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="watchingCount">0</div>
+                    <div class="stat-label">Watching</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="portfolioReturn">0%</div>
+                    <div class="stat-label">Portfolio Return</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Investments -->
+        <section>
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">My Investments</h2>
+
+            <div class="card">
+                <h3>Current Investments</h3>
+                <div id="myInvestments">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💼</div>
+                        <h3>No Investments Yet</h3>
+                        <p>Start investing in African SMEs to build your portfolio</p>
+                        <button class="btn btn-primary" onclick="scrollToOpportunities()">
+                            Browse Opportunities
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Investment Opportunities -->
+        <section>
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Investment Opportunities</h2>
+
+            <!-- Search and Filters -->
+            <div class="search-filters">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search businesses..." onkeyup="filterBusinesses()">
+                <select class="filter-select" id="industryFilter" onchange="filterBusinesses()">
+                    <option value="">All Industries</option>
+                    <option value="agriculture">Agriculture</option>
+                    <option value="technology">Technology</option>
+                    <option value="retail">Retail & E-commerce</option>
+                    <option value="manufacturing">Manufacturing</option>
+                    <option value="services">Services</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="education">Education</option>
+                    <option value="finance">Finance</option>
+                    <option value="realestate">Real Estate</option>
+                    <option value="hospitality">Hospitality</option>
+                    <option value="transportation">Transportation</option>
+                </select>
+                <select class="filter-select" id="sortFilter" onchange="filterBusinesses()">
+                    <option value="newest">Newest First</option>
+                    <option value="score">Highest Score</option>
+                    <option value="funding">Most Funded</option>
+                </select>
+            </div>
+
+            <div id="businessOpportunities">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🏢</div>
+                    <h3>No Opportunities Available</h3>
+                    <p>Check back later for new investment opportunities from verified African SMEs</p>
+                    <button class="btn btn-secondary" onclick="refreshOpportunities()">
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Watchlist -->
+        <section>
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Watchlist</h2>
+
+            <div class="card">
+                <h3>Businesses You're Watching</h3>
+                <div id="watchlist">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👀</div>
+                        <h3>No Businesses in Watchlist</h3>
+                        <p>Add businesses to your watchlist to track their progress</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Initialize dashboard on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+        });
+
+        // Initialize Dashboard
+        function initializeDashboard() {
+            // Check if user is logged in
+            const token = localStorage.getItem('bvesterToken');
+            const userStr = localStorage.getItem('bvesterUser');
+
+            if (!token || !userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(userStr || '{}');
+
+            if (!user.email) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check if this is the right dashboard
+            if (user.userType === 'sme') {
+                window.location.href = 'sme-dashboard.html';
+                return;
+            }
+
+            // Set user name
+            document.getElementById('userName').textContent = `Welcome, ${user.name || user.email}!`;
+
+            // Load investor data
+            loadInvestorData();
+
+            // Load business opportunities
+            loadBusinessOpportunities();
+
+            // Update portfolio stats
+            updatePortfolioStats();
+        }
+
+        // Load investor data
+        function loadInvestorData() {
+            const investments = JSON.parse(localStorage.getItem('myInvestments') || '[]');
+            const watchlist = JSON.parse(localStorage.getItem('myWatchlist') || '[]');
+
+            // Update my investments
+            const myInvestmentsContainer = document.getElementById('myInvestments');
+            if (investments.length > 0) {
+                let html = '';
+                investments.forEach(investment => {
+                    html += createInvestmentCard(investment);
+                });
+                myInvestmentsContainer.innerHTML = html;
+            }
+
+            // Update watchlist
+            const watchlistContainer = document.getElementById('watchlist');
+            if (watchlist.length > 0) {
+                let html = '';
+                watchlist.forEach(business => {
+                    html += createBusinessCard(business, true);
+                });
+                watchlistContainer.innerHTML = html;
+            }
+        }
+
+        // Update portfolio stats
+        function updatePortfolioStats() {
+            const investments = JSON.parse(localStorage.getItem('myInvestments') || '[]');
+            const watchlist = JSON.parse(localStorage.getItem('myWatchlist') || '[]');
+
+            const totalInvested = investments.reduce((sum, inv) => sum + (inv.amount || 0), 0);
+            const activeCount = investments.filter(inv => inv.status === 'active').length;
+
+            document.getElementById('totalInvested').textContent = `₵${totalInvested.toLocaleString()}`;
+            document.getElementById('activeInvestments').textContent = activeCount;
+            document.getElementById('watchingCount').textContent = watchlist.length;
+
+            // Calculate portfolio return (simplified - in production, use real data)
+            const returnRate = totalInvested > 0 ? Math.round(Math.random() * 20 - 5) : 0;
+            document.getElementById('portfolioReturn').textContent = `${returnRate}%`;
+            document.getElementById('portfolioReturn').style.color = returnRate >= 0 ? '#22C55E' : '#EF4444';
+        }
+
+        // Load business opportunities (real businesses from localStorage)
+        function loadBusinessOpportunities() {
+            // Get all registered businesses (this would come from API in production)
+            const allBusinesses = JSON.parse(localStorage.getItem('allBusinesses') || '[]');
+
+            const container = document.getElementById('businessOpportunities');
+
+            if (allBusinesses.length > 0) {
+                let html = '';
+                allBusinesses.forEach(business => {
+                    html += createBusinessCard(business);
+                });
+                container.innerHTML = html;
+            } else {
+                // Show sample opportunity structure for demonstration
+                showSampleOpportunities(container);
+            }
+        }
+
+        // Show empty state for new users
+        function showSampleOpportunities(container) {
+            container.innerHTML = `
+                <div style="background: var(--soft-black); padding: 3rem; border-radius: var(--radius-lg); text-align: center; border: 2px dashed rgba(255, 215, 0, 0.2);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                    <h3 style="color: var(--primary-gold); margin-bottom: 1rem;">No Investment Opportunities Yet</h3>
+                    <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 2rem;">
+                        Investment opportunities will appear here as SMEs complete their profiles and prepare for funding.
+                        Check back soon or explore the platform to learn more about our investment process.
+                    </p>
+                    <button class="btn btn-primary" onclick="window.location.href='/how-it-works.html'" style="padding: 0.75rem 1.5rem;">
+                        Learn How Bvester Works
+                    </button>
+                </div>
+            `;
+        }
+
+        // Create business card
+        function createBusinessCard(business, isWatchlist = false) {
+            const fundingProgress = business.fundingGoal ? Math.round((business.amountRaised / business.fundingGoal) * 100) : 0;
+
+            return `
+                <div class="business-card" onclick="viewBusinessDetails('${business.id}')">
+                    <div class="business-header">
+                        <div>
+                            <div class="business-name">${business.name}</div>
+                            <div class="business-industry">${business.industry}</div>
+                        </div>
+                        <div>
+                            ${!isWatchlist ? `<button class="btn btn-secondary" onclick="event.stopPropagation(); addToWatchlist('${business.id}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Watch</button>` : ''}
+                        </div>
+                    </div>
+
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">${business.description}</p>
+
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-value">${business.investmentScore || 'N/A'}</div>
+                            <div class="metric-label">Score</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">₵${(business.amountRaised || 0).toLocaleString()}</div>
+                            <div class="metric-label">Raised</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${fundingProgress}%</div>
+                            <div class="metric-label">Progress</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${business.employees || 0}</div>
+                            <div class="metric-label">Employees</div>
+                        </div>
+                    </div>
+
+                    ${business.fundingGoal ? `
+                        <div style="margin-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="color: var(--text-secondary);">Funding Progress</span>
+                                <span style="color: var(--primary-gold);">₵${business.amountRaised.toLocaleString()} / ₵${business.fundingGoal.toLocaleString()}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${fundingProgress}%;"></div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center;">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); investInBusiness('${business.id}')" style="padding: 0.5rem 1rem;">
+                            Invest
+                        </button>
+                        <button class="btn btn-secondary" onclick="event.stopPropagation(); viewBusinessDetails('${business.id}')" style="padding: 0.5rem 1rem;">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create investment card
+        function createInvestmentCard(investment) {
+            return `
+                <div class="business-card">
+                    <div class="business-header">
+                        <div>
+                            <div class="business-name">${investment.businessName}</div>
+                            <div class="business-industry">Investment Amount: ₵${investment.amount.toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <span class="investment-status status-${investment.status}">${investment.status}</span>
+                        </div>
+                    </div>
+
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-value">${investment.sharePercentage || 'N/A'}%</div>
+                            <div class="metric-label">Ownership</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">₵${investment.currentValue || investment.amount}</div>
+                            <div class="metric-label">Current Value</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${investment.roi || '0'}%</div>
+                            <div class="metric-label">ROI</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${new Date(investment.date).toLocaleDateString()}</div>
+                            <div class="metric-label">Invested</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add to watchlist
+        function addToWatchlist(businessId) {
+            const watchlist = JSON.parse(localStorage.getItem('myWatchlist') || '[]');
+
+            if (!watchlist.find(item => item.id === businessId)) {
+                // In production, fetch business details from API
+                const business = { id: businessId, name: 'Business Name', dateAdded: new Date().toISOString() };
+                watchlist.push(business);
+                localStorage.setItem('myWatchlist', JSON.stringify(watchlist));
+
+                alert('Added to watchlist!');
+                loadInvestorData();
+                updatePortfolioStats();
+            } else {
+                alert('Already in watchlist!');
+            }
+        }
+
+        // Invest in business
+        function investInBusiness(businessId) {
+            const amount = parseFloat(prompt('Enter investment amount (₵):'));
+
+            if (amount && amount > 0) {
+                const investments = JSON.parse(localStorage.getItem('myInvestments') || '[]');
+
+                const investment = {
+                    id: Date.now().toString(),
+                    businessId: businessId,
+                    businessName: 'Business Name', // In production, fetch from API
+                    amount: amount,
+                    date: new Date().toISOString(),
+                    status: 'active',
+                    roi: 0
+                };
+
+                investments.push(investment);
+                localStorage.setItem('myInvestments', JSON.stringify(investments));
+
+                alert('Investment successful!');
+                loadInvestorData();
+                updatePortfolioStats();
+            }
+        }
+
+        // View business details
+        function viewBusinessDetails(businessId) {
+            // In production, navigate to business detail page
+            alert(`Viewing details for business: ${businessId}`);
+        }
+
+        // Filter businesses
+        function filterBusinesses() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const industryFilter = document.getElementById('industryFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+
+            // In production, implement actual filtering logic
+            console.log('Filtering:', { searchTerm, industryFilter, sortFilter });
+        }
+
+        // Refresh opportunities
+        function refreshOpportunities() {
+            loadBusinessOpportunities();
+        }
+
+        // Scroll to opportunities
+        function scrollToOpportunities() {
+            document.getElementById('businessOpportunities').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Logout
+        function logout() {
+            // Clear all auth data
+            localStorage.removeItem('bvesterToken');
+            localStorage.removeItem('bvesterUser');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

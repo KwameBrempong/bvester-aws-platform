@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice & Chat Records - Bvester</title>
+
+    <style>
+        :root {
+            --primary-black: #0A0A0A;
+            --rich-black: #1A1A1A;
+            --soft-black: #2A2A2A;
+            --primary-gold: #FFD700;
+            --secondary-gold: #FFA500;
+            --pure-white: #FFFFFF;
+            --off-white: #F5F5F5;
+            --dark-gray: #666666;
+            --success-green: #00C853;
+            --whatsapp-green: #25D366;
+            --whatsapp-dark: #128C7E;
+            --error-red: #e53e3e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-black);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--off-white);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--soft-black);
+            border-top: 3px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header {
+            background: var(--rich-black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .chat-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            height: calc(100vh - 200px);
+        }
+
+        /* Mobile Toggle Button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--whatsapp-green);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            z-index: 101;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Conversations List */
+        .conversations-sidebar {
+            background: var(--rich-black);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            overflow-y: auto;
+            transition: transform 0.3s;
+        }
+
+        .conversation-header {
+            background: var(--whatsapp-dark);
+            color: white;
+            padding: 1rem;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-sidebar {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .conversation-item {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .conversation-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .conversation-item.active {
+            background: rgba(37, 211, 102, 0.1);
+            border-left: 3px solid var(--whatsapp-green);
+        }
+
+        .conversation-title {
+            color: var(--primary-gold);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .conversation-preview {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-time {
+            color: var(--dark-gray);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-gray);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            background: var(--rich-black);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: var(--whatsapp-dark);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><g fill="%23222" fill-opacity="0.3"><path d="M0 20h40v20H0z"/></g></svg>');
+        }
+
+        .message {
+            max-width: 70%;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            position: relative;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.sent {
+            background: var(--whatsapp-green);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 0;
+        }
+
+        .message.received {
+            background: var(--soft-black);
+            color: var(--off-white);
+            border-bottom-left-radius: 0;
+        }
+
+        .message.error {
+            background: var(--error-red);
+            color: white;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 0.25rem;
+        }
+
+        .voice-message {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--soft-black);
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.3s;
+        }
+
+        .voice-play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .voice-waveform {
+            flex: 1;
+            height: 30px;
+            background: linear-gradient(90deg,
+                var(--whatsapp-green) 10%, transparent 10%,
+                transparent 20%, var(--whatsapp-green) 20%,
+                var(--whatsapp-green) 30%, transparent 30%,
+                transparent 40%, var(--whatsapp-green) 40%,
+                var(--whatsapp-green) 50%, transparent 50%);
+            border-radius: 5px;
+            opacity: 0.3;
+        }
+
+        .voice-duration {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .message-input {
+            flex: 1;
+            background: var(--soft-black);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            color: var(--off-white);
+            padding: 0.75rem 1rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            resize: none;
+            min-height: 45px;
+            max-height: 120px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+
+        .voice-record-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .voice-record-btn:hover {
+            background: var(--whatsapp-dark);
+            transform: scale(1.1);
+        }
+
+        .voice-record-btn.recording {
+            background: var(--error-red);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: var(--whatsapp-dark);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Summary Panel */
+        .summary-panel {
+            background: var(--rich-black);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .summary-title {
+            color: var(--primary-gold);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--soft-black);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .stat-label {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .export-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            padding: 0.5rem 1rem;
+            background: var(--soft-black);
+            color: var(--off-white);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--whatsapp-green);
+            color: white;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .chat-container {
+                grid-template-columns: 1fr;
+                height: calc(100vh - 150px);
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .conversations-sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 80%;
+                max-width: 300px;
+                z-index: 102;
+                transform: translateX(-100%);
+                border-radius: 0;
+            }
+
+            .conversations-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .close-sidebar {
+                display: block;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .quick-actions {
+                justify-content: center;
+            }
+
+            .summary-panel {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">
+        ☰
+    </button>
+
+    <header class="header">
+        <h1>💬 Voice & Chat Records</h1>
+        <a href="#" class="back-btn" onclick="goBack()">← Back to Dashboard</a>
+    </header>
+
+    <div class="container">
+        <div class="chat-container">
+            <!-- Conversations Sidebar -->
+            <div class="conversations-sidebar" id="sidebar">
+                <div class="conversation-header">
+                    📱 Business Records
+                    <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
+                </div>
+
+                <div id="conversationsList">
+                    <div class="conversation-item active" onclick="selectConversation('sales', this)">
+                        <div class="conversation-title">💰 Sales Records</div>
+                        <div class="conversation-preview">Record your sales transactions</div>
+                        <div class="conversation-time">Active</div>
+                    </div>
+
+                    <div class="conversation-item" onclick="selectConversation('expenses', this)">
+                        <div class="conversation-title">💸 Expenses</div>
+                        <div class="conversation-preview">Track business expenses</div>
+                        <div class="conversation-time">Active</div>
+                    </div>
+
+                    <div class="conversation-item" onclick="selectConversation('inventory', this)">
+                        <div class="conversation-title">📦 Inventory</div>
+                        <div class="conversation-preview">Manage stock levels</div>
+                        <div class="conversation-time">Active</div>
+                    </div>
+
+                    <div class="conversation-item" onclick="selectConversation('customers', this)">
+                        <div class="conversation-title">👥 Customer Records</div>
+                        <div class="conversation-preview">Customer transactions</div>
+                        <div class="conversation-time">Active</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="chat-header">
+                    <div>
+                        <strong id="chatTitle">💰 Sales Records</strong>
+                        <br>
+                        <small style="opacity: 0.8;">Record your transactions via voice or text</small>
+                    </div>
+                    <button onclick="clearChat()" style="background: none; border: none; color: white; cursor: pointer;">🗑️ Clear</button>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="quickAdd('sale')">+ Quick Sale</button>
+                    <button class="quick-action-btn" onclick="quickAdd('expense')">+ Quick Expense</button>
+                    <button class="quick-action-btn" onclick="quickAdd('payment')">+ Payment Received</button>
+                    <button class="quick-action-btn" onclick="quickAdd('invoice')">+ New Invoice</button>
+                </div>
+
+                <div class="messages-container" id="messagesContainer">
+                    <!-- Welcome Message -->
+                    <div class="message received">
+                        <div>👋 Welcome to Voice & Chat Records!</div>
+                        <div>You can record your business transactions by:</div>
+                        <div>• Typing a message (e.g., "Sold 3 laptops for 5000 cedis")</div>
+                        <div>• Recording a voice note</div>
+                        <div>• Using quick action buttons above</div>
+                        <div class="message-time">System</div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <textarea
+                        class="message-input"
+                        id="messageInput"
+                        placeholder="Type a message or record transaction... (e.g., 'Sold 2 phones for 1500')"
+                        rows="1"
+                    ></textarea>
+                    <button class="voice-record-btn" id="voiceBtn" onclick="toggleRecording(this)">
+                        🎤
+                    </button>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Panel -->
+        <div class="summary-panel">
+            <h2 class="summary-title">📊 Today's Summary</h2>
+
+            <div class="summary-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSales">₵0</div>
+                    <div class="stat-label">Total Sales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalExpenses">₵0</div>
+                    <div class="stat-label">Total Expenses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="transactionCount">0</div>
+                    <div class="stat-label">Transactions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="netProfit">₵0</div>
+                    <div class="stat-label">Net Profit</div>
+                </div>
+            </div>
+
+            <button class="export-btn" id="exportBtn" onclick="exportRecords()">
+                📥 Export Today's Records
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const API_BASE = 'https://y06kgtou3i.execute-api.eu-west-2.amazonaws.com/prod';
+
+        // State management
+        let currentConversationType = 'sales';
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let transactions = [];
+        let messages = [];
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('bvesterToken');
+            if (!token) {
+                window.location.href = '/login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Go back to dashboard
+        function goBack() {
+            const user = JSON.parse(localStorage.getItem('bvesterUser') || '{}');
+            const dashboardUrl = user.userType === 'investor'
+                ? '/investor-dashboard.html'
+                : '/sme-dashboard.html';
+            window.location.href = dashboardUrl;
+        }
+
+        // Toggle sidebar (mobile)
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Select conversation
+        function selectConversation(type, element) {
+            currentConversationType = type;
+
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            // Update chat header
+            const titles = {
+                'sales': '💰 Sales Records',
+                'expenses': '💸 Expenses',
+                'inventory': '📦 Inventory',
+                'customers': '👥 Customer Records'
+            };
+            document.getElementById('chatTitle').textContent = titles[type];
+
+            // Load conversation history
+            loadConversationHistory(type);
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        // Load conversation history
+        async function loadConversationHistory(type) {
+            showLoading(true);
+
+            try {
+                // Load from localStorage for now (will be API later)
+                const savedMessages = localStorage.getItem(`bvester_chat_${type}`);
+
+                if (savedMessages) {
+                    messages = JSON.parse(savedMessages);
+                    displayMessages();
+                } else {
+                    // Show empty state
+                    messages = [];
+                    const container = document.getElementById('messagesContainer');
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📝</div>
+                            <h3>No records yet</h3>
+                            <p>Start recording your ${type} transactions</p>
+                        </div>
+                    `;
+                }
+
+                updateSummary();
+            } catch (error) {
+                console.error('Error loading history:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Display messages
+        function displayMessages() {
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = '';
+
+            messages.forEach(msg => {
+                if (msg.type === 'voice') {
+                    container.innerHTML += `
+                        <div class="voice-message">
+                            <button class="voice-play-btn" onclick="playVoice(this, '${msg.audioUrl}')">▶️</button>
+                            <div class="voice-waveform"></div>
+                            <span class="voice-duration">${msg.duration || '0:00'}</span>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML += `
+                        <div class="message ${msg.sender}">
+                            ${msg.text}
+                            <div class="message-time">${msg.time}</div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Disable send button
+            document.getElementById('sendBtn').disabled = true;
+
+            // Add user message to UI
+            const userMessage = {
+                type: 'text',
+                sender: 'sent',
+                text: message,
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            };
+
+            messages.push(userMessage);
+            addMessageToUI(userMessage);
+
+            // Clear input
+            input.value = '';
+            input.style.height = 'auto';
+
+            // Process message with API
+            try {
+                const response = await processTransaction(message);
+
+                const systemMessage = {
+                    type: 'text',
+                    sender: 'received',
+                    text: response.message,
+                    time: 'System'
+                };
+
+                messages.push(systemMessage);
+                addMessageToUI(systemMessage);
+
+                // Update summary if transaction was processed
+                if (response.transaction) {
+                    transactions.push(response.transaction);
+                    updateSummary();
+                }
+
+            } catch (error) {
+                const errorMessage = {
+                    type: 'text',
+                    sender: 'error',
+                    text: '❌ Error processing transaction. Please try again.',
+                    time: 'System'
+                };
+                messages.push(errorMessage);
+                addMessageToUI(errorMessage);
+            }
+
+            // Save messages locally
+            saveMessagesLocally();
+
+            // Re-enable send button
+            document.getElementById('sendBtn').disabled = false;
+        }
+
+        // Add message to UI
+        function addMessageToUI(message) {
+            const container = document.getElementById('messagesContainer');
+
+            // Remove empty state if exists
+            const emptyState = container.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.sender}`;
+            messageDiv.innerHTML = `${message.text}<div class="message-time">${message.time}</div>`;
+            messageDiv.style.animation = 'fadeIn 0.3s';
+
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Process transaction (mock API call)
+        async function processTransaction(message) {
+            // Simulate API processing
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const lowerMessage = message.toLowerCase();
+            let type, amount, description;
+
+            // Parse message
+            if (lowerMessage.includes('sold') || lowerMessage.includes('sale')) {
+                type = 'sale';
+                amount = extractAmount(message);
+                description = message;
+
+                return {
+                    message: `✅ Sales record added successfully!\n• Amount: ₵${amount}\n• Description: "${description}"`,
+                    transaction: { type, amount, description, date: new Date() }
+                };
+            } else if (lowerMessage.includes('bought') || lowerMessage.includes('expense') || lowerMessage.includes('purchased')) {
+                type = 'expense';
+                amount = extractAmount(message);
+                description = message;
+
+                return {
+                    message: `✅ Expense record added successfully!\n• Amount: ₵${amount}\n• Description: "${description}"`,
+                    transaction: { type, amount, description, date: new Date() }
+                };
+            } else if (lowerMessage.includes('received') || lowerMessage.includes('payment')) {
+                type = 'payment';
+                amount = extractAmount(message);
+                description = message;
+
+                return {
+                    message: `✅ Payment record added successfully!\n• Amount: ₵${amount}\n• Description: "${description}"`,
+                    transaction: { type, amount, description, date: new Date() }
+                };
+            } else {
+                return {
+                    message: `📝 Record saved. Please specify if this is a sale, expense, or payment for proper categorization.`,
+                    transaction: null
+                };
+            }
+        }
+
+        // Extract amount from message
+        function extractAmount(message) {
+            const match = message.match(/(\d+[\d,\.]*)/);
+            return match ? parseFloat(match[0].replace(/,/g, '')) : 0;
+        }
+
+        // Voice recording
+        async function toggleRecording(btn) {
+            if (!isRecording) {
+                // Start recording
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        await processVoiceRecording(audioBlob);
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    btn.classList.add('recording');
+                    btn.innerHTML = '⏹️';
+
+                } catch (error) {
+                    alert('Unable to access microphone. Please check your permissions.');
+                    console.error('Recording error:', error);
+                }
+
+            } else {
+                // Stop recording
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+                isRecording = false;
+                btn.classList.remove('recording');
+                btn.innerHTML = '🎤';
+            }
+        }
+
+        // Process voice recording
+        async function processVoiceRecording(audioBlob) {
+            // Add voice message to UI
+            const voiceMessage = {
+                type: 'voice',
+                duration: '0:03',
+                audioUrl: URL.createObjectURL(audioBlob)
+            };
+
+            const container = document.getElementById('messagesContainer');
+            const voiceDiv = document.createElement('div');
+            voiceDiv.className = 'voice-message';
+            voiceDiv.innerHTML = `
+                <button class="voice-play-btn" onclick="playVoice(this, '${voiceMessage.audioUrl}')">▶️</button>
+                <div class="voice-waveform"></div>
+                <span class="voice-duration">${voiceMessage.duration}</span>
+            `;
+            container.appendChild(voiceDiv);
+
+            // Mock transcription (in production, would use speech-to-text API)
+            setTimeout(() => {
+                const transcription = "Sample voice transcription";
+                addMessageToUI({
+                    type: 'text',
+                    sender: 'received',
+                    text: `🎤 Voice transcription: "${transcription}"\n✅ Record processed!`,
+                    time: 'System'
+                });
+            }, 1500);
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Play voice message
+        function playVoice(btn, audioUrl) {
+            if (btn.innerHTML === '▶️') {
+                btn.innerHTML = '⏸️';
+                const audio = new Audio(audioUrl);
+                audio.play();
+                audio.onended = () => {
+                    btn.innerHTML = '▶️';
+                };
+            } else {
+                btn.innerHTML = '▶️';
+                // Stop audio
+            }
+        }
+
+        // Quick add functions
+        function quickAdd(type) {
+            const input = document.getElementById('messageInput');
+
+            switch(type) {
+                case 'sale':
+                    input.value = 'Sale: ';
+                    break;
+                case 'expense':
+                    input.value = 'Expense: ';
+                    break;
+                case 'payment':
+                    input.value = 'Payment received: ';
+                    break;
+                case 'invoice':
+                    input.value = 'Invoice: ';
+                    break;
+            }
+            input.focus();
+        }
+
+        // Clear chat
+        function clearChat() {
+            if (confirm('Clear all messages in this conversation? (Records are still saved)')) {
+                messages = [];
+                saveMessagesLocally();
+
+                const container = document.getElementById('messagesContainer');
+                container.innerHTML = `
+                    <div class="message received">
+                        <div>💬 Conversation cleared. Your records are still saved in the database.</div>
+                        <div class="message-time">System</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Update summary
+        function updateSummary() {
+            let totalSales = 0;
+            let totalExpenses = 0;
+            let transactionCount = transactions.length;
+
+            transactions.forEach(t => {
+                if (t.type === 'sale' || t.type === 'payment') {
+                    totalSales += t.amount;
+                } else if (t.type === 'expense') {
+                    totalExpenses += t.amount;
+                }
+            });
+
+            const netProfit = totalSales - totalExpenses;
+
+            document.getElementById('totalSales').textContent = `₵${totalSales.toLocaleString()}`;
+            document.getElementById('totalExpenses').textContent = `₵${totalExpenses.toLocaleString()}`;
+            document.getElementById('transactionCount').textContent = transactionCount;
+            document.getElementById('netProfit').textContent = `₵${netProfit.toLocaleString()}`;
+        }
+
+        // Export records
+        function exportRecords() {
+            if (transactions.length === 0) {
+                alert('No transactions to export.');
+                return;
+            }
+
+            showLoading(true);
+
+            // Create CSV data
+            let csv = 'Date,Type,Description,Amount\n';
+            transactions.forEach(t => {
+                csv += `"${new Date(t.date).toLocaleString()}","${t.type}","${t.description}",${t.amount}\n`;
+            });
+
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bvester_records_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+
+            showLoading(false);
+            alert('Records exported successfully!');
+        }
+
+        // Save messages locally
+        function saveMessagesLocally() {
+            localStorage.setItem(`bvester_chat_${currentConversationType}`, JSON.stringify(messages));
+        }
+
+        // Show/hide loading
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+
+        // Handle Enter key for sending
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                loadConversationHistory(currentConversationType);
+                updateSummary();
+                console.log('Chat Records loaded');
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

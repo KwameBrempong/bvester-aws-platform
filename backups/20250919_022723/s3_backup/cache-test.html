@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CACHE TEST - TIMESTAMP</title>
+    <style>
+        body { 
+            background: purple !important; 
+            color: white !important; 
+            font-size: 50px !important; 
+            text-align: center !important;
+            padding: 100px !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>CACHE TEST: 2025-07-26 15:45</h1>
+    <p>If you see purple, caching is working properly</p>
+    <p>Current time: <span id="time"></span></p>
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

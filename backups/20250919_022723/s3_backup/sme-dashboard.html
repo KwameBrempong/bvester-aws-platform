@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SME Dashboard - Bvester</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Variables Definition - Fixing missing global-design-system.css */
+        :root {
+            /* Colors */
+            --primary-black: #0A0A0A;
+            --rich-black: #1A1A1A;
+            --soft-black: #2A2A2A;
+            --primary-gold: #FFD700;
+            --secondary-gold: #FFA500;
+            --accent-gold: #D4AF37;
+            --pure-white: #FFFFFF;
+            --off-white: #F5F5F5;
+            --dark-gray: #666666;
+            --success-green: #00C853;
+            --warning-orange: #FF9800;
+
+            /* Typography */
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-heading: 'Montserrat', sans-serif;
+            --font-light: 300;
+            --font-regular: 400;
+            --font-medium: 500;
+            --font-semibold: 600;
+            --font-bold: 700;
+            --font-black: 900;
+
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+
+            /* Text Sizes */
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+
+            /* Border Radius */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-full: 9999px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --shadow-gold: 0 4px 20px rgba(255, 215, 0, 0.3);
+
+            /* Gradients */
+            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+
+            /* Transitions */
+            --transition-base: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            --transition-slower: 0.8s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-black);
+            font-family: var(--font-primary);
+            color: var(--off-white);
+        }
+
+        .header {
+            background: var(--rich-black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            color: var(--pure-white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--primary-gold);
+            font-family: var(--font-heading);
+        }
+
+        .header span {
+            color: var(--off-white);
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: var(--gold-gradient);
+            border: none;
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition-base);
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-gold);
+        }
+
+        /* Sidebar Navigation */
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--rich-black);
+            border-right: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 2rem 0;
+        }
+
+        .nav-item {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            color: var(--off-white);
+            font-family: var(--font-primary);
+            font-weight: var(--font-medium);
+            position: relative;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 20px;
+            background: var(--gold-gradient);
+            border-radius: var(--radius-full);
+            transition: width var(--transition-base);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+            border-left-color: var(--primary-gold);
+            color: var(--primary-gold);
+        }
+
+        .nav-item:hover::after {
+            width: 3px;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 215, 0, 0.1);
+            border-left-color: var(--primary-gold);
+            color: var(--primary-gold);
+        }
+
+        .nav-item.active::after {
+            width: 3px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .card {
+            background: var(--rich-black);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1.5rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity var(--transition-slow);
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            color: var(--primary-gold);
+            margin-bottom: var(--space-md);
+            font-size: var(--text-xl);
+            font-family: var(--font-heading);
+            font-weight: var(--font-semibold);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .card p {
+            color: var(--off-white);
+            line-height: 1.6;
+        }
+
+        .stat-number {
+            font-size: var(--text-4xl);
+            font-weight: var(--font-black);
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-sm);
+            line-height: 1.2;
+        }
+
+        .btn-primary {
+            background: var(--gold-gradient);
+            color: var(--primary-black);
+            padding: var(--space-md) var(--space-xl);
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+            font-family: var(--font-primary);
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px -5px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-gold);
+            border: 2px solid var(--primary-gold);
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+            font-family: var(--font-primary);
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all var(--transition-base);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gold-gradient);
+            color: var(--primary-black);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--space-xs) var(--space-md);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: var(--font-bold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-active {
+            background: var(--success-green);
+            color: var(--pure-white);
+        }
+
+        .status-pending {
+            background: var(--warning-orange);
+            color: var(--primary-black);
+        }
+
+        .status-completed {
+            background: var(--gold-gradient);
+            color: var(--primary-black);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93BBFB;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold-gradient);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--space-md);
+            background: var(--primary-black);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .records-table th {
+            background: var(--soft-black);
+            padding: var(--space-md);
+            text-align: left;
+            color: var(--primary-gold);
+            font-weight: var(--font-semibold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: var(--text-sm);
+        }
+
+        .records-table td {
+            padding: var(--space-md);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.05);
+            color: var(--off-white);
+        }
+
+        .section-title {
+            color: var(--primary-gold);
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+            font-family: var(--font-heading);
+        }
+
+        /* Mobile responsive design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Bvester</h1>
+            <span>SME Business Center</span>
+        </div>
+        <div class="user-info">
+            <span id="userName">Welcome back!</span>
+            <span class="status-badge status-active" id="tierBadge">Starter</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="nav-item active" onclick="showSection('overview')">
+                📊 Overview
+            </div>
+            <div class="nav-item" onclick="showSection('records')">
+                📝 Business Records
+            </div>
+            <div class="nav-item" onclick="showSection('financials')">
+                💰 Financial Tracking
+            </div>
+            <div class="nav-item" onclick="showSection('health')">
+                ❤️ Health Score
+            </div>
+            <div class="nav-item" onclick="showSection('investors')">
+                👥 Investor Relations
+            </div>
+            <div class="nav-item" onclick="showSection('documents')">
+                📁 Documents
+            </div>
+            <div class="nav-item" onclick="showSection('analytics')">
+                📈 Analytics
+            </div>
+            <div class="nav-item" onclick="showSection('settings')">
+                ⚙️ Settings
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section active">
+                <h2 class="section-title">Business Dashboard</h2>
+
+                <div class="alert alert-info">
+                    <span>💡</span>
+                    <div>
+                        <strong>Quick Tip:</strong> Complete your business profile to increase your investment readiness score by 15 points!
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="investmentScore">72</div>
+                        <div class="metric-label">Investment Readiness Score</div>
+                    </div>
+
+                    <div class="card">
+                        <h3>💰 Funding Status</h3>
+                        <div class="stat-number">₵25,000</div>
+                        <p>Raised of ₵100,000 goal</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 25%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>👥 Investor Interest</h3>
+                        <div class="stat-number">12</div>
+                        <p>Active investors viewing</p>
+                        <button class="btn-secondary" onclick="showSection('investors')">View Details</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="btn-primary" onclick="window.location.href='/chat-records.html'">💬 Voice/Chat Records</button>
+                        <button class="btn-primary" onclick="window.location.href='/chat-records.html'">+ Add Business Record</button>
+                        <button class="btn-primary" onclick="window.location.href='/chat-records.html'">+ Log Financial Entry</button>
+                        <button class="btn-primary" onclick="window.location.href='/documents.html'">+ Upload Document</button>
+                        <button class="btn-primary" onclick="window.location.href='/investment-assessment.html'">Take Assessment</button>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>📈 Recent Performance</h3>
+                        <table style="width: 100%; color: var(--off-white);">
+                            <tr>
+                                <td>Monthly Revenue</td>
+                                <td style="text-align: right; font-weight: bold; color: #38a169;">₵15,000</td>
+                            </tr>
+                            <tr>
+                                <td>Growth Rate</td>
+                                <td style="text-align: right; font-weight: bold; color: #38a169;">+12%</td>
+                            </tr>
+                            <tr>
+                                <td>Customer Base</td>
+                                <td style="text-align: right; font-weight: bold;">450</td>
+                            </tr>
+                            <tr>
+                                <td>Profit Margin</td>
+                                <td style="text-align: right; font-weight: bold;">18%</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h3>🎯 Investment Readiness</h3>
+                        <ul style="list-style: none; padding: 0; color: var(--off-white);">
+                            <li style="padding: 0.5rem 0;">✅ Business Registration</li>
+                            <li style="padding: 0.5rem 0;">✅ Financial Records (6 months)</li>
+                            <li style="padding: 0.5rem 0;">⏳ Business Plan</li>
+                            <li style="padding: 0.5rem 0;">❌ Audited Accounts</li>
+                            <li style="padding: 0.5rem 0;">⏳ Growth Strategy</li>
+                        </ul>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%;"></div>
+                        </div>
+                        <small style="color: var(--off-white);">60% Complete</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Business Records Section -->
+            <section id="records" class="content-section">
+                <h2 class="section-title">Business Records Management</h2>
+
+                <div class="card">
+                    <h3>💬 Voice & Chat Records</h3>
+                    <p>Record transactions using voice or chat interface</p>
+                    <button class="btn-primary" onclick="window.location.href='/chat-records.html'">Open Chat Records</button>
+                </div>
+
+                <div class="card">
+                    <h3>📝 Recent Records</h3>
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--dark-gray);">
+                                    No records yet. Start by adding your first transaction using the Chat Records feature.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Financial Tracking Section -->
+            <section id="financials" class="content-section">
+                <h2 class="section-title">Financial Tracking</h2>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>💵 Revenue</h3>
+                        <div class="stat-number" style="color: #38a169;">₵0</div>
+                        <p>This Quarter</p>
+                        <small style="color: var(--dark-gray);">Start tracking your revenue</small>
+                    </div>
+
+                    <div class="card">
+                        <h3>💸 Expenses</h3>
+                        <div class="stat-number" style="color: #e53e3e;">₵0</div>
+                        <p>This Quarter</p>
+                        <small style="color: var(--dark-gray);">Start tracking your expenses</small>
+                    </div>
+
+                    <div class="card">
+                        <h3>💰 Net Profit</h3>
+                        <div class="stat-number" style="color: #667eea;">₵0</div>
+                        <p>This Quarter</p>
+                        <small style="color: var(--dark-gray);">Track revenue and expenses</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Health Score Section -->
+            <section id="health" class="content-section">
+                <h2 class="section-title">Business Health Score</h2>
+
+                <div class="card">
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2.5rem; margin-bottom: 1rem;">
+                            <span id="healthScoreValue">0</span>
+                        </div>
+                        <h3 style="color: var(--primary-gold);">Not Yet Assessed</h3>
+                        <p>Complete the assessment to determine your investment readiness score</p>
+                        <button class="btn-primary" onclick="window.location.href='/investment-assessment.html'">Take Full Assessment</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Investor Relations Section -->
+            <section id="investors" class="content-section">
+                <h2 class="section-title">Investor Relations</h2>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>👥 Active Investors</h3>
+                        <div class="stat-number">0</div>
+                        <p>Currently invested</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>👀 Interested Investors</h3>
+                        <div class="stat-number">0</div>
+                        <p>Viewing your profile</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>💬 Messages</h3>
+                        <div class="stat-number">5</div>
+                        <p>Unread messages</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documents Section -->
+            <section id="documents" class="content-section">
+                <h2 class="section-title">Document Management</h2>
+
+                <div class="card">
+                    <h3>📁 Business Documents</h3>
+                    <p>Upload and manage your business documents here.</p>
+                    <button class="btn-primary" onclick="window.location.href='/documents.html'">Manage Documents</button>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics" class="content-section">
+                <h2 class="section-title">Business Analytics</h2>
+
+                <div class="card">
+                    <h3>📊 Performance Analytics</h3>
+                    <p>Detailed analytics and insights about your business performance.</p>
+                    <div class="alert alert-info">
+                        <span>📈</span>
+                        <div>Analytics dashboard will be available soon with detailed insights and reports.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="content-section">
+                <h2 class="section-title">Settings</h2>
+
+                <div class="card">
+                    <h3>🏢 Business Information</h3>
+                    <p>Manage your business profile and settings.</p>
+                    <button class="btn-primary" onclick="alert('Settings management coming soon!')">Edit Profile</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('bvesterToken');
+            const userStr = localStorage.getItem('bvesterUser');
+
+            if (!token || !userStr) {
+                // Redirect to login
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            try {
+                const user = JSON.parse(userStr);
+
+                // Check if this is the right dashboard
+                if (user.userType === 'investor') {
+                    window.location.href = '/investor-dashboard.html';
+                    return false;
+                }
+
+                // Update user info
+                const userName = user.name || user.email || 'Guest';
+                document.getElementById('userName').textContent = `Welcome, ${userName}!`;
+
+                return true;
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        // Navigation Functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected section
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+            }
+
+            // Add active class to clicked nav item
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+        }
+
+        // Business Health Score Calculation
+        function calculateHealthScore() {
+            const scores = {
+                financial: Math.floor(Math.random() * 20) + 70,
+                documentation: Math.floor(Math.random() * 30) + 50,
+                market: Math.floor(Math.random() * 25) + 65,
+                growth: Math.floor(Math.random() * 20) + 60
+            };
+
+            const totalScore = Math.floor((scores.financial + scores.documentation + scores.market + scores.growth) / 4);
+
+            document.getElementById('healthScoreValue').textContent = totalScore;
+            document.getElementById('investmentScore').textContent = totalScore;
+
+            alert(`Health Score Updated: ${totalScore}/100`);
+        }
+
+        // Logout Function
+        function logout() {
+            // Clear all auth data
+            localStorage.removeItem('bvesterToken');
+            localStorage.removeItem('bvesterUser');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+
+            // Redirect to index
+            window.location.href = '/index.html';
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                console.log('Dashboard loaded successfully');
+            }
+        });
+    </script>
+    <script src="error-tracker.js"></script>
+</body>
+</html>

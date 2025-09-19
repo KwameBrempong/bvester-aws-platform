@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7-Minute Business X-Ray - Bvester</title>
+    <link rel="stylesheet" href="css/global-design-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Color Variables */
+        :root {
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --pure-white: #FFFFFF;
+            --off-white: #FAFAFA;
+            --dark-gray: #888888;
+            --primary-gold: #FFD700;
+            --primary-black: #0A0A0A;
+            --rich-black: #1A1A1A;
+            --soft-black: #2D2D2D;
+            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --radius-sm: 4px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0A0A0A;
+            color: #FFFFFF !important;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Dark card with proper contrast */
+        .question-card {
+            background: linear-gradient(135deg, #1A1A1A 0%, #252525 100%) !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .answer-option {
+            background: rgba(30, 30, 30, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .answer-option:hover {
+            background: rgba(255, 215, 0, 0.1) !important;
+            border-color: rgba(255, 215, 0, 0.5) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2) !important;
+        }
+
+        .answer-option.selected {
+            background: rgba(255, 215, 0, 0.2) !important;
+            border-color: #FFD700 !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1) !important;
+            padding: 1rem !important;
+            border-radius: 8px !important;
+        }
+
+        /* White text for dark backgrounds */
+        .question-title {
+            color: #FFFFFF !important;
+            font-weight: 600 !important;
+        }
+
+        .question-subtitle {
+            color: #B0B0B0 !important;
+        }
+
+        .answer-label {
+            color: #E0E0E0 !important;
+            font-weight: 500 !important;
+        }
+
+        .answer-detail {
+            color: #A0A0A0 !important;
+        }
+
+        .progress-text {
+            color: #FFFFFF !important;
+        }
+
+        /* Keep special elements as designed */
+        .btn-primary {
+            color: #000000 !important;
+        }
+
+        .question-category {
+            color: #FFD700 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important;
+            font-size: 0.875rem !important;
+            letter-spacing: 1px !important;
+        }
+
+        .timer {
+            color: #FFD700 !important;
+        }
+
+        /* Results sections with light backgrounds */
+        .key-findings {
+            background: #F8F8F8 !important;
+        }
+
+        .finding-item {
+            background: #FFFFFF !important;
+            color: #2D2D2D !important;
+        }
+
+        .finding-title {
+            color: #1A1A1A !important;
+        }
+
+        .finding-description {
+            color: #4A4A4A !important;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '';
+            width: 32px;
+            height: 32px;
+            background-image: url('images/bvester-logo.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .assessment-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #E0E0E0;
+            text-align: center;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: linear-gradient(135deg, #1A1A1A 0%, #252525 100%);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 2.5rem;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 25%, #D4AF37 50%, #FFA500 75%, #FFD700 100%);
+            border-radius: 12px 12px 0 0;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .question-header {
+            margin-bottom: 2rem;
+        }
+
+        .question-category {
+            color: #FFD700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-title {
+            font-size: 1.75rem;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            font-weight: 700;
+        }
+
+        .question-subtitle {
+            color: #FFFFFF;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Answer Options */
+        .answer-options {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .answer-option {
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .answer-option:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+            transform: translateX(5px);
+        }
+
+        .answer-option.selected {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #FFD700;
+        }
+
+        .answer-option.selected::after {
+            content: '✓';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #FFD700;
+            font-size: 1.5rem;
+        }
+
+        .answer-label {
+            display: block;
+            color: #FFFFFF;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .answer-detail {
+            color: #D0D0D0;
+            font-size: 0.875rem;
+        }
+
+        /* Number Input */
+        .number-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .number-input {
+            width: 100%;
+            padding: 1rem;
+            background: #1A1A1A;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
+        }
+
+        .input-hint {
+            color: #C0C0C0;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        /* Navigation */
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            color: #E0E0E0;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            border-color: #FFD700;
+            color: #FFD700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-container {
+            display: none;
+        }
+
+        .score-display {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .score-svg {
+            transform: rotate(-90deg);
+        }
+
+        .score-bg {
+            fill: none;
+            stroke: #2D2D2D;
+            stroke-width: 12;
+        }
+
+        .score-progress {
+            fill: none;
+            stroke: url(#scoreGradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 565;
+            transition: stroke-dashoffset 2s ease;
+        }
+
+        .score-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-label {
+            font-size: 1.25rem;
+            color: #4A4A4A;
+            margin-bottom: 2rem;
+        }
+
+        .score-status {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+        }
+
+        .status-red { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid #EF4444; }
+        .status-yellow { background: rgba(251, 191, 36, 0.2); color: #FBBF24; border: 1px solid #FBBF24; }
+        .status-green { background: rgba(34, 197, 94, 0.2); color: #22C55E; border: 1px solid #22C55E; }
+
+        /* Key Findings */
+        .key-findings {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .finding-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #2D2D2D;
+            border-radius: 8px;
+            border-left: 4px solid #FFD700;
+        }
+
+        .finding-icon {
+            font-size: 1.5rem;
+        }
+
+        .finding-content {
+            flex: 1;
+        }
+
+        .finding-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #1A1A1A;
+        }
+
+        .finding-description {
+            color: #4A4A4A;
+            line-height: 1.5;
+        }
+
+        /* CTA Section */
+        .results-cta {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 12px;
+            border: 2px dashed rgba(255, 215, 0, 0.2);
+        }
+
+        .results-cta h3 {
+            color: #FFD700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .results-cta p {
+            color: #4A4A4A;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0;
+            }
+
+            .timer {
+                font-size: 0.875rem;
+                padding: 0.375rem 0.75rem;
+            }
+
+            .assessment-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+
+            .question-card {
+                padding: 1.5rem;
+                min-height: 350px;
+            }
+
+            .question-title {
+                font-size: 1.5rem;
+                line-height: 1.25;
+            }
+
+            .question-subtitle {
+                font-size: 1rem;
+            }
+
+            .answer-option {
+                padding: 1rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                padding: 0.875rem 1.5rem;
+                width: 100%;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-number {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.75rem 1rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .question-card {
+                padding: 1.25rem;
+                margin-bottom: 1rem;
+            }
+
+            .question-title {
+                font-size: 1.25rem;
+            }
+
+            .answer-option {
+                padding: 0.875rem;
+            }
+
+            .answer-label {
+                font-size: 0.9rem;
+            }
+
+            .answer-detail {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Loading State */
+        .calculating {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 215, 0, 0.1);
+            border-top-color: #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">Bvester</a>
+            <div class="timer" id="timer">⏱️ 7:00</div>
+        </div>
+    </header>
+
+    <div class="assessment-container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Question 1 of 10</div>
+        </div>
+
+        <!-- Question Section -->
+        <div id="questionSection" class="question-card">
+            <div class="question-header">
+                <div class="question-category" id="questionCategory">Cash Flow Reality</div>
+                <h2 class="question-title" id="questionTitle">Loading...</h2>
+                <p class="question-subtitle" id="questionSubtitle"></p>
+            </div>
+
+            <div id="answerContainer" class="answer-options">
+                <!-- Dynamic content -->
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>
+                    ← Previous
+                </button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>
+                    Next →
+                </button>
+            </div>
+        </div>
+
+        <!-- Calculating State -->
+        <div id="calculatingSection" class="calculating" style="display: none;">
+            <div class="spinner"></div>
+            <h2 style="color: #FFD700; margin-bottom: 1rem;">Analyzing Your Business...</h2>
+            <p style="color: #4A4A4A;">Calculating your investment readiness score based on your responses</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="results-container">
+            <div class="score-display">
+                <div class="score-circle">
+                    <svg class="score-svg" width="200" height="200">
+                        <defs>
+                            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#FFD700" />
+                                <stop offset="50%" style="stop-color:#FFA500" />
+                                <stop offset="100%" style="stop-color:#D4AF37" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="score-bg" cx="100" cy="100" r="90"></circle>
+                        <circle class="score-progress" id="scoreProgress" cx="100" cy="100" r="90"></circle>
+                    </svg>
+                    <div class="score-number" id="scoreNumber">0</div>
+                </div>
+                <div class="score-label">Your Investment Readiness Score</div>
+                <div class="score-status" id="scoreStatus">Calculating...</div>
+            </div>
+
+            <div class="key-findings">
+                <h3 style="color: #FFD700; margin-bottom: 1.5rem;">🔍 Key Findings</h3>
+                <div id="findingsList">
+                    <!-- Dynamic findings -->
+                </div>
+            </div>
+
+            <div class="results-cta">
+                <h3>Transform Your Business in 30 Days</h3>
+                <p>Based on your assessment, our Investment Readiness Bootcamp can help you fix critical gaps and attract investors.</p>
+
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" onclick="enrollInAccelerator()">
+                        Join Next Cohort (12 Spots Left)
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadReport()">
+                        Download Full Report
+                    </button>
+                </div>
+
+                <p style="margin-top: 1rem; color: #4A4A4A; font-size: 0.875rem;">
+                    Next cohort starts: <strong style="color: #FFD700;">January 15, 2025</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Assessment Questions - Powerful and Revealing
+        const questions = [
+            {
+                id: 1,
+                category: "Cash Flow Reality",
+                title: "How many months can your business operate without new revenue?",
+                subtitle: "This reveals your financial cushion and crisis readiness",
+                type: "multiple",
+                options: [
+                    { value: 0, label: "Less than 1 month", detail: "Critical cash flow risk" },
+                    { value: 25, label: "1-2 months", detail: "Limited runway" },
+                    { value: 50, label: "3-5 months", detail: "Moderate cushion" },
+                    { value: 100, label: "6+ months", detail: "Strong financial position" }
+                ],
+                weight: 15
+            },
+            {
+                id: 2,
+                category: "Customer Concentration",
+                title: "What percentage of revenue comes from your top 3 customers?",
+                subtitle: "High concentration means high risk for investors",
+                type: "number",
+                unit: "%",
+                hint: "Enter percentage (0-100)",
+                scoring: (value) => {
+                    if (value >= 80) return 0;
+                    if (value >= 60) return 25;
+                    if (value >= 40) return 50;
+                    if (value >= 20) return 75;
+                    return 100;
+                },
+                weight: 15
+            },
+            {
+                id: 3,
+                category: "Growth Bottleneck",
+                title: "What would break first if you doubled sales tomorrow?",
+                subtitle: "This reveals your scalability constraints",
+                type: "multiple",
+                options: [
+                    { value: 25, label: "Production/Delivery capacity", detail: "Solvable with investment" },
+                    { value: 0, label: "Cash flow", detail: "Critical financial weakness" },
+                    { value: 50, label: "Team/Staffing", detail: "Manageable growth challenge" },
+                    { value: 75, label: "Nothing - we're ready", detail: "Excellent scalability" }
+                ],
+                weight: 10
+            },
+            {
+                id: 4,
+                category: "Financial Discipline",
+                title: "When did you last reconcile your books?",
+                subtitle: "Financial discipline is crucial for investor confidence",
+                type: "multiple",
+                options: [
+                    { value: 100, label: "This week", detail: "Excellent financial hygiene" },
+                    { value: 75, label: "This month", detail: "Good practices" },
+                    { value: 25, label: "This quarter", detail: "Needs improvement" },
+                    { value: 0, label: "Can't remember", detail: "Major red flag" }
+                ],
+                weight: 12
+            },
+            {
+                id: 5,
+                category: "Market Validation",
+                title: "How many paying customers validated your current pricing?",
+                subtitle: "Real market validation beats assumptions",
+                type: "number",
+                hint: "Enter number of paying customers",
+                scoring: (value) => {
+                    if (value >= 100) return 100;
+                    if (value >= 50) return 75;
+                    if (value >= 20) return 50;
+                    if (value >= 5) return 25;
+                    return 0;
+                },
+                weight: 10
+            },
+            {
+                id: 6,
+                category: "Revenue Predictability",
+                title: "What percentage of your revenue is recurring/contracted?",
+                subtitle: "Predictable revenue reduces investment risk",
+                type: "number",
+                unit: "%",
+                hint: "Enter percentage (0-100)",
+                scoring: (value) => {
+                    if (value >= 70) return 100;
+                    if (value >= 50) return 75;
+                    if (value >= 30) return 50;
+                    if (value >= 10) return 25;
+                    return 0;
+                },
+                weight: 12
+            },
+            {
+                id: 7,
+                category: "Gross Margins",
+                title: "What's your current gross profit margin?",
+                subtitle: "Healthy margins indicate sustainable unit economics",
+                type: "number",
+                unit: "%",
+                hint: "Enter percentage (0-100)",
+                scoring: (value) => {
+                    if (value >= 60) return 100;
+                    if (value >= 40) return 75;
+                    if (value >= 25) return 50;
+                    if (value >= 15) return 25;
+                    return 0;
+                },
+                weight: 8
+            },
+            {
+                id: 8,
+                category: "Team Strength",
+                title: "How many key team members would cripple operations if they left?",
+                subtitle: "Single points of failure are investment risks",
+                type: "multiple",
+                options: [
+                    { value: 100, label: "0 - Strong redundancy", detail: "Excellent risk management" },
+                    { value: 75, label: "1 person", detail: "Manageable risk" },
+                    { value: 25, label: "2-3 people", detail: "Significant vulnerability" },
+                    { value: 0, label: "More than 3", detail: "Critical dependency risk" }
+                ],
+                weight: 8
+            },
+            {
+                id: 9,
+                category: "Legal & Compliance",
+                title: "Are all your licenses, permits, and registrations current?",
+                subtitle: "Legal issues can kill investment deals",
+                type: "multiple",
+                options: [
+                    { value: 100, label: "Yes, all current", detail: "Investment ready" },
+                    { value: 50, label: "Mostly, with minor gaps", detail: "Quick fixes needed" },
+                    { value: 25, label: "Some major items pending", detail: "Significant work required" },
+                    { value: 0, label: "Not sure", detail: "Major due diligence risk" }
+                ],
+                weight: 10
+            },
+            {
+                id: 10,
+                category: "Growth Trajectory",
+                title: "What's your revenue growth rate over the last 12 months?",
+                subtitle: "Growth momentum attracts investors",
+                type: "number",
+                unit: "%",
+                hint: "Enter percentage (can be negative)",
+                scoring: (value) => {
+                    if (value >= 100) return 100;
+                    if (value >= 50) return 85;
+                    if (value >= 20) return 60;
+                    if (value >= 0) return 30;
+                    return 0;
+                },
+                weight: 10
+            }
+        ];
+
+        // State Management
+        let currentQuestion = 0;
+        let answers = {};
+        let startTime = Date.now();
+        let timerInterval;
+
+        // Initialize Assessment
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuestion(0);
+            startTimer();
+        });
+
+        // Timer Function
+        function startTimer() {
+            let timeLeft = 420; // 7 minutes in seconds
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 60) {
+                    document.getElementById('timer').style.color = '#EF4444';
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (Object.keys(answers).length > 5) {
+                        calculateResults();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Load Question
+        function loadQuestion(index) {
+            const question = questions[index];
+
+            // Update progress
+            const progress = ((index + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Question ${index + 1} of ${questions.length}`;
+
+            // Update question content
+            document.getElementById('questionCategory').textContent = question.category;
+            document.getElementById('questionTitle').textContent = question.title;
+            document.getElementById('questionSubtitle').textContent = question.subtitle;
+
+            // Update answer container
+            const container = document.getElementById('answerContainer');
+
+            if (question.type === 'multiple') {
+                container.className = 'answer-options';
+                container.innerHTML = question.options.map(option => `
+                    <div class="answer-option ${answers[question.id] === option.value ? 'selected' : ''}"
+                         onclick="selectAnswer(${question.id}, ${option.value}, this)">
+                        <span class="answer-label">${option.label}</span>
+                        <span class="answer-detail">${option.detail}</span>
+                    </div>
+                `).join('');
+            } else if (question.type === 'number') {
+                container.className = 'number-input-container';
+                container.innerHTML = `
+                    <input type="number"
+                           class="number-input"
+                           id="numberInput"
+                           placeholder="Enter value"
+                           value="${answers[question.id] || ''}"
+                           onchange="selectNumberAnswer(${question.id}, this.value)">
+                    <div class="input-hint">${question.hint}</div>
+                    ${question.unit ? `<div style="text-align: center; font-size: 1.5rem; color: #FFD700;">${question.unit}</div>` : ''}
+                `;
+
+                // Focus input for better UX
+                setTimeout(() => {
+                    const input = document.getElementById('numberInput');
+                    if (input) input.focus();
+                }, 100);
+            }
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = !answers[question.id];
+
+            if (index === questions.length - 1) {
+                document.getElementById('nextBtn').textContent = 'Get Results →';
+            } else {
+                document.getElementById('nextBtn').textContent = 'Next →';
+            }
+        }
+
+        // Select Multiple Choice Answer
+        function selectAnswer(questionId, value, element) {
+            answers[questionId] = value;
+
+            // Update UI
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+
+            // Auto-advance after short delay for better UX
+            setTimeout(() => {
+                if (currentQuestion < questions.length - 1) {
+                    nextQuestion();
+                }
+            }, 500);
+        }
+
+        // Select Number Answer
+        function selectNumberAnswer(questionId, value) {
+            const numValue = parseFloat(value);
+            if (!isNaN(numValue)) {
+                answers[questionId] = numValue;
+                document.getElementById('nextBtn').disabled = false;
+            } else {
+                delete answers[questionId];
+                document.getElementById('nextBtn').disabled = true;
+            }
+        }
+
+        // Navigation
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            } else {
+                calculateResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion(currentQuestion);
+            }
+        }
+
+        // Calculate Results
+        function calculateResults() {
+            clearInterval(timerInterval);
+
+            // Show calculating state
+            document.getElementById('questionSection').style.display = 'none';
+            document.getElementById('calculatingSection').style.display = 'block';
+
+            // Calculate score
+            let totalScore = 0;
+            let totalWeight = 0;
+            let findings = [];
+
+            questions.forEach(question => {
+                const answer = answers[question.id];
+                if (answer !== undefined) {
+                    let score;
+
+                    if (question.type === 'multiple') {
+                        score = answer;
+                    } else if (question.scoring) {
+                        score = question.scoring(answer);
+                    } else {
+                        score = answer;
+                    }
+
+                    totalScore += (score * question.weight) / 100;
+                    totalWeight += question.weight;
+
+                    // Generate findings
+                    if (score < 50) {
+                        findings.push({
+                            category: question.category,
+                            issue: getIssueFeedback(question, score),
+                            severity: score < 25 ? 'critical' : 'warning'
+                        });
+                    }
+                }
+            });
+
+            const finalScore = totalWeight > 0 ? Math.round(totalScore / totalWeight * 100) : 0;
+
+            // Show results after delay
+            setTimeout(() => {
+                showResults(finalScore, findings);
+            }, 2000);
+        }
+
+        // Get Issue Feedback
+        function getIssueFeedback(question, score) {
+            const feedbackMap = {
+                "Cash Flow Reality": "Your cash runway is dangerously short. This is the #1 reason investors pass.",
+                "Customer Concentration": "Heavy reliance on few customers is a major investment risk.",
+                "Growth Bottleneck": "Your business isn't ready to scale. Investors need growth potential.",
+                "Financial Discipline": "Poor financial records will fail investor due diligence.",
+                "Market Validation": "Insufficient market validation raises doubts about product-market fit.",
+                "Revenue Predictability": "Unpredictable revenue makes valuation difficult.",
+                "Gross Margins": "Low margins suggest unsustainable unit economics.",
+                "Team Strength": "Over-dependency on key people is a critical risk.",
+                "Legal & Compliance": "Legal issues are deal-breakers for investors.",
+                "Growth Trajectory": "Lack of growth momentum makes investment unattractive."
+            };
+
+            return feedbackMap[question.category] || "This area needs improvement for investment readiness.";
+        }
+
+        // Show Results
+        function showResults(score, findings) {
+            document.getElementById('calculatingSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            // Animate score
+            animateScore(score);
+
+            // Set status
+            let status, statusClass;
+            if (score >= 70) {
+                status = "Investment Ready";
+                statusClass = "status-green";
+            } else if (score >= 40) {
+                status = "Needs Structure";
+                statusClass = "status-yellow";
+            } else {
+                status = "Critical Gaps";
+                statusClass = "status-red";
+            }
+
+            document.getElementById('scoreStatus').textContent = status;
+            document.getElementById('scoreStatus').className = `score-status ${statusClass}`;
+
+            // Show findings
+            const findingsContainer = document.getElementById('findingsList');
+
+            if (findings.length === 0) {
+                findingsContainer.innerHTML = `
+                    <div class="finding-item">
+                        <div class="finding-icon">✅</div>
+                        <div class="finding-content">
+                            <div class="finding-title">Excellent Foundation</div>
+                            <div class="finding-description">
+                                Your business shows strong fundamentals across all key areas.
+                                You're well-positioned for investment.
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Show top 3 critical findings
+                const topFindings = findings.slice(0, 3);
+                findingsContainer.innerHTML = topFindings.map(finding => `
+                    <div class="finding-item">
+                        <div class="finding-icon">${finding.severity === 'critical' ? '⚠️' : '⚡'}</div>
+                        <div class="finding-content">
+                            <div class="finding-title">${finding.category}</div>
+                            <div class="finding-description">${finding.issue}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Add the hidden opportunity
+                findingsContainer.innerHTML += `
+                    <div class="finding-item" style="border-left-color: #22C55E;">
+                        <div class="finding-icon">💡</div>
+                        <div class="finding-content">
+                            <div class="finding-title">Hidden Opportunity</div>
+                            <div class="finding-description">
+                                Based on your profile, fixing these ${findings.length} issues could increase
+                                your valuation by 40-60% and reduce fundraising time by 3 months.
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Store results
+            const assessmentResults = {
+                score: score,
+                status: status,
+                findings: findings,
+                completedAt: new Date().toISOString(),
+                timeSpent: Math.round((Date.now() - startTime) / 1000)
+            };
+
+            localStorage.setItem('assessmentResults', JSON.stringify(assessmentResults));
+        }
+
+        // Animate Score
+        function animateScore(targetScore) {
+            let currentScore = 0;
+            const increment = targetScore / 50;
+            const scoreElement = document.getElementById('scoreNumber');
+            const progressElement = document.getElementById('scoreProgress');
+
+            const interval = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(interval);
+                }
+
+                scoreElement.textContent = Math.round(currentScore);
+
+                // Update progress circle
+                const offset = 565 - (565 * currentScore / 100);
+                progressElement.style.strokeDashoffset = offset;
+
+                // Update color based on score
+                if (currentScore < 40) {
+                    scoreElement.style.color = '#EF4444';
+                } else if (currentScore < 70) {
+                    scoreElement.style.color = '#FBBF24';
+                } else {
+                    scoreElement.style.color = '#22C55E';
+                }
+            }, 20);
+        }
+
+        // Action Functions
+        function enrollInAccelerator() {
+            // Store assessment results for accelerator page
+            window.location.href = 'accelerator-program.html?from=assessment';
+        }
+
+        function downloadReport() {
+            // In production, generate PDF report
+            alert('Full report will be sent to your email. Premium feature coming soon!');
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('nextBtn').disabled) {
+                nextQuestion();
+            } else if (e.key === 'ArrowLeft' && !document.getElementById('prevBtn').disabled) {
+                previousQuestion();
+            } else if (e.key === 'ArrowRight' && !document.getElementById('nextBtn').disabled) {
+                nextQuestion();
+            }
+        });
+    </script>
+</body>
+</html>

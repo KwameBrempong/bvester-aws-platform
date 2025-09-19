@@ -1,0 +1,210 @@
+# Bvester Project Development Rules
+# Critical constraints to prevent breaking changes and ensure safe development
+
+## 🚨 CRITICAL RULES - MUST FOLLOW
+
+### 1. FILE MODIFICATION CONSTRAINTS
+- NEVER modify files outside the specific feature being fixed
+- Before ANY change, list ALL files that will be modified in a clear manifest
+- Get explicit confirmation before modifying multiple files
+- If fixing backend issues, DO NOT touch frontend files unless explicitly required
+- If fixing frontend issues, DO NOT touch backend files unless explicitly required
+- Respect the separation of concerns: frontend (HTML/CSS/JS) vs backend (API/server)
+
+### 2. TESTING REQUIREMENTS (QA ENGINEER MANDATES)
+- Run tests after EVERY single change, not just at the end
+- If no tests exist, create basic functionality tests before making changes
+- Verify ALL affected functionality works after each modification
+- Test in staging environment before any production deployment
+- Document any test failures immediately and fix before proceeding
+
+### 2.1 QA ENGINEER DEPLOYMENT GATES
+- **MANDATORY**: QA Engineer must run tests before AND after all changes
+- **DEPLOYMENT BLOCKER**: If any tests fail, deployment is BLOCKED until fixed
+- **NO EXCEPTIONS**: No production deployment allowed without QA approval
+- **TEST COVERAGE**: All critical user flows must have automated tests
+- **REGRESSION TESTING**: Full regression test suite must pass before production
+
+### 3. AWS SERVICE SAFETY
+- Always verify AWS service configurations before deployment
+- Check S3 bucket policies, CloudFront distributions, and API Gateway settings
+- Confirm environment variables and service endpoints before deployment
+- Validate IAM permissions and security groups
+- Never assume AWS configurations are correct - always verify
+
+### 4. DEPLOYMENT SAFETY
+- NEVER deploy to production without explicit confirmation from the user
+- Always deploy to staging first and get approval
+- Use the established deployment process: staging → testing → production approval → production deployment
+- Create rollback plan before every production deployment
+- Verify deployment success before marking as complete
+
+### 5. CHANGE MANAGEMENT
+- Before starting any work, create a clear plan of what will be modified
+- Document the scope of changes and why each file needs modification
+- If the scope expands beyond the original plan, stop and get new approval
+- Keep changes minimal and focused on the specific issue being addressed
+
+## 📋 MANDATORY CHANGE PROCESS
+
+### Before Making ANY Changes:
+```
+1. Identify the specific issue/feature to fix
+2. List ALL files that will be modified
+3. Explain WHY each file needs to be changed
+4. Get explicit confirmation before proceeding
+5. Create backup/rollback plan
+```
+
+### During Development:
+```
+1. Make changes to ONE file at a time
+2. Test the change immediately
+3. Verify no existing functionality is broken
+4. Document any unexpected side effects
+5. If issues arise, stop and reassess
+```
+
+### Before Deployment:
+```
+1. Test all changes in staging environment
+2. Verify AWS configurations are correct
+3. Run full user flow testing
+4. **QA ENGINEER APPROVAL**: Get QA sign-off on all tests
+5. Get explicit production deployment approval
+6. Execute deployment with monitoring
+```
+
+## 🎯 SCOPE BOUNDARIES
+
+### Frontend Changes (HTML/CSS/JavaScript):
+- Only modify: .html, .css, .js files in root directory
+- Test: Homepage navigation, forms, user interface
+- Verify: Cross-browser compatibility, mobile responsiveness
+- Deploy: Static files to S3, invalidate CloudFront cache
+
+### Backend Changes (API/Server):
+- Only modify: API files, server configurations, database schemas
+- Test: API endpoints, data processing, authentication
+- Verify: Database connections, external service integrations
+- Deploy: Server deployments, database migrations
+
+### Configuration Changes:
+- Only modify: Config files, environment variables, AWS settings
+- Test: Service connectivity, environment detection
+- Verify: All environments (dev/staging/prod) work correctly
+- Deploy: Infrastructure updates with careful verification
+
+### Security Changes:
+- Only modify: Security-related files and configurations
+- Test: Authentication, authorization, data protection
+- Verify: No security vulnerabilities introduced
+- Deploy: Security fixes with immediate verification
+
+## 🛡️ SAFETY CHECKS
+
+### Pre-Change Checklist:
+- [ ] Clear understanding of what needs to be fixed
+- [ ] Complete list of files to be modified
+- [ ] Backup/rollback plan in place
+- [ ] Test plan defined
+- [ ] User approval obtained
+
+### Post-Change Checklist:
+- [ ] All changes tested individually
+- [ ] No existing functionality broken
+- [ ] Staging environment tested
+- [ ] User flows verified
+- [ ] Ready for production (if applicable)
+
+### Production Deployment Checklist:
+- [ ] Staging tests passed
+- [ ] **QA ENGINEER SIGN-OFF**: All tests approved by QA
+- [ ] AWS configurations verified
+- [ ] Rollback plan ready
+- [ ] Explicit production approval received
+- [ ] Monitoring plan in place
+
+## 🚫 PROHIBITED ACTIONS
+
+### NEVER DO:
+- Modify files without explicit permission
+- Deploy to production without approval
+- **Deploy without QA engineer approval**
+- Change multiple unrelated components simultaneously
+- Skip testing after modifications
+- **Bypass QA testing requirements**
+- Assume AWS configurations are correct
+- Make "quick fixes" without proper testing
+- Modify both frontend and backend unless absolutely necessary
+- Change file permissions or access controls without approval
+- Modify deployment scripts without testing
+- Override security configurations
+
+### ALWAYS DO:
+- List files before modifying
+- Test every change immediately
+- **Get QA engineer approval before deployment**
+- **Run comprehensive test suites**
+- Verify AWS configurations
+- Get production deployment approval
+- Follow the established deployment process
+- Document all changes and their reasons
+- Respect component boundaries
+- Create rollback plans
+- Monitor deployments
+- Report issues immediately
+
+## 📁 FILE ORGANIZATION RESPECT
+
+### Root Level Files:
+- index.html (Homepage)
+- login-final.html (Login page)
+- signup-final.html (Signup page)
+- investment-assessment.html (Assessment tool)
+- config.js (Security configuration)
+
+### Deployment Files:
+- deploy-staging.bat/.sh (Staging deployment)
+- deploy-production.bat/.sh (Production deployment)
+- emergency-rollback.bat/.sh (Emergency procedures)
+
+### Documentation:
+- WEB_DEPLOYMENT_CHECKLIST.md
+- DEVELOPMENT_PROCESS.md
+- .cursorrules (This file)
+
+### Backend Directory:
+- bvester/ (Backend code - separate from frontend)
+- api/ (API configurations)
+- backend/ (Server implementations)
+
+## 🎯 SUCCESS CRITERIA
+
+### Every Change Must:
+1. Be explicitly scoped and approved
+2. Pass individual testing
+3. Not break existing functionality
+4. Follow security best practices
+5. Be deployable with confidence
+
+### Every Deployment Must:
+1. Be tested in staging first
+2. Have AWS configurations verified
+3. Include rollback procedures
+4. Have explicit approval
+5. Be monitored for success
+
+## 💡 REMEMBER
+
+**Quality over speed**: It's better to make careful, tested changes than to break existing functionality.
+
+**Security first**: Never compromise security for convenience.
+
+**User experience matters**: Every change should maintain or improve the user experience.
+
+**Production is sacred**: Treat production deployments with extreme care.
+
+---
+
+*These rules exist to protect the stability and security of the Bvester platform. Following them ensures reliable, safe development and deployment practices.*

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Bvester</title>
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.execute-api.eu-west-2.amazonaws.com; frame-ancestors 'none';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2D2D2D 50%, #1A1A1A 75%, #0A0A0A 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .signup-container {
+            background: linear-gradient(135deg, #FAFAFA 0%, #FFFFFF 50%, #FFF9E6 100%);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .signup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 25%, #D4AF37 50%, #FFA500 75%, #FFD700 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            color: #1A1A1A;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #FFD700, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            color: #4A4A4A;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .user-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-type {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .user-type:hover {
+            border-color: #FFD700;
+            transform: translateY(-2px);
+        }
+
+        .user-type.active {
+            border-color: #FFD700;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(212, 175, 55, 0.1));
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+        }
+
+        .user-type-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-type-label {
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-type-desc {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1A1A1A;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #FFFFFF;
+            color: #1A1A1A;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
+        }
+
+        input.error, select.error {
+            border-color: #EF4444;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            background: #E0E0E0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .password-strength-bar.weak {
+            width: 33%;
+            background: #EF4444;
+        }
+
+        .password-strength-bar.medium {
+            width: 66%;
+            background: #FFA500;
+        }
+
+        .password-strength-bar.strong {
+            width: 100%;
+            background: #10B981;
+        }
+
+        .password-hint {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .terms input[type="checkbox"] {
+            width: auto;
+            margin-top: 0.25rem;
+        }
+
+        .terms label {
+            margin-bottom: 0;
+            font-weight: normal;
+            color: #4A4A4A;
+        }
+
+        .terms a {
+            color: #D4AF37;
+            text-decoration: none;
+        }
+
+        .terms a:hover {
+            color: #FFD700;
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover:not(:disabled)::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:disabled {
+            background: #E0E0E0;
+            color: #888888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .links a {
+            color: #D4AF37;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            margin: 0 0.5rem;
+        }
+
+        .links a:hover {
+            color: #FFD700;
+            text-decoration: underline;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.error {
+            color: #EF4444;
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #EF4444;
+            display: block;
+        }
+
+        .message.success {
+            color: #10B981;
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10B981;
+            display: block;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #0A0A0A;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .user-type-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <h1>Bvester</h1>
+            <p>Create your account</p>
+        </div>
+
+        <form id="signupForm">
+            <!-- User Type Selection -->
+            <div class="user-type-selector">
+                <div class="user-type active" data-type="sme" onclick="selectUserType('sme', this)">
+                    <div class="user-type-icon">🏢</div>
+                    <div class="user-type-label">SME</div>
+                    <div class="user-type-desc">I need funding</div>
+                </div>
+                <div class="user-type" data-type="investor" onclick="selectUserType('investor', this)">
+                    <div class="user-type-icon">💰</div>
+                    <div class="user-type-label">Investor</div>
+                    <div class="user-type-desc">I want to invest</div>
+                </div>
+            </div>
+
+            <input type="hidden" id="userType" name="userType" value="sme">
+
+            <!-- Name Fields -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required placeholder="John" autocomplete="given-name">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required placeholder="Doe" autocomplete="family-name">
+                </div>
+            </div>
+
+            <!-- Contact Fields -->
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="john@example.com" autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number (Optional)</label>
+                <input type="tel" id="phone" name="phone" placeholder="+233 XX XXX XXXX" autocomplete="tel">
+            </div>
+
+            <!-- Password Fields -->
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Create a strong password" autocomplete="new-password">
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="strengthBar"></div>
+                </div>
+                <div class="password-hint">Use 8+ characters with uppercase, lowercase, numbers and symbols</div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Re-enter your password" autocomplete="new-password">
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="terms">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">
+                    I agree to the <a href="/terms" target="_blank">Terms of Service</a> and
+                    <a href="/privacy" target="_blank">Privacy Policy</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn" id="signupBtn">
+                <span id="btnText">Create Account</span>
+            </button>
+
+            <div id="message" class="message"></div>
+        </form>
+
+        <div class="links">
+            <a href="/login.html">Already have an account? Login</a> |
+            <a href="/index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Security Configuration -->
+    <meta name="csrf-token" content="">
+    <script src="config.js"></script>
+
+    <script>
+        // Secure API Configuration - No hardcoded endpoints!
+        // Configuration is now managed by config.js based on environment
+
+        // User type selection
+        let selectedUserType = 'sme';
+
+        function selectUserType(type, element) {
+            selectedUserType = type;
+            document.getElementById('userType').value = type;
+
+            // Update UI
+            document.querySelectorAll('.user-type').forEach(el => {
+                el.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            const strengthBar = document.getElementById('strengthBar');
+
+            if (strength <= 2) {
+                strengthBar.className = 'password-strength-bar weak';
+            } else if (strength <= 4) {
+                strengthBar.className = 'password-strength-bar medium';
+            } else {
+                strengthBar.className = 'password-strength-bar strong';
+            }
+
+            return strength;
+        }
+
+        // Password input event
+        document.getElementById('password').addEventListener('input', (e) => {
+            checkPasswordStrength(e.target.value);
+        });
+
+        // Enhanced form validation with security checks
+        function validateForm() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+
+            // Enhanced name validation with security checks
+            if (firstName.length < 2) {
+                return { valid: false, message: 'First name must be at least 2 characters' };
+            }
+
+            if (lastName.length < 2) {
+                return { valid: false, message: 'Last name must be at least 2 characters' };
+            }
+
+            // Check for suspicious patterns in names
+            if (firstName.length > 50 || lastName.length > 50) {
+                return { valid: false, message: 'Names must be less than 50 characters' };
+            }
+
+            // Check for HTML/script injection attempts
+            const dangerousPattern = /<[^>]*>|javascript:|data:|on\w+=/i;
+            if (dangerousPattern.test(firstName) || dangerousPattern.test(lastName)) {
+                return { valid: false, message: 'Invalid characters in name fields' };
+            }
+
+            // Enhanced email validation using BvesterConfig
+            if (!BvesterConfig.security.validateEmail(email)) {
+                return { valid: false, message: 'Please enter a valid email address' };
+            }
+
+            // Check email length for security
+            if (email.length > 254) {
+                return { valid: false, message: 'Email address is too long' };
+            }
+
+            // Enhanced password validation using BvesterConfig
+            const passwordValidation = BvesterConfig.security.validatePassword(password);
+            if (!passwordValidation.isValid) {
+                let messages = [];
+                if (!passwordValidation.length) messages.push('at least 8 characters');
+                if (!passwordValidation.hasUpper) messages.push('uppercase letter');
+                if (!passwordValidation.hasLower) messages.push('lowercase letter');
+                if (!passwordValidation.hasNumber) messages.push('number');
+
+                return {
+                    valid: false,
+                    message: `Password must contain ${messages.join(', ')}`
+                };
+            }
+
+            // Check password confirmation
+            if (password !== confirmPassword) {
+                return { valid: false, message: 'Passwords do not match' };
+            }
+
+            // Check for common weak passwords
+            const commonPasswords = ['password', '123456', '12345678', 'qwerty', 'abc123', 'password123'];
+            if (commonPasswords.includes(password.toLowerCase())) {
+                return { valid: false, message: 'Please choose a less common password' };
+            }
+
+            // Check password strength
+            if (checkPasswordStrength(password) < 3) {
+                return { valid: false, message: 'Password is too weak. Please use a stronger password' };
+            }
+
+            // Terms validation
+            if (!terms) {
+                return { valid: false, message: 'You must agree to the terms and conditions' };
+            }
+
+            return { valid: true };
+        }
+
+        // Handle form submission
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const messageDiv = document.getElementById('message');
+            const signupBtn = document.getElementById('signupBtn');
+            const btnText = document.getElementById('btnText');
+
+            // Clear previous messages
+            messageDiv.className = 'message';
+            messageDiv.textContent = '';
+
+            // Validate form
+            const validation = validateForm();
+            if (!validation.valid) {
+                messageDiv.className = 'message error';
+                messageDiv.textContent = validation.message;
+                return;
+            }
+
+            // Get form data
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Disable button and show loading
+            signupBtn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span>Creating account...';
+
+            try {
+                // Use secure API configuration with CSRF protection and input sanitization
+                const response = await BvesterConfig.secureApiCall('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: BvesterConfig.security.sanitizeInput(`${firstName} ${lastName}`),
+                        email: BvesterConfig.security.sanitizeInput(email),
+                        password: password, // Don't sanitize passwords
+                        userType: selectedUserType,
+                        phoneNumber: phone || null
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.token) {
+                    // Save authentication data using secure session storage
+                    BvesterConfig.security.setSecureToken(data.token, data.user);
+
+                    // Clear any legacy localStorage data for security
+                    localStorage.removeItem('bvesterToken');
+                    localStorage.removeItem('bvesterUser');
+
+                    // Show success message
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = 'Account created successfully! Redirecting to dashboard...';
+
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        const dashboardUrl = selectedUserType === 'investor'
+                            ? '/investor-dashboard.html'
+                            : '/sme-dashboard.html';
+                        window.location.href = dashboardUrl;
+                    }, 1500);
+                } else {
+                    // Show error message
+                    let errorMsg = 'Failed to create account';
+
+                    if (data.error) {
+                        if (data.error.includes('exists')) {
+                            errorMsg = 'An account with this email already exists';
+                        } else if (data.error.includes('invalid')) {
+                            errorMsg = 'Invalid information provided';
+                        } else {
+                            errorMsg = data.error;
+                        }
+                    }
+
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = errorMsg;
+
+                    // Re-enable button
+                    signupBtn.disabled = false;
+                    btnText.textContent = 'Create Account';
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+
+                // Show network error
+                messageDiv.className = 'message error';
+
+                if (error.message === 'Failed to fetch') {
+                    messageDiv.textContent = 'Unable to connect to server. Please check your internet connection.';
+                } else {
+                    messageDiv.textContent = 'An error occurred. Please try again.';
+                }
+
+                // Re-enable button
+                signupBtn.disabled = false;
+                btnText.textContent = 'Create Account';
+            }
+        });
+
+        // Clear error messages on input
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => {
+                const messageDiv = document.getElementById('message');
+                if (messageDiv.classList.contains('error')) {
+                    messageDiv.className = 'message';
+                    messageDiv.textContent = '';
+                }
+                input.classList.remove('error');
+            });
+        });
+
+        // Real-time password match validation
+        document.getElementById('confirmPassword').addEventListener('input', (e) => {
+            const password = document.getElementById('password').value;
+            const confirmPassword = e.target.value;
+
+            if (confirmPassword && password !== confirmPassword) {
+                e.target.classList.add('error');
+            } else {
+                e.target.classList.remove('error');
+            }
+        });
+    </script>
+</body>
+</html>
