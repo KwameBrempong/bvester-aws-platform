@@ -6,7 +6,7 @@
 class BvesterAWSAPI {
     constructor() {
         // AWS Backend URLs
-        this.productionURL = 'http://bvester-backend-env.eba-ivjm3qsc.eu-west-2.elasticbeanstalk.com';
+        this.productionURL = 'https://y06kgtou3i.execute-api.eu-west-2.amazonaws.com/prod';
         this.localURL = 'http://localhost:8080';
         
         // Auto-detect environment

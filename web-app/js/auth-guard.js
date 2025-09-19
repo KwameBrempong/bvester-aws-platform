@@ -22,33 +22,37 @@ class AuthGuard {
 
         try {
             console.log('🔐 AuthGuard: Initializing authentication system...');
-            
-            // Wait for Firebase and bvesterAPI to be available
+
+            // Wait for bvesterAPI to be available
             await this.waitForDependencies();
-            
-            // Initialize Firebase Auth if not already done
+
+            // Get current user from bvesterAPI
             if (typeof bvesterAPI !== 'undefined') {
-                await bvesterAPI.initializeAuth();
-                this.currentUser = bvesterAPI.currentUser;
+                this.currentUser = bvesterAPI.getCurrentUser();
+
+                // Check if user is authenticated
+                if (!this.currentUser && bvesterAPI.isAuthenticated()) {
+                    this.currentUser = bvesterAPI.loadUserFromStorage();
+                }
             } else {
                 throw new Error('BvesterAPI not available');
             }
-            
+
             this.isInitialized = true;
             console.log('✅ AuthGuard: Authentication system initialized');
-            
+
             return this.currentUser;
-            
+
         } catch (error) {
             console.error('❌ AuthGuard: Initialization failed:', error);
             this.retryCount++;
-            
+
             if (this.retryCount < this.maxRetries) {
                 console.log(`🔄 AuthGuard: Retrying initialization (${this.retryCount}/${this.maxRetries})`);
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 return this.initialize();
             }
-            
+
             throw new Error('Authentication system failed to initialize after multiple attempts');
         }
     }
@@ -57,34 +61,31 @@ class AuthGuard {
      * Wait for required dependencies to load
      */
     async waitForDependencies() {
-        const maxWaitTime = 15000; // 15 seconds
+        const maxWaitTime = 10000; // 10 seconds
         const checkInterval = 500; // 500ms
         let elapsed = 0;
 
         return new Promise((resolve, reject) => {
             const checkDependencies = () => {
-                // Check if Firebase is loaded
-                const firebaseLoaded = typeof firebase !== 'undefined' && firebase.auth;
-                
                 // Check if bvesterAPI is loaded
                 const apiLoaded = typeof bvesterAPI !== 'undefined';
-                
-                console.log(`🔍 AuthGuard: Dependency check - Firebase: ${firebaseLoaded}, API: ${apiLoaded}`);
-                
-                if (firebaseLoaded && apiLoaded) {
+
+                console.log(`🔍 AuthGuard: Dependency check - API: ${apiLoaded}`);
+
+                if (apiLoaded) {
                     resolve();
                     return;
                 }
-                
+
                 elapsed += checkInterval;
                 if (elapsed >= maxWaitTime) {
-                    reject(new Error('Dependencies failed to load within timeout period'));
+                    reject(new Error('BvesterAPI failed to load within timeout period'));
                     return;
                 }
-                
+
                 setTimeout(checkDependencies, checkInterval);
             };
-            
+
             checkDependencies();
         });
     }
@@ -119,15 +120,15 @@ class AuthGuard {
             
             // Check user type if specified
             if (requiredUserType) {
-                const userType = this.currentUser.bvesterData?.userType;
+                const userType = this.currentUser.userType;
                 let hasValidUserType = false;
-                
+
                 if (Array.isArray(requiredUserType)) {
                     hasValidUserType = requiredUserType.includes(userType);
                 } else {
                     hasValidUserType = userType === requiredUserType;
                 }
-                
+
                 if (!hasValidUserType) {
                     console.log(`❌ AuthGuard: Wrong user type. Required: ${requiredUserType}, Got: ${userType}`);
                     this.redirectToCorrectDashboard(userType);
@@ -185,15 +186,15 @@ class AuthGuard {
      * Redirect to onboarding flow
      */
     redirectToOnboarding() {
-        const userType = this.currentUser.bvesterData?.userType;
+        const userType = this.currentUser?.userType;
         let onboardingUrl = 'signup.html';
-        
+
         if (userType === 'investor') {
             onboardingUrl = 'investor-onboarding.html';
-        } else if (userType === 'business' || userType === 'startup') {
+        } else if (userType === 'business' || userType === 'startup' || userType === 'sme') {
             onboardingUrl = 'business-onboarding.html';
         }
-        
+
         console.log('🔄 AuthGuard: Redirecting to onboarding:', onboardingUrl);
         window.location.href = onboardingUrl;
     }
@@ -203,13 +204,15 @@ class AuthGuard {
      */
     redirectToCorrectDashboard(userType) {
         let dashboardUrl = 'index.html';
-        
+
         if (userType === 'investor') {
             dashboardUrl = 'investor-dashboard.html';
-        } else if (userType === 'business' || userType === 'startup') {
-            dashboardUrl = 'startup-dashboard.html';
+        } else if (userType === 'business' || userType === 'startup' || userType === 'sme') {
+            dashboardUrl = 'sme-dashboard.html';
+        } else if (userType === 'premium') {
+            dashboardUrl = 'premium-dashboard.html';
         }
-        
+
         console.log(`🔄 AuthGuard: Redirecting to correct dashboard (${userType}):`, dashboardUrl);
         window.location.href = dashboardUrl;
     }
@@ -283,17 +286,15 @@ class AuthGuard {
     async logout() {
         try {
             console.log('🚪 AuthGuard: Logging out user...');
-            
+
             if (typeof bvesterAPI !== 'undefined') {
                 await bvesterAPI.logout();
-            } else if (typeof firebase !== 'undefined' && firebase.auth) {
-                await firebase.auth().signOut();
             }
-            
+
             // Clear stored data
             this.currentUser = null;
             this.isInitialized = false;
-            
+
             // Clear session storage
             try {
                 sessionStorage.clear();
@@ -301,10 +302,10 @@ class AuthGuard {
             } catch (error) {
                 console.warn('⚠️ Could not clear storage:', error);
             }
-            
+
             console.log('✅ AuthGuard: User logged out successfully');
             window.location.href = 'index.html';
-            
+
         } catch (error) {
             console.error('❌ AuthGuard: Logout failed:', error);
             // Force redirect even if logout fails
@@ -323,22 +324,24 @@ class AuthGuard {
      * Check if user has specific permission
      */
     hasPermission(permission) {
-        if (!this.currentUser || !this.currentUser.bvesterData) {
+        if (!this.currentUser) {
             return false;
         }
-        
-        const userType = this.currentUser.bvesterData.userType;
-        const kycStatus = this.currentUser.bvesterData.kycStatus;
-        
+
+        const userType = this.currentUser.userType;
+        const kycStatus = this.currentUser.kycStatus || 'pending';
+
         switch (permission) {
             case 'make_investment':
                 return userType === 'investor' && kycStatus === 'verified';
             case 'create_campaign':
-                return (userType === 'business' || userType === 'startup') && kycStatus === 'verified';
+                return (userType === 'business' || userType === 'startup' || userType === 'sme') && kycStatus === 'verified';
             case 'view_financials':
-                return userType === 'investor' || userType === 'business';
+                return userType === 'investor' || userType === 'business' || userType === 'sme';
             case 'admin_access':
                 return userType === 'admin';
+            case 'premium_features':
+                return userType === 'premium' || userType === 'admin';
             default:
                 return false;
         }
@@ -377,12 +380,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const currentPage = window.location.pathname.split('/').pop();
     const protectedRoutes = {
         'investor-dashboard.html': { userType: 'investor', requireEmailVerification: false },
-        'startup-dashboard.html': { userType: ['business', 'startup'], requireEmailVerification: false },
+        'sme-dashboard.html': { userType: ['business', 'startup', 'sme'], requireEmailVerification: false },
+        'premium-dashboard.html': { userType: 'premium', requireEmailVerification: false },
         'portfolio-management.html': { userType: 'investor', requireEmailVerification: false },
-        'business-analytics.html': { userType: ['business', 'startup'], requireEmailVerification: false },
+        'business-analytics.html': { userType: ['business', 'startup', 'sme'], requireEmailVerification: false },
         'investment-opportunities.html': { userType: null, requireEmailVerification: false },
-        'financial-records.html': { userType: ['business', 'startup'], requireEmailVerification: false },
-        'message-investors.html': { userType: ['business', 'startup'], requireEmailVerification: false }
+        'financial-records.html': { userType: ['business', 'startup', 'sme'], requireEmailVerification: false },
+        'message-investors.html': { userType: ['business', 'startup', 'sme'], requireEmailVerification: false }
     };
     
     if (protectedRoutes[currentPage]) {

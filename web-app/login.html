@@ -65,6 +65,7 @@
         </div>
     </div>
 
+    <script src="js/bvester-api.js"></script>
     <script>
         // Demo accounts for live testing
         const demoAccounts = {
@@ -103,42 +104,83 @@
         
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const email = document.getElementById('email').value;
+
+            const email = document.getElementById('email').value.trim().toLowerCase();
             const password = document.getElementById('password').value;
             const messageDiv = document.getElementById('message');
             const loginBtn = document.getElementById('loginBtn');
-            
+
+            // Validate input
+            if (!email || !password) {
+                messageDiv.innerHTML = '<div class="error">Please enter both email and password.</div>';
+                return;
+            }
+
+            if (!BvesterAPI.validateEmail(email)) {
+                messageDiv.innerHTML = '<div class="error">Please enter a valid email address.</div>';
+                return;
+            }
+
             loginBtn.disabled = true;
             loginBtn.textContent = 'Logging in...';
-            
-            // Demo mode - check against demo accounts
-            if (demoAccounts[email] && demoAccounts[email].password === password) {
-                const user = demoAccounts[email];
-                messageDiv.innerHTML = '<div class="success">Login successful! Redirecting...</div>';
-                
-                // Store user info
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userType', user.userType);
-                localStorage.setItem('userName', user.name);
-                localStorage.setItem('userEmail', email);
-                
-                // Redirect based on user type
-                setTimeout(() => {
-                    if (user.userType === 'investor') {
-                        window.location.href = 'investor-dashboard.html';
-                    } else if (user.userType === 'sme') {
-                        window.location.href = 'sme-dashboard.html';
+            messageDiv.innerHTML = '';
+
+            try {
+                let result;
+
+                // Try real API login first
+                try {
+                    result = await bvesterAPI.login(email, password);
+                    messageDiv.innerHTML = '<div class="success">Login successful! Redirecting...</div>';
+                } catch (apiError) {
+                    console.warn('API login failed, trying demo mode:', apiError);
+
+                    // Check against demo accounts
+                    if (demoAccounts[email] && demoAccounts[email].password === password) {
+                        result = bvesterAPI.loginDemo(email, password);
+                        messageDiv.innerHTML = '<div class="success">Login successful! (Demo Mode) Redirecting...</div>';
                     } else {
-                        window.location.href = 'premium-dashboard.html';
+                        // Check for newly created demo account
+                        const newAccount = localStorage.getItem('newDemoAccount');
+                        if (newAccount) {
+                            const account = JSON.parse(newAccount);
+                            if (account.email === email && account.password === password) {
+                                result = bvesterAPI.loginDemo(email, password);
+                                messageDiv.innerHTML = '<div class="success">Login successful! (Demo Mode) Redirecting...</div>';
+                            } else {
+                                throw new Error('Invalid email or password. Please use demo accounts or create a new account.');
+                            }
+                        } else {
+                            throw new Error('Invalid email or password. Please use demo accounts or create a new account.');
+                        }
                     }
-                }, 1500);
-            } else {
-                messageDiv.innerHTML = '<div class="error">Invalid email or password. Please use demo accounts above.</div>';
+                }
+
+                if (result && result.success) {
+                    const user = result.user;
+
+                    // Redirect based on user type
+                    setTimeout(() => {
+                        if (user.userType === 'investor') {
+                            window.location.href = 'investor-dashboard.html';
+                        } else if (user.userType === 'sme') {
+                            window.location.href = 'sme-dashboard.html';
+                        } else if (user.userType === 'premium') {
+                            window.location.href = 'premium-dashboard.html';
+                        } else {
+                            window.location.href = 'sme-dashboard.html';
+                        }
+                    }, 1500);
+                } else {
+                    throw new Error('Login failed. Please try again.');
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                messageDiv.innerHTML = `<div class="error">${error.message}</div>`;
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
             }
-            
-            loginBtn.disabled = false;
-            loginBtn.textContent = 'Login';
         });
         
         // Auto-fill demo credentials on click

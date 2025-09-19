@@ -44,8 +44,8 @@
             
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required minlength="6">
-                <div class="account-type-info">Must be at least 6 characters</div>
+                <input type="password" id="password" name="password" required minlength="8">
+                <div class="account-type-info">Must be at least 8 characters with uppercase, lowercase, number, and special character</div>
             </div>
             
             <div class="form-group">
@@ -70,8 +70,8 @@
         </div>
     </div>
 
+    <script src="js/bvester-api.js"></script>
     <script>
-        const API_BASE = 'https://bvester-backend-env.eba-iym3cqmz.eu-west-2.elasticbeanstalk.com';
         
         // Update info text based on selected user type
         document.getElementById('userType').addEventListener('change', function() {
@@ -95,41 +95,64 @@
         
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim().toLowerCase(),
                 password: document.getElementById('password').value,
                 userType: document.getElementById('userType').value
             };
-            
+
             const messageDiv = document.getElementById('message');
             const signupBtn = document.getElementById('signupBtn');
-            
+
+            // Validate form data
+            const validation = validateSignupForm(formData);
+            if (!validation.isValid) {
+                messageDiv.innerHTML = `<div class="error">${validation.errors.join('<br>')}</div>`;
+                return;
+            }
+
             signupBtn.disabled = true;
             signupBtn.textContent = 'Creating Account...';
-            
-            // Demo mode - simulate successful registration
-            if (formData.name && formData.email && formData.password.length >= 6 && formData.userType) {
-                messageDiv.innerHTML = '<div class="success">Account created successfully! Setting up your dashboard...</div>';
+            messageDiv.innerHTML = '';
 
-                // Store the new account info for demo purposes
-                const newAccount = {
-                    name: formData.name,
-                    email: formData.email,
-                    userType: formData.userType,
-                    password: formData.password
-                };
+            try {
+                // Try real API registration first
+                let result;
+                try {
+                    result = await bvesterAPI.register(formData);
+                    messageDiv.innerHTML = '<div class="success">Account created successfully! Setting up your dashboard...</div>';
+                } catch (apiError) {
+                    console.warn('API registration failed, falling back to demo mode:', apiError);
 
-                // Store in localStorage for demo
-                localStorage.setItem('newDemoAccount', JSON.stringify(newAccount));
+                    // Fallback to demo mode
+                    messageDiv.innerHTML = '<div class="success">Account created successfully! (Demo Mode) Setting up your dashboard...</div>';
 
-                // Automatically log the user in
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userType', formData.userType);
-                localStorage.setItem('userName', formData.name);
-                localStorage.setItem('userEmail', formData.email);
-                localStorage.setItem('userTier', 'starter'); // New users start with free tier
+                    // Store the new account info for demo purposes
+                    const newAccount = {
+                        name: formData.name,
+                        email: formData.email,
+                        userType: formData.userType,
+                        password: formData.password
+                    };
+                    localStorage.setItem('newDemoAccount', JSON.stringify(newAccount));
+
+                    // Simulate successful registration
+                    result = {
+                        success: true,
+                        user: {
+                            id: 'demo_' + Date.now(),
+                            name: formData.name,
+                            email: formData.email,
+                            userType: formData.userType,
+                            isDemo: true
+                        }
+                    };
+
+                    // Set demo auth data
+                    bvesterAPI.setAuthData('demo_token_' + Date.now(), result.user);
+                }
 
                 // Redirect to appropriate dashboard based on user type
                 setTimeout(() => {
@@ -147,16 +170,51 @@
                             window.location.href = 'sme-dashboard.html';
                     }
                 }, 2000);
-            } else {
-                let errorMsg = 'Please fill all fields correctly.';
-                if (formData.password.length < 6) {
-                    errorMsg = 'Password must be at least 6 characters.';
-                }
-                messageDiv.innerHTML = `<div class="error">${errorMsg}</div>`;
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                messageDiv.innerHTML = `<div class="error">${error.message}</div>`;
                 signupBtn.disabled = false;
                 signupBtn.textContent = 'Create Account';
             }
         });
+
+        // Form validation function
+        function validateSignupForm(formData) {
+            const errors = [];
+
+            // Name validation
+            if (!formData.name || formData.name.length < 2) {
+                errors.push('Name must be at least 2 characters long');
+            }
+
+            // Email validation
+            if (!formData.email) {
+                errors.push('Email is required');
+            } else if (!BvesterAPI.validateEmail(formData.email)) {
+                errors.push('Please enter a valid email address');
+            }
+
+            // Password validation
+            if (!formData.password) {
+                errors.push('Password is required');
+            } else {
+                const passwordValidation = BvesterAPI.validatePassword(formData.password);
+                if (!passwordValidation.isValid) {
+                    errors.push(...passwordValidation.errors);
+                }
+            }
+
+            // User type validation
+            if (!formData.userType) {
+                errors.push('Please select an account type');
+            }
+
+            return {
+                isValid: errors.length === 0,
+                errors: errors
+            };
+        }
     </script>
 </body>
 </html>
