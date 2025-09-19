@@ -1,0 +1,1 @@
+- the current homepage is the approved homepage for all fixes and improvements. never upload/deploy/use any different homepage/index file until i speciaflly instruct you to or i give you the approval to

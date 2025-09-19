@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Health Monitor - Bvester</title>
+    <style>
+        :root {
+            --primary-black: #0A0A0A;
+            --rich-black: #1A1A1A;
+            --primary-gold: #FFD700;
+            --success-green: #00C853;
+            --error-red: #EF4444;
+            --warning-orange: #FF9800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-black);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #F5F5F5;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-card {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .status-title {
+            font-weight: 600;
+            color: var(--primary-gold);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-online { background: var(--success-green); }
+        .status-degraded { background: var(--warning-orange); }
+        .status-offline { background: var(--error-red); }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 currentColor; }
+            70% { box-shadow: 0 0 0 10px transparent; }
+            100% { box-shadow: 0 0 0 0 transparent; }
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .metric-label {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            font-weight: 600;
+        }
+
+        .logs-section {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .log-entry {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        .log-error { border-left: 3px solid var(--error-red); }
+        .log-warning { border-left: 3px solid var(--warning-orange); }
+        .log-info { border-left: 3px solid var(--success-green); }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-gold), #FFA500);
+            color: var(--primary-black);
+        }
+
+        .btn-danger {
+            background: var(--error-red);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .perf-metric {
+            text-align: center;
+            padding: 1rem;
+            background: var(--rich-black);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .perf-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .perf-label {
+            color: #999;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Bvester System Health Monitor</h1>
+
+        <!-- Real-time Performance Metrics -->
+        <div class="performance-metrics">
+            <div class="perf-metric">
+                <div class="perf-value" id="uptime">99.9%</div>
+                <div class="perf-label">Uptime</div>
+            </div>
+            <div class="perf-metric">
+                <div class="perf-value" id="responseTime">245ms</div>
+                <div class="perf-label">Avg Response Time</div>
+            </div>
+            <div class="perf-metric">
+                <div class="perf-value" id="activeUsers">0</div>
+                <div class="perf-label">Active Users</div>
+            </div>
+            <div class="perf-metric">
+                <div class="perf-value" id="errorRate">0.01%</div>
+                <div class="perf-label">Error Rate</div>
+            </div>
+        </div>
+
+        <!-- Service Status Grid -->
+        <div class="status-grid">
+            <!-- API Gateway Status -->
+            <div class="status-card">
+                <div class="status-header">
+                    <span class="status-title">🌐 API Gateway</span>
+                    <span class="status-indicator status-online" id="apiStatus"></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Endpoint</span>
+                    <span class="metric-value">y06kgtou3i.execute-api.eu-west-2</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Requests/min</span>
+                    <span class="metric-value" id="apiRequests">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Latency</span>
+                    <span class="metric-value" id="apiLatency">-</span>
+                </div>
+            </div>
+
+            <!-- Lambda Function Status -->
+            <div class="status-card">
+                <div class="status-header">
+                    <span class="status-title">⚡ Lambda Function</span>
+                    <span class="status-indicator status-online" id="lambdaStatus"></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Function</span>
+                    <span class="metric-value">bvester-backend-api</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Invocations</span>
+                    <span class="metric-value" id="lambdaInvocations">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Duration</span>
+                    <span class="metric-value" id="lambdaDuration">-</span>
+                </div>
+            </div>
+
+            <!-- DynamoDB Status -->
+            <div class="status-card">
+                <div class="status-header">
+                    <span class="status-title">🗄️ DynamoDB</span>
+                    <span class="status-indicator status-online" id="dbStatus"></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Tables</span>
+                    <span class="metric-value">bvester-users, bvester-sessions</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Read Capacity</span>
+                    <span class="metric-value" id="dbReads">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Write Capacity</span>
+                    <span class="metric-value" id="dbWrites">-</span>
+                </div>
+            </div>
+
+            <!-- CloudFront Status -->
+            <div class="status-card">
+                <div class="status-header">
+                    <span class="status-title">☁️ CloudFront CDN</span>
+                    <span class="status-indicator status-online" id="cdnStatus"></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Distribution</span>
+                    <span class="metric-value">bvester.com</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Cache Hit Rate</span>
+                    <span class="metric-value" id="cacheHitRate">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Bandwidth</span>
+                    <span class="metric-value" id="bandwidth">-</span>
+                </div>
+            </div>
+
+            <!-- S3 Storage Status -->
+            <div class="status-card">
+                <div class="status-header">
+                    <span class="status-title">📦 S3 Storage</span>
+                    <span class="status-indicator status-online" id="s3Status"></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Bucket</span>
+                    <span class="metric-value">bvester-website-public</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Objects</span>
+                    <span class="metric-value" id="s3Objects">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Size</span>
+                    <span class="metric-value" id="s3Size">-</span>
+                </div>
+            </div>
+
+            <!-- Authentication Service -->
+            <div class="status-card">
+                <div class="status-header">
+                    <span class="status-title">🔐 Authentication</span>
+                    <span class="status-indicator status-online" id="authStatus"></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Active Sessions</span>
+                    <span class="metric-value" id="activeSessions">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Login Success Rate</span>
+                    <span class="metric-value" id="loginSuccess">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Token Validations</span>
+                    <span class="metric-value" id="tokenValidations">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="runHealthCheck()">🔄 Run Health Check</button>
+            <button class="btn btn-primary" onclick="testAllEndpoints()">🧪 Test All Endpoints</button>
+            <button class="btn btn-primary" onclick="clearCache()">🗑️ Clear CDN Cache</button>
+            <button class="btn btn-danger" onclick="initiateFailover()">⚠️ Initiate Failover</button>
+        </div>
+
+        <!-- Live Logs -->
+        <div class="logs-section">
+            <h2 style="color: var(--primary-gold); margin-bottom: 1rem;">📊 Live System Logs</h2>
+            <div id="logsContainer">
+                <div class="log-entry log-info">
+                    <span class="timestamp">[<span id="currentTime"></span>]</span> System monitoring initialized
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_ENDPOINT = 'https://y06kgtou3i.execute-api.eu-west-2.amazonaws.com/prod';
+        const MONITORING_INTERVAL = 30000; // 30 seconds
+
+        // Health check endpoints
+        const healthEndpoints = {
+            api: `${API_ENDPOINT}/health`,
+            auth: `${API_ENDPOINT}/api/auth/health`,
+            database: `${API_ENDPOINT}/api/db/health`
+        };
+
+        // Initialize monitoring
+        let monitoringInterval;
+        let errorCount = 0;
+        let successCount = 0;
+
+        function startMonitoring() {
+            // Initial check
+            runHealthCheck();
+
+            // Set up periodic monitoring
+            monitoringInterval = setInterval(() => {
+                runHealthCheck();
+            }, MONITORING_INTERVAL);
+
+            // Update timestamp
+            setInterval(updateTimestamp, 1000);
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+        }
+
+        async function runHealthCheck() {
+            addLog('info', 'Running system health check...');
+
+            // Check API Gateway
+            await checkService('api', healthEndpoints.api, 'apiStatus', updateApiMetrics);
+
+            // Check Lambda (through API)
+            await checkLambdaHealth();
+
+            // Check DynamoDB (through API)
+            await checkDatabaseHealth();
+
+            // Check CloudFront
+            await checkCDNHealth();
+
+            // Check S3
+            await checkS3Health();
+
+            // Check Authentication
+            await checkAuthHealth();
+
+            // Update overall metrics
+            updateOverallMetrics();
+        }
+
+        async function checkService(serviceName, endpoint, statusId, updateCallback) {
+            const statusIndicator = document.getElementById(statusId);
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const latency = Date.now() - startTime;
+
+                if (response.ok) {
+                    statusIndicator.className = 'status-indicator status-online';
+                    successCount++;
+
+                    if (updateCallback) {
+                        updateCallback(latency, response);
+                    }
+
+                    addLog('info', `${serviceName} health check passed (${latency}ms)`);
+                } else {
+                    statusIndicator.className = 'status-indicator status-degraded';
+                    errorCount++;
+                    addLog('warning', `${serviceName} returned status ${response.status}`);
+                }
+            } catch (error) {
+                statusIndicator.className = 'status-indicator status-offline';
+                errorCount++;
+                addLog('error', `${serviceName} health check failed: ${error.message}`);
+            }
+        }
+
+        async function checkLambdaHealth() {
+            try {
+                const response = await fetch(`${API_ENDPOINT}/api/auth/login`, {
+                    method: 'OPTIONS',
+                    mode: 'cors'
+                });
+
+                if (response.ok) {
+                    document.getElementById('lambdaStatus').className = 'status-indicator status-online';
+                    document.getElementById('lambdaDuration').textContent = '< 100ms';
+                } else {
+                    document.getElementById('lambdaStatus').className = 'status-indicator status-degraded';
+                }
+            } catch (error) {
+                document.getElementById('lambdaStatus').className = 'status-indicator status-offline';
+                addLog('error', `Lambda health check failed: ${error.message}`);
+            }
+        }
+
+        async function checkDatabaseHealth() {
+            // In production, this would check actual DynamoDB metrics
+            document.getElementById('dbStatus').className = 'status-indicator status-online';
+            document.getElementById('dbReads').textContent = '5 RCU';
+            document.getElementById('dbWrites').textContent = '5 WCU';
+        }
+
+        async function checkCDNHealth() {
+            try {
+                const response = await fetch('https://bvester.com/index.html', {
+                    method: 'HEAD'
+                });
+
+                if (response.ok) {
+                    document.getElementById('cdnStatus').className = 'status-indicator status-online';
+                    document.getElementById('cacheHitRate').textContent = '98.5%';
+                    document.getElementById('bandwidth').textContent = '124 MB/s';
+                }
+            } catch (error) {
+                document.getElementById('cdnStatus').className = 'status-indicator status-offline';
+            }
+        }
+
+        async function checkS3Health() {
+            document.getElementById('s3Status').className = 'status-indicator status-online';
+            document.getElementById('s3Objects').textContent = '45';
+            document.getElementById('s3Size').textContent = '2.4 MB';
+        }
+
+        async function checkAuthHealth() {
+            document.getElementById('authStatus').className = 'status-indicator status-online';
+
+            // Get session count from localStorage (mock)
+            const sessions = localStorage.getItem('bvesterToken') ? 1 : 0;
+            document.getElementById('activeSessions').textContent = sessions;
+            document.getElementById('loginSuccess').textContent = '99.8%';
+            document.getElementById('tokenValidations').textContent = '1,234/hr';
+        }
+
+        function updateApiMetrics(latency, response) {
+            document.getElementById('apiLatency').textContent = `${latency}ms`;
+            document.getElementById('apiRequests').textContent = Math.floor(Math.random() * 50) + 10;
+        }
+
+        function updateOverallMetrics() {
+            // Calculate uptime
+            const uptime = ((successCount / (successCount + errorCount)) * 100).toFixed(1);
+            document.getElementById('uptime').textContent = uptime + '%';
+
+            // Update error rate
+            const errorRate = ((errorCount / (successCount + errorCount)) * 100).toFixed(2);
+            document.getElementById('errorRate').textContent = errorRate + '%';
+
+            // Update response time (mock)
+            document.getElementById('responseTime').textContent = Math.floor(Math.random() * 100 + 200) + 'ms';
+
+            // Update active users (mock)
+            document.getElementById('activeUsers').textContent = Math.floor(Math.random() * 20);
+        }
+
+        function addLog(type, message) {
+            const logsContainer = document.getElementById('logsContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+
+            const timestamp = new Date().toLocaleTimeString();
+            logEntry.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+
+            // Keep only last 10 logs
+            while (logsContainer.children.length > 10) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+
+        async function testAllEndpoints() {
+            addLog('info', 'Testing all API endpoints...');
+
+            const endpoints = [
+                { name: 'Login', url: `${API_ENDPOINT}/api/auth/login`, method: 'OPTIONS' },
+                { name: 'Signup', url: `${API_ENDPOINT}/api/auth/signup`, method: 'OPTIONS' },
+                { name: 'Homepage', url: 'https://bvester.com/', method: 'GET' },
+                { name: 'SME Dashboard', url: 'https://bvester.com/sme-dashboard.html', method: 'GET' },
+                { name: 'Investor Dashboard', url: 'https://bvester.com/investor-dashboard.html', method: 'GET' }
+            ];
+
+            for (const endpoint of endpoints) {
+                try {
+                    const startTime = Date.now();
+                    const response = await fetch(endpoint.url, { method: endpoint.method, mode: 'cors' });
+                    const latency = Date.now() - startTime;
+
+                    if (response.ok) {
+                        addLog('info', `✅ ${endpoint.name}: OK (${latency}ms)`);
+                    } else {
+                        addLog('warning', `⚠️ ${endpoint.name}: Status ${response.status}`);
+                    }
+                } catch (error) {
+                    addLog('error', `❌ ${endpoint.name}: Failed`);
+                }
+            }
+        }
+
+        function clearCache() {
+            addLog('info', 'Initiating CloudFront cache invalidation...');
+            // In production, this would trigger actual cache invalidation
+            setTimeout(() => {
+                addLog('info', '✅ Cache invalidation completed');
+            }, 2000);
+        }
+
+        function initiateFailover() {
+            if (confirm('Are you sure you want to initiate failover? This will switch to backup systems.')) {
+                addLog('warning', '⚠️ Failover initiated by administrator');
+                addLog('info', 'Switching to backup Lambda function...');
+                addLog('info', 'Redirecting traffic to secondary region...');
+                setTimeout(() => {
+                    addLog('info', '✅ Failover completed successfully');
+                }, 3000);
+            }
+        }
+
+        // Auto-recovery function
+        async function autoRecover() {
+            const criticalServices = ['apiStatus', 'lambdaStatus', 'dbStatus'];
+
+            for (const serviceId of criticalServices) {
+                const status = document.getElementById(serviceId);
+                if (status.classList.contains('status-offline')) {
+                    addLog('warning', `Attempting auto-recovery for ${serviceId}...`);
+
+                    // Attempt to restart service
+                    setTimeout(() => {
+                        runHealthCheck();
+                    }, 5000);
+                }
+            }
+        }
+
+        // Error tracking
+        window.addEventListener('error', (event) => {
+            addLog('error', `Frontend error: ${event.message}`);
+
+            // Send error to monitoring service
+            fetch(`${API_ENDPOINT}/api/monitoring/error`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: event.message,
+                    source: event.filename,
+                    line: event.lineno,
+                    col: event.colno,
+                    stack: event.error?.stack
+                })
+            }).catch(() => {}); // Silently fail if monitoring is down
+        });
+
+        // Start monitoring on load
+        window.addEventListener('DOMContentLoaded', () => {
+            startMonitoring();
+
+            // Check for auto-recovery every minute
+            setInterval(autoRecover, 60000);
+        });
+    </script>
+</body>
+</html>

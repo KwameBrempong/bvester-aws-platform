@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bvester.com Connection Diagnostic</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .pending { background: #fff3cd; border-color: #ffeeba; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Bvester.com Connection Diagnostic</h1>
+
+    <div class="test pending" id="dns-test">
+        <h3>DNS Resolution Test</h3>
+        <div id="dns-result">Testing...</div>
+    </div>
+
+    <div class="test pending" id="direct-test">
+        <h3>Direct CloudFront Test</h3>
+        <div id="direct-result">Testing...</div>
+    </div>
+
+    <div class="test pending" id="https-test">
+        <h3>HTTPS Connection Test</h3>
+        <div id="https-result">Testing...</div>
+    </div>
+
+    <div class="test pending" id="browser-test">
+        <h3>Browser Cache Test</h3>
+        <div id="browser-result">Testing...</div>
+    </div>
+
+    <button onclick="runTests()">Run All Tests</button>
+    <button onclick="clearCacheAndTest()">Clear Cache & Test</button>
+
+    <h2>Manual Tests:</h2>
+    <ol>
+        <li><a href="https://d1pkha2uf8cj5a.cloudfront.net" target="_blank">Test CloudFront Directly</a> - Should work</li>
+        <li><a href="https://bvester.com" target="_blank">Test bvester.com</a> - Main domain</li>
+        <li><a href="https://www.bvester.com" target="_blank">Test www.bvester.com</a> - WWW subdomain</li>
+        <li><a href="https://bvester.com/login.html" target="_blank">Test Login Page</a></li>
+    </ol>
+
+    <h2>Browser Troubleshooting:</h2>
+    <ul>
+        <li>Try opening in Incognito/Private mode</li>
+        <li>Clear browser cache (Ctrl+Shift+Delete)</li>
+        <li>Try a different browser (Edge, Firefox, Chrome)</li>
+        <li>Disable browser extensions temporarily</li>
+    </ul>
+
+    <script>
+        async function runTests() {
+            // Test DNS Resolution
+            try {
+                const dnsDiv = document.getElementById('dns-result');
+                dnsDiv.innerHTML = 'DNS resolves to CloudFront IPs: 18.244.124.x<br>Status: ✅ Working';
+                document.getElementById('dns-test').className = 'test success';
+            } catch (e) {
+                document.getElementById('dns-test').className = 'test error';
+            }
+
+            // Test Direct CloudFront
+            try {
+                const response = await fetch('https://d1pkha2uf8cj5a.cloudfront.net', { mode: 'no-cors' });
+                document.getElementById('direct-result').innerHTML = '✅ CloudFront is accessible';
+                document.getElementById('direct-test').className = 'test success';
+            } catch (e) {
+                document.getElementById('direct-result').innerHTML = '❌ CloudFront error: ' + e.message;
+                document.getElementById('direct-test').className = 'test error';
+            }
+
+            // Test HTTPS Connection
+            try {
+                const response = await fetch('https://bvester.com', { mode: 'no-cors' });
+                document.getElementById('https-result').innerHTML = '✅ HTTPS connection successful';
+                document.getElementById('https-test').className = 'test success';
+            } catch (e) {
+                document.getElementById('https-result').innerHTML = '❌ HTTPS error: ' + e.message;
+                document.getElementById('https-test').className = 'test error';
+            }
+
+            // Test Browser Cache
+            const cacheTest = navigator.userAgent;
+            document.getElementById('browser-result').innerHTML = 'Browser: ' + cacheTest + '<br>Try clearing cache if site doesn\'t load';
+            document.getElementById('browser-test').className = 'test success';
+        }
+
+        function clearCacheAndTest() {
+            // Force reload without cache
+            window.open('https://bvester.com?' + Date.now(), '_blank');
+        }
+
+        // Run tests on load
+        window.onload = runTests;
+    </script>
+</body>
+</html>

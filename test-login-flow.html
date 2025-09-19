@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bvester Login Flow Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2E7D8F;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #2E7D8F;
+        }
+        .credentials {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .credentials code {
+            background: #2E7D8F;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        button {
+            background: #2E7D8F;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1d5a6b;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        a {
+            color: #2E7D8F;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Bvester Login Flow Test</h1>
+
+        <div class="test-section">
+            <h2>✅ Deployed Dashboard Pages:</h2>
+            <ul>
+                <li>✅ <a href="https://bvester.com/investor-dashboard.html" target="_blank">Investor Dashboard</a></li>
+                <li>✅ <a href="https://bvester.com/sme-dashboard.html" target="_blank">SME Dashboard</a></li>
+                <li>✅ <a href="https://bvester.com/premium-dashboard.html" target="_blank">Premium Dashboard</a></li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Demo Credentials:</h2>
+
+            <div class="credentials">
+                <strong>SME Owner Account:</strong><br>
+                Email: <code>sme@demo.com</code><br>
+                Password: <code>Demo123!</code><br>
+                → Redirects to: SME Dashboard
+            </div>
+
+            <div class="credentials">
+                <strong>Investor Account:</strong><br>
+                Email: <code>investor@demo.com</code><br>
+                Password: <code>Demo123!</code><br>
+                → Redirects to: Investor Dashboard
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test the Login Flow:</h2>
+            <p>Click the button below to open the login page and test with demo credentials:</p>
+            <button onclick="window.open('https://bvester.com/login.html', '_blank')">
+                Open Login Page
+            </button>
+            <button onclick="testDirectLogin('sme')">
+                Test SME Login
+            </button>
+            <button onclick="testDirectLogin('investor')">
+                Test Investor Login
+            </button>
+
+            <div id="status" class="status"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Troubleshooting:</h2>
+            <p>If login doesn't redirect to dashboard:</p>
+            <ol>
+                <li>Clear browser cache (Ctrl+Shift+Delete)</li>
+                <li>Try in Incognito/Private mode</li>
+                <li>Check browser console for errors (F12)</li>
+                <li>Wait 1-2 minutes for CloudFront cache to update</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>✨ What Should Happen:</h2>
+            <ol>
+                <li>Enter demo credentials</li>
+                <li>Click Login button</li>
+                <li>See "Login successful!" message</li>
+                <li>Wait 1.5 seconds</li>
+                <li>Automatically redirect to appropriate dashboard</li>
+                <li>Dashboard shows user data and metrics</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function testDirectLogin(userType) {
+            const statusDiv = document.getElementById('status');
+
+            if (userType === 'sme') {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '✅ SME Login Test:<br>' +
+                    'Email: sme@demo.com<br>' +
+                    'Password: Demo123!<br>' +
+                    'Expected: Redirect to SME Dashboard<br>' +
+                    '<a href="https://bvester.com/login.html" target="_blank">→ Try it now</a>';
+            } else if (userType === 'investor') {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '✅ Investor Login Test:<br>' +
+                    'Email: investor@demo.com<br>' +
+                    'Password: Demo123!<br>' +
+                    'Expected: Redirect to Investor Dashboard<br>' +
+                    '<a href="https://bvester.com/login.html" target="_blank">→ Try it now</a>';
+            }
+        }
+
+        // Check if dashboards are accessible
+        async function checkDashboards() {
+            console.log('Checking dashboard availability...');
+            const dashboards = [
+                'https://bvester.com/investor-dashboard.html',
+                'https://bvester.com/sme-dashboard.html',
+                'https://bvester.com/premium-dashboard.html'
+            ];
+
+            for (let url of dashboards) {
+                try {
+                    await fetch(url, { mode: 'no-cors' });
+                    console.log('✅ Accessible:', url);
+                } catch (e) {
+                    console.log('❌ Error accessing:', url, e);
+                }
+            }
+        }
+
+        // Run check on load
+        window.onload = checkDashboards;
+    </script>
+</body>
+</html>

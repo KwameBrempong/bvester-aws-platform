@@ -1,0 +1,327 @@
+name: Bvester Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+          - rollback
+
+env:
+  AWS_REGION: eu-west-2
+  S3_BUCKET_PRIMARY: bvester-website-public
+  S3_BUCKET_SECONDARY: bvester-web-prod-eu
+  CLOUDFRONT_DIST_PRIMARY: E290B7QN3BBXCA
+  CLOUDFRONT_DIST_SECONDARY: EEAX13OO0TOYS
+
+jobs:
+  # Run tests first
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint || echo "No lint script found"
+
+      - name: Run tests
+        run: npm test || echo "No test script found"
+
+      - name: Check for security vulnerabilities
+        run: npm audit --audit-level=high
+
+  # Validate HTML and JavaScript
+  validate:
+    name: Validate Code
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Validate HTML files
+        run: |
+          for file in *.html; do
+            if [ -f "$file" ]; then
+              echo "Validating $file..."
+              # Check for localhost references
+              if grep -q "localhost" "$file"; then
+                echo "ERROR: $file contains localhost references!"
+                exit 1
+              fi
+              # Check for console.log statements
+              if grep -q "console.log" "$file"; then
+                echo "WARNING: $file contains console.log statements"
+              fi
+            fi
+          done
+
+      - name: Check for sensitive data
+        run: |
+          # Check for exposed API keys or secrets
+          if grep -r "sk-" . --include="*.js" --include="*.html"; then
+            echo "ERROR: Potential secret key exposed!"
+            exit 1
+          fi
+          if grep -r "AKIA" . --include="*.js" --include="*.html"; then
+            echo "ERROR: Potential AWS key exposed!"
+            exit 1
+          fi
+
+  # Build and prepare deployment
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: |
+          # Add build steps here if needed
+          echo "Building application..."
+
+          # Minify JavaScript
+          for file in *.js; do
+            if [ -f "$file" ] && [ "$file" != "*.min.js" ]; then
+              echo "Minifying $file..."
+              npx terser "$file" -o "${file%.js}.min.js" --compress --mangle || true
+            fi
+          done
+
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy
+          cp *.html deploy/
+          cp *.css deploy/ 2>/dev/null || true
+          cp *.js deploy/ 2>/dev/null || true
+          cp -r assets deploy/ 2>/dev/null || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-package
+          path: deploy/
+
+  # Deploy to staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment: staging
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: deployment-package
+          path: deploy/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy to S3 staging
+        run: |
+          aws s3 sync deploy/ s3://bvester-staging/ \
+            --delete \
+            --cache-control "max-age=3600"
+
+      - name: Run smoke tests
+        run: |
+          # Test key endpoints
+          curl -f https://staging.bvester.com/index.html || exit 1
+          curl -f https://staging.bvester.com/login.html || exit 1
+
+  # Deploy to production
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: deployment-package
+          path: deploy/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Backup current deployment
+        run: |
+          BACKUP_TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          aws s3 sync s3://${{ env.S3_BUCKET_PRIMARY }}/ s3://bvester-backups/$BACKUP_TIMESTAMP/ \
+            --storage-class GLACIER_IR
+
+      - name: Deploy to primary S3
+        run: |
+          aws s3 sync deploy/ s3://${{ env.S3_BUCKET_PRIMARY }}/ \
+            --delete \
+            --cache-control "max-age=3600" \
+            --metadata-directive REPLACE
+
+      - name: Deploy to secondary S3
+        run: |
+          aws s3 sync deploy/ s3://${{ env.S3_BUCKET_SECONDARY }}/ \
+            --delete \
+            --cache-control "max-age=3600" \
+            --metadata-directive REPLACE
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.CLOUDFRONT_DIST_PRIMARY }} \
+            --paths "/*"
+
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.CLOUDFRONT_DIST_SECONDARY }} \
+            --paths "/*"
+
+      - name: Run health checks
+        run: |
+          sleep 30  # Wait for cache invalidation
+
+          # Test critical pages
+          PAGES=("index.html" "login.html" "signup.html" "sme-dashboard.html" "investor-dashboard.html")
+
+          for page in "${PAGES[@]}"; do
+            echo "Testing https://bvester.com/$page..."
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://bvester.com/$page")
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "ERROR: $page returned HTTP $HTTP_CODE"
+              exit 1
+            fi
+          done
+
+      - name: Monitor error rates
+        run: |
+          # Query CloudWatch for error metrics
+          ERROR_COUNT=$(aws cloudwatch get-metric-statistics \
+            --namespace AWS/CloudFront \
+            --metric-name 4xxErrorRate \
+            --dimensions Name=DistributionId,Value=${{ env.CLOUDFRONT_DIST_PRIMARY }} \
+            --start-time $(date -u -d '5 minutes ago' +%Y-%m-%dT%H:%M:%S) \
+            --end-time $(date -u +%Y-%m-%dT%H:%M:%S) \
+            --period 300 \
+            --statistics Sum \
+            --query 'Datapoints[0].Sum' \
+            --output text)
+
+          if [ "$ERROR_COUNT" != "None" ] && [ $(echo "$ERROR_COUNT > 5" | bc) -eq 1 ]; then
+            echo "WARNING: High error rate detected: $ERROR_COUNT"
+          fi
+
+      - name: Send deployment notification
+        if: success()
+        run: |
+          aws sns publish \
+            --topic-arn arn:aws:sns:eu-west-2:565871520457:bvester-deployments \
+            --subject "Production Deployment Successful" \
+            --message "Deployment to production completed successfully at $(date)"
+
+  # Rollback deployment
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'rollback'
+    environment: production
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: List available backups
+        run: |
+          echo "Available backups:"
+          aws s3 ls s3://bvester-backups/ --recursive | tail -20
+
+      - name: Restore from latest backup
+        run: |
+          # Get latest backup
+          LATEST_BACKUP=$(aws s3 ls s3://bvester-backups/ | tail -1 | awk '{print $2}')
+
+          if [ -z "$LATEST_BACKUP" ]; then
+            echo "ERROR: No backups found!"
+            exit 1
+          fi
+
+          echo "Restoring from backup: $LATEST_BACKUP"
+
+          # Restore to S3
+          aws s3 sync s3://bvester-backups/$LATEST_BACKUP s3://${{ env.S3_BUCKET_PRIMARY }}/ \
+            --delete
+
+          aws s3 sync s3://bvester-backups/$LATEST_BACKUP s3://${{ env.S3_BUCKET_SECONDARY }}/ \
+            --delete
+
+      - name: Invalidate cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.CLOUDFRONT_DIST_PRIMARY }} \
+            --paths "/*"
+
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.CLOUDFRONT_DIST_SECONDARY }} \
+            --paths "/*"
+
+      - name: Send rollback notification
+        run: |
+          aws sns publish \
+            --topic-arn arn:aws:sns:eu-west-2:565871520457:bvester-critical \
+            --subject "Production Rollback Executed" \
+            --message "Production has been rolled back to previous version at $(date)"

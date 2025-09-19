@@ -1,0 +1,290 @@
+{
+  "alarms": [
+    {
+      "name": "bvester-api-gateway-4xx-errors",
+      "description": "Alert when API Gateway 4XX errors exceed threshold",
+      "metric": {
+        "namespace": "AWS/ApiGateway",
+        "name": "4XXError",
+        "dimensions": [
+          {
+            "name": "ApiName",
+            "value": "bvester-api"
+          }
+        ]
+      },
+      "threshold": 10,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 2,
+      "period": 300,
+      "statistic": "Sum",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-alerts"],
+        "autoRecover": false
+      }
+    },
+    {
+      "name": "bvester-api-gateway-5xx-errors",
+      "description": "CRITICAL: API Gateway 5XX errors detected",
+      "metric": {
+        "namespace": "AWS/ApiGateway",
+        "name": "5XXError",
+        "dimensions": [
+          {
+            "name": "ApiName",
+            "value": "bvester-api"
+          }
+        ]
+      },
+      "threshold": 5,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 1,
+      "period": 60,
+      "statistic": "Sum",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-critical"],
+        "autoRecover": true,
+        "recoveryAction": "restart-lambda"
+      }
+    },
+    {
+      "name": "bvester-lambda-errors",
+      "description": "Lambda function errors detected",
+      "metric": {
+        "namespace": "AWS/Lambda",
+        "name": "Errors",
+        "dimensions": [
+          {
+            "name": "FunctionName",
+            "value": "bvester-backend-api"
+          }
+        ]
+      },
+      "threshold": 5,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 2,
+      "period": 300,
+      "statistic": "Average",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-alerts"],
+        "autoRecover": true
+      }
+    },
+    {
+      "name": "bvester-lambda-throttles",
+      "description": "Lambda function throttling detected",
+      "metric": {
+        "namespace": "AWS/Lambda",
+        "name": "Throttles",
+        "dimensions": [
+          {
+            "name": "FunctionName",
+            "value": "bvester-backend-api"
+          }
+        ]
+      },
+      "threshold": 1,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 1,
+      "period": 60,
+      "statistic": "Sum",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-critical"],
+        "autoRecover": true,
+        "recoveryAction": "increase-concurrency"
+      }
+    },
+    {
+      "name": "bvester-lambda-duration",
+      "description": "Lambda function running slow",
+      "metric": {
+        "namespace": "AWS/Lambda",
+        "name": "Duration",
+        "dimensions": [
+          {
+            "name": "FunctionName",
+            "value": "bvester-backend-api"
+          }
+        ]
+      },
+      "threshold": 3000,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 3,
+      "period": 300,
+      "statistic": "Average",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-alerts"]
+      }
+    },
+    {
+      "name": "bvester-dynamodb-throttles",
+      "description": "DynamoDB throttling detected",
+      "metric": {
+        "namespace": "AWS/DynamoDB",
+        "name": "UserErrors",
+        "dimensions": [
+          {
+            "name": "TableName",
+            "value": "bvester-users"
+          }
+        ]
+      },
+      "threshold": 5,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 2,
+      "period": 300,
+      "statistic": "Sum",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-alerts"],
+        "autoRecover": true,
+        "recoveryAction": "increase-capacity"
+      }
+    },
+    {
+      "name": "bvester-cloudfront-origin-latency",
+      "description": "CloudFront origin response slow",
+      "metric": {
+        "namespace": "AWS/CloudFront",
+        "name": "OriginLatency",
+        "dimensions": [
+          {
+            "name": "DistributionId",
+            "value": "E290B7QN3BBXCA"
+          }
+        ]
+      },
+      "threshold": 1000,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 3,
+      "period": 300,
+      "statistic": "Average",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-alerts"]
+      }
+    },
+    {
+      "name": "bvester-cloudfront-4xx-errors",
+      "description": "High 4XX error rate on CloudFront",
+      "metric": {
+        "namespace": "AWS/CloudFront",
+        "name": "4xxErrorRate",
+        "dimensions": [
+          {
+            "name": "DistributionId",
+            "value": "E290B7QN3BBXCA"
+          }
+        ]
+      },
+      "threshold": 5,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 2,
+      "period": 300,
+      "statistic": "Average",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-alerts"]
+      }
+    },
+    {
+      "name": "bvester-login-failure-rate",
+      "description": "High login failure rate detected",
+      "metric": {
+        "namespace": "Bvester/Authentication",
+        "name": "LoginFailures",
+        "dimensions": []
+      },
+      "threshold": 20,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 1,
+      "period": 300,
+      "statistic": "Sum",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-security"],
+        "autoRecover": false
+      }
+    },
+    {
+      "name": "bvester-concurrent-users",
+      "description": "High concurrent user load",
+      "metric": {
+        "namespace": "Bvester/Application",
+        "name": "ConcurrentUsers",
+        "dimensions": []
+      },
+      "threshold": 1000,
+      "comparisonOperator": "GreaterThanThreshold",
+      "evaluationPeriods": 2,
+      "period": 60,
+      "statistic": "Maximum",
+      "actions": {
+        "alarm": ["arn:aws:sns:eu-west-2:565871520457:bvester-scaling"],
+        "autoRecover": true,
+        "recoveryAction": "scale-up"
+      }
+    }
+  ],
+  "dashboards": {
+    "name": "Bvester-Production-Dashboard",
+    "widgets": [
+      {
+        "type": "metric",
+        "title": "API Gateway Requests",
+        "metrics": [
+          ["AWS/ApiGateway", "Count", {"stat": "Sum"}],
+          [".", "4XXError", {"stat": "Sum", "color": "#ff9900"}],
+          [".", "5XXError", {"stat": "Sum", "color": "#ff0000"}]
+        ]
+      },
+      {
+        "type": "metric",
+        "title": "Lambda Performance",
+        "metrics": [
+          ["AWS/Lambda", "Invocations", {"stat": "Sum"}],
+          [".", "Duration", {"stat": "Average"}],
+          [".", "Errors", {"stat": "Sum", "color": "#ff0000"}],
+          [".", "Throttles", {"stat": "Sum", "color": "#ff9900"}]
+        ]
+      },
+      {
+        "type": "metric",
+        "title": "DynamoDB Performance",
+        "metrics": [
+          ["AWS/DynamoDB", "ConsumedReadCapacityUnits", {"stat": "Sum"}],
+          [".", "ConsumedWriteCapacityUnits", {"stat": "Sum"}],
+          [".", "UserErrors", {"stat": "Sum", "color": "#ff0000"}],
+          [".", "SystemErrors", {"stat": "Sum", "color": "#ff0000"}]
+        ]
+      },
+      {
+        "type": "metric",
+        "title": "CloudFront Distribution",
+        "metrics": [
+          ["AWS/CloudFront", "Requests", {"stat": "Sum"}],
+          [".", "BytesDownloaded", {"stat": "Sum"}],
+          [".", "4xxErrorRate", {"stat": "Average", "color": "#ff9900"}],
+          [".", "5xxErrorRate", {"stat": "Average", "color": "#ff0000"}]
+        ]
+      }
+    ]
+  },
+  "autoRecovery": {
+    "enabled": true,
+    "actions": {
+      "restart-lambda": {
+        "description": "Restart Lambda function",
+        "script": "aws lambda update-function-configuration --function-name bvester-backend-api --description 'Auto-restart at $(date)'"
+      },
+      "increase-concurrency": {
+        "description": "Increase Lambda concurrent executions",
+        "script": "aws lambda put-function-concurrency --function-name bvester-backend-api --reserved-concurrent-executions 100"
+      },
+      "increase-capacity": {
+        "description": "Increase DynamoDB capacity",
+        "script": "aws dynamodb update-table --table-name bvester-users --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=10"
+      },
+      "scale-up": {
+        "description": "Scale up Lambda memory and timeout",
+        "script": "aws lambda update-function-configuration --function-name bvester-backend-api --memory-size 512 --timeout 30"
+      }
+    }
+  }
+}

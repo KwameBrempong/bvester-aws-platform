@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(do sed -i 's|https://[^/]*elasticbeanstalk\\.com|https://lh4wi733jhjrlpz76bbwezpuea0drqzq.lambda-url.eu-west-2.on.aws|g' \"$file\")",
+      "WebFetch(domain:lh4wi733jhjrlpz76bbwezpuea0drqzq.lambda-url.eu-west-2.on.aws)",
+      "Bash(for file in login.html signup.html)",
+      "Bash(do aws s3 cp s3://bvester-website-public/$file -)",
+      "Bash(for file in investor-dashboard.html sme-dashboard.html)",
+      "Bash(./fix-all-backend-urls.bat)",
+      "Bash(timeout:*)",
+      "Bash(git rm:*)",
+      "Bash(ROOT_ID=\"g6982kes7h\")",
+      "Bash(./setup-monitoring.sh:*)",
+      "Bash(./dynamodb-backup.sh:*)",
+      "Bash(xargs curl:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

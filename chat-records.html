@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice & Chat Records - Bvester</title>
+
+    <style>
+        :root {
+            --primary-black: #0A0A0A;
+            --rich-black: #1A1A1A;
+            --soft-black: #2A2A2A;
+            --primary-gold: #FFD700;
+            --secondary-gold: #FFA500;
+            --pure-white: #FFFFFF;
+            --off-white: #F5F5F5;
+            --dark-gray: #666666;
+            --success-green: #00C853;
+            --whatsapp-green: #25D366;
+            --whatsapp-dark: #128C7E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-black);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--off-white);
+        }
+
+        .header {
+            background: var(--rich-black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .chat-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            height: calc(100vh - 200px);
+        }
+
+        /* Conversations List */
+        .conversations-sidebar {
+            background: var(--rich-black);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .conversation-header {
+            background: var(--whatsapp-dark);
+            color: white;
+            padding: 1rem;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        .conversation-item {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .conversation-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .conversation-item.active {
+            background: rgba(37, 211, 102, 0.1);
+            border-left: 3px solid var(--whatsapp-green);
+        }
+
+        .conversation-title {
+            color: var(--primary-gold);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .conversation-preview {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-time {
+            color: var(--dark-gray);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            background: var(--rich-black);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: var(--whatsapp-dark);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><g fill="%23222" fill-opacity="0.3"><path d="M0 20h40v20H0z"/></g></svg>');
+        }
+
+        .message {
+            max-width: 70%;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            background: var(--whatsapp-green);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 0;
+        }
+
+        .message.received {
+            background: var(--soft-black);
+            color: var(--off-white);
+            border-bottom-left-radius: 0;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 0.25rem;
+        }
+
+        .voice-message {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--soft-black);
+            border-radius: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .voice-play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .voice-waveform {
+            flex: 1;
+            height: 30px;
+            background: linear-gradient(90deg,
+                var(--whatsapp-green) 10%, transparent 10%,
+                transparent 20%, var(--whatsapp-green) 20%,
+                var(--whatsapp-green) 30%, transparent 30%,
+                transparent 40%, var(--whatsapp-green) 40%,
+                var(--whatsapp-green) 50%, transparent 50%);
+            border-radius: 5px;
+            opacity: 0.3;
+        }
+
+        .voice-duration {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .message-input {
+            flex: 1;
+            background: var(--soft-black);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            color: var(--off-white);
+            padding: 0.75rem 1rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            resize: none;
+            min-height: 45px;
+            max-height: 120px;
+        }
+
+        .voice-record-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .voice-record-btn:hover {
+            background: var(--whatsapp-dark);
+            transform: scale(1.1);
+        }
+
+        .voice-record-btn.recording {
+            background: #e53e3e;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Summary Panel */
+        .summary-panel {
+            background: var(--rich-black);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .summary-title {
+            color: var(--primary-gold);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--soft-black);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .stat-label {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .quick-action-btn {
+            padding: 0.5rem 1rem;
+            background: var(--soft-black);
+            color: var(--off-white);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--whatsapp-green);
+            color: white;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+            }
+
+            .conversations-sidebar {
+                display: none;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>💬 Voice & Chat Records</h1>
+        <a href="#" class="back-btn" onclick="goBack()">← Back to Dashboard</a>
+    </header>
+
+    <div class="container">
+        <div class="chat-container">
+            <!-- Conversations Sidebar -->
+            <div class="conversations-sidebar">
+                <div class="conversation-header">
+                    📱 Business Records
+                </div>
+
+                <div class="conversation-item active" onclick="selectConversation('sales')">
+                    <div class="conversation-title">💰 Sales Records</div>
+                    <div class="conversation-preview">Sold 5 units of electronics...</div>
+                    <div class="conversation-time">Today, 2:30 PM</div>
+                </div>
+
+                <div class="conversation-item" onclick="selectConversation('expenses')">
+                    <div class="conversation-title">💸 Expenses</div>
+                    <div class="conversation-preview">Office supplies purchase...</div>
+                    <div class="conversation-time">Today, 11:45 AM</div>
+                </div>
+
+                <div class="conversation-item" onclick="selectConversation('inventory')">
+                    <div class="conversation-title">📦 Inventory</div>
+                    <div class="conversation-preview">Received 20 new items...</div>
+                    <div class="conversation-time">Yesterday</div>
+                </div>
+
+                <div class="conversation-item" onclick="selectConversation('customers')">
+                    <div class="conversation-title">👥 Customer Records</div>
+                    <div class="conversation-preview">New customer: John Mensah...</div>
+                    <div class="conversation-time">Yesterday</div>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="chat-header">
+                    <div>
+                        <strong>💰 Sales Records</strong>
+                        <br>
+                        <small style="opacity: 0.8;">Record your transactions via voice or text</small>
+                    </div>
+                    <button onclick="clearChat()" style="background: none; border: none; color: white; cursor: pointer;">🗑️ Clear</button>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="quickAdd('sale')">+ Quick Sale</button>
+                    <button class="quick-action-btn" onclick="quickAdd('expense')">+ Quick Expense</button>
+                    <button class="quick-action-btn" onclick="quickAdd('payment')">+ Payment Received</button>
+                    <button class="quick-action-btn" onclick="quickAdd('invoice')">+ New Invoice</button>
+                </div>
+
+                <div class="messages-container" id="messagesContainer">
+                    <!-- Welcome Message -->
+                    <div class="message received">
+                        <div>👋 Welcome to Voice & Chat Records!</div>
+                        <div>You can record your business transactions by:</div>
+                        <div>• Typing a message (e.g., "Sold 3 laptops for 5000 cedis")</div>
+                        <div>• Recording a voice note</div>
+                        <div>• Using quick action buttons above</div>
+                        <div class="message-time">System</div>
+                    </div>
+
+                    <!-- Sample Messages -->
+                    <div class="message sent">
+                        Sold 5 units of electronics for ₵2,500
+                        <div class="message-time">2:30 PM</div>
+                    </div>
+
+                    <div class="message received">
+                        ✅ Sales record added successfully!
+                        <br>• Product: Electronics
+                        <br>• Quantity: 5 units
+                        <br>• Amount: ₵2,500
+                        <br>• Date: Today
+                        <div class="message-time">2:30 PM</div>
+                    </div>
+
+                    <!-- Voice Message Sample -->
+                    <div class="voice-message">
+                        <button class="voice-play-btn" onclick="playVoice(this)">▶️</button>
+                        <div class="voice-waveform"></div>
+                        <span class="voice-duration">0:15</span>
+                    </div>
+
+                    <div class="message received">
+                        🎤 Voice transcription: "Purchased office supplies for 350 cedis from ABC Stores"
+                        <br>✅ Expense record added!
+                        <div class="message-time">11:45 AM</div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <textarea
+                        class="message-input"
+                        id="messageInput"
+                        placeholder="Type a message or record transaction... (e.g., 'Sold 2 phones for 1500')"
+                        rows="1"
+                    ></textarea>
+                    <button class="voice-record-btn" id="voiceBtn" onclick="toggleRecording(this)">
+                        🎤
+                    </button>
+                    <button class="send-btn" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Panel -->
+        <div class="summary-panel">
+            <h2 class="summary-title">📊 Today's Summary</h2>
+
+            <div class="summary-stats">
+                <div class="stat-card">
+                    <div class="stat-value">₵15,850</div>
+                    <div class="stat-label">Total Sales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">₵3,200</div>
+                    <div class="stat-label">Total Expenses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">23</div>
+                    <div class="stat-label">Transactions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">₵12,650</div>
+                    <div class="stat-label">Net Profit</div>
+                </div>
+            </div>
+
+            <button class="export-btn" onclick="exportRecords()">
+                📥 Export Today's Records
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Get base URL based on current location
+        const BASE_URL = window.location.hostname === 'bvester.com' || window.location.hostname === 'www.bvester.com'
+            ? ''
+            : 'https://dhxakkhet5u0p.cloudfront.net';
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('bvesterToken');
+            if (!token) {
+                window.location.href = BASE_URL ? `${BASE_URL}/login.html` : '/login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Go back to dashboard
+        function goBack() {
+            const user = JSON.parse(localStorage.getItem('bvesterUser') || '{}');
+            const dashboardUrl = user.userType === 'investor'
+                ? '/investor-dashboard.html'
+                : '/sme-dashboard.html';
+            window.location.href = BASE_URL ? BASE_URL + dashboardUrl : dashboardUrl;
+        }
+
+        // Select conversation
+        function selectConversation(type) {
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Load conversation history (mock)
+            console.log('Loading conversation:', type);
+        }
+
+        // Send message
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            const messagesContainer = document.getElementById('messagesContainer');
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message sent';
+            userMsg.innerHTML = `${message}<div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>`;
+            messagesContainer.appendChild(userMsg);
+
+            // Process message (mock AI response)
+            setTimeout(() => {
+                const responseMsg = document.createElement('div');
+                responseMsg.className = 'message received';
+
+                // Parse the message for transaction details
+                if (message.toLowerCase().includes('sold') || message.toLowerCase().includes('sale')) {
+                    responseMsg.innerHTML = `✅ Sales record added successfully!<br>Processing: "${message}"<div class="message-time">System</div>`;
+                } else if (message.toLowerCase().includes('bought') || message.toLowerCase().includes('expense') || message.toLowerCase().includes('purchased')) {
+                    responseMsg.innerHTML = `✅ Expense record added successfully!<br>Processing: "${message}"<div class="message-time">System</div>`;
+                } else if (message.toLowerCase().includes('received') || message.toLowerCase().includes('payment')) {
+                    responseMsg.innerHTML = `✅ Payment record added successfully!<br>Processing: "${message}"<div class="message-time">System</div>`;
+                } else {
+                    responseMsg.innerHTML = `📝 Record saved. Please specify if this is a sale, expense, or payment for proper categorization.<div class="message-time">System</div>`;
+                }
+
+                messagesContainer.appendChild(responseMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 1000);
+
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Voice recording
+        let isRecording = false;
+        function toggleRecording(btn) {
+            isRecording = !isRecording;
+
+            if (isRecording) {
+                btn.classList.add('recording');
+                btn.innerHTML = '⏹️';
+                // Start recording logic here
+                console.log('Recording started...');
+
+                // Mock stop after 3 seconds
+                setTimeout(() => {
+                    if (isRecording) {
+                        toggleRecording(btn);
+                    }
+                }, 3000);
+            } else {
+                btn.classList.remove('recording');
+                btn.innerHTML = '🎤';
+                // Stop recording and process
+                console.log('Recording stopped');
+
+                // Add voice message to chat
+                const messagesContainer = document.getElementById('messagesContainer');
+                const voiceMsg = document.createElement('div');
+                voiceMsg.className = 'voice-message';
+                voiceMsg.innerHTML = `
+                    <button class="voice-play-btn" onclick="playVoice(this)">▶️</button>
+                    <div class="voice-waveform"></div>
+                    <span class="voice-duration">0:03</span>
+                `;
+                messagesContainer.appendChild(voiceMsg);
+
+                // Add transcription
+                setTimeout(() => {
+                    const responseMsg = document.createElement('div');
+                    responseMsg.className = 'message received';
+                    responseMsg.innerHTML = `🎤 Voice transcription: "Sample voice record"<br>✅ Record processed!<div class="message-time">System</div>`;
+                    messagesContainer.appendChild(responseMsg);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1500);
+            }
+        }
+
+        // Play voice message
+        function playVoice(btn) {
+            if (btn.innerHTML === '▶️') {
+                btn.innerHTML = '⏸️';
+                // Play audio
+                setTimeout(() => {
+                    btn.innerHTML = '▶️';
+                }, 3000);
+            } else {
+                btn.innerHTML = '▶️';
+                // Pause audio
+            }
+        }
+
+        // Quick add functions
+        function quickAdd(type) {
+            const input = document.getElementById('messageInput');
+
+            switch(type) {
+                case 'sale':
+                    input.value = 'Sale: ';
+                    break;
+                case 'expense':
+                    input.value = 'Expense: ';
+                    break;
+                case 'payment':
+                    input.value = 'Payment received: ';
+                    break;
+                case 'invoice':
+                    input.value = 'Invoice: ';
+                    break;
+            }
+            input.focus();
+        }
+
+        // Clear chat
+        function clearChat() {
+            if (confirm('Clear all messages in this conversation?')) {
+                const messagesContainer = document.getElementById('messagesContainer');
+                messagesContainer.innerHTML = `
+                    <div class="message received">
+                        <div>💬 Conversation cleared. Your records are still saved in the database.</div>
+                        <div class="message-time">System</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Export records
+        function exportRecords() {
+            alert('Exporting records to PDF/Excel...\nThis will download all today\'s transactions.');
+        }
+
+        // Handle Enter key for sending
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                console.log('Chat Records loaded');
+            }
+        });
+    </script>
+</body>
+</html>

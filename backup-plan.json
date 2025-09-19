@@ -1,0 +1,13 @@
+{
+    "BackupPlanName": "bvester-daily-backup",
+    "Rules": [{
+        "RuleName": "DailyBackups",
+        "TargetBackupVault": "Default",
+        "ScheduleExpression": "cron(0 2 ? * * *)",
+        "StartWindowMinutes": 60,
+        "CompletionWindowMinutes": 120,
+        "Lifecycle": {
+            "DeleteAfterDays": 30
+        }
+    }]
+}

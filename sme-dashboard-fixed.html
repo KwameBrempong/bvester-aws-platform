@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SME Dashboard - Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0A0A0A;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .welcome {
+            color: #0A0A0A;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            padding: 0.75rem 1.5rem;
+            background: #0A0A0A;
+            color: #FFD700;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #1A1A1A;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #1A1A1A;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #FFD700;
+            color: #0A0A0A;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .card-btn:hover {
+            background: #FFA500;
+            transform: translateX(5px);
+        }
+
+        .stats {
+            display: flex;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .alert {
+            background: #FFF3CD;
+            border: 1px solid #FFD700;
+            color: #856404;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            height: 100%;
+            width: 0%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0A0A0A;
+            font-weight: bold;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">Bvester</div>
+            <div class="user-info">
+                <span class="welcome" id="welcomeMessage">Welcome!</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>SME Dashboard</h1>
+
+        <div class="alert">
+            🚀 Welcome to your Bvester SME dashboard! Start by completing your business profile to attract investors.
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">₵0</div>
+                <div class="stat-label">Funding Goal</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Interested Investors</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">0%</div>
+                <div class="stat-label">Profile Complete</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Profile Completion</h3>
+            <p>Complete your business profile to increase visibility to investors.</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar">0%</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Business Profile</h3>
+                <p>Add your business details, financials, and growth plans to attract investors.</p>
+                <a href="business-profile.html" class="card-btn">Edit Profile →</a>
+            </div>
+
+            <div class="card">
+                <h3>Funding Request</h3>
+                <p>Set your funding goals, terms, and what you're offering to investors.</p>
+                <a href="funding-request.html" class="card-btn">Manage Funding →</a>
+            </div>
+
+            <div class="card">
+                <h3>Investor Interest</h3>
+                <p>View investors who have shown interest in your business.</p>
+                <a href="investors.html" class="card-btn">View Investors →</a>
+            </div>
+
+            <div class="card">
+                <h3>Documents</h3>
+                <p>Upload and manage business documents, financials, and pitch decks.</p>
+                <a href="documents.html" class="card-btn">Manage Docs →</a>
+            </div>
+
+            <div class="card">
+                <h3>Analytics</h3>
+                <p>Track profile views, investor engagement, and funding progress.</p>
+                <a href="analytics.html" class="card-btn">View Analytics →</a>
+            </div>
+
+            <div class="card">
+                <h3>Settings</h3>
+                <p>Manage your account settings and notification preferences.</p>
+                <a href="settings.html" class="card-btn">Settings →</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('bvesterToken');
+            const userStr = localStorage.getItem('bvesterUser');
+
+            if (!token || !userStr) {
+                // Not logged in, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const user = JSON.parse(userStr);
+
+                // Check if this is the right dashboard
+                if (user.userType !== 'sme') {
+                    // Wrong dashboard, redirect to correct one
+                    if (user.userType === 'investor') {
+                        window.location.href = 'investor-dashboard.html';
+                    }
+                    return;
+                }
+
+                // Update welcome message
+                document.getElementById('welcomeMessage').textContent = `Welcome, ${user.name || user.email}!`;
+
+                // Animate progress bar (demo)
+                setTimeout(() => {
+                    document.getElementById('progressBar').style.width = '25%';
+                    document.getElementById('progressBar').textContent = '25%';
+                }, 500);
+
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                // Invalid data, redirect to login
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            // Clear all auth data
+            localStorage.removeItem('bvesterToken');
+            localStorage.removeItem('bvesterUser');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+
+            // Redirect to home
+            window.location.href = 'index.html';
+        }
+
+        // Check auth on load
+        window.addEventListener('load', checkAuth);
+    </script>
+</body>
+</html>

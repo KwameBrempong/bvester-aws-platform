@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Authentication - Bvester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2D2D2D 50%, #1A1A1A 75%, #0A0A0A 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .auth-container {
+            background: linear-gradient(135deg, #FAFAFA 0%, #FFFFFF 50%, #FFF9E6 100%);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 25%, #D4AF37 50%, #FFA500 75%, #FFD700 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo h1 {
+            color: #1A1A1A;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #4A4A4A;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1A1A1A;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #FFFFFF;
+            color: #1A1A1A;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #D4AF37 100%);
+            color: #0A0A0A;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:disabled {
+            background: #E0E0E0;
+            color: #888888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            color: #666;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #FFD700;
+            border-bottom: 3px solid #FFD700;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .links a {
+            color: #D4AF37;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #FFD700;
+        }
+
+        .error {
+            color: #EF4444;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.75rem;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 4px;
+        }
+
+        .success {
+            color: #10B981;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 4px;
+        }
+
+        .info {
+            color: #3B82F6;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.75rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 4px;
+        }
+
+        .connection-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.online {
+            background: #10B981;
+        }
+
+        .status-indicator.offline {
+            background: #EF4444;
+            animation: none;
+        }
+
+        .status-indicator.checking {
+            background: #F59E0B;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 2rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="connection-status">
+            <span class="status-indicator checking"></span>
+            <span class="status-text">Checking...</span>
+        </div>
+
+        <div class="logo">
+            <h1>Bvester</h1>
+            <p id="tagline">Join our investment community!</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('signup')">Sign Up</div>
+            <div class="tab" onclick="switchTab('login')">Login</div>
+        </div>
+
+        <!-- Signup Form -->
+        <form id="signupForm" style="display: block;">
+            <div class="form-group">
+                <label for="signup-name">Full Name</label>
+                <input type="text" id="signup-name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" name="password" required minlength="6">
+            </div>
+
+            <div class="form-group">
+                <label for="userType">Account Type</label>
+                <select id="userType" name="userType" required>
+                    <option value="">Select account type</option>
+                    <option value="investor">Investor - Find and fund SMEs</option>
+                    <option value="sme">SME Owner - Seek funding for your business</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn" id="signupBtn">Create Account</button>
+
+            <div id="signupMessage"></div>
+        </form>
+
+        <!-- Login Form -->
+        <form id="loginForm" style="display: none;">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn" id="loginBtn">Login</button>
+
+            <div id="loginMessage"></div>
+        </form>
+
+        <div class="links">
+            <a href="index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Configuration with fallback endpoints
+        const API_CONFIG = {
+            primary: 'https://lh4wi733jhjrlpz76bbwezpuea0drqzq.lambda-url.eu-west-2.on.aws',
+            timeout: 10000,
+            retryAttempts: 3,
+            retryDelay: 1000
+        };
+
+        // Connection status management
+        let connectionStatus = 'checking';
+        let lastHealthCheck = null;
+
+        // Enhanced fetch with retry logic and better error handling
+        async function enhancedFetch(url, options = {}, attempt = 1) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                // Log response for debugging
+                console.log(`Request successful (attempt ${attempt}):`, {
+                    url,
+                    status: response.status,
+                    ok: response.ok
+                });
+
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+
+                // Log error details
+                console.error(`Request failed (attempt ${attempt}):`, {
+                    url,
+                    error: error.message,
+                    type: error.name
+                });
+
+                // Retry logic with exponential backoff
+                if (attempt < API_CONFIG.retryAttempts) {
+                    const delay = API_CONFIG.retryDelay * Math.pow(2, attempt - 1);
+                    console.log(`Retrying in ${delay}ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return enhancedFetch(url, options, attempt + 1);
+                }
+
+                throw error;
+            }
+        }
+
+        // Health check function
+        async function checkHealth() {
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('.status-text');
+
+            try {
+                statusIndicator.className = 'status-indicator checking';
+                statusText.textContent = 'Checking...';
+
+                const response = await enhancedFetch(`${API_CONFIG.primary}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    connectionStatus = 'online';
+                    statusIndicator.className = 'status-indicator online';
+                    statusText.textContent = 'Connected';
+                    lastHealthCheck = Date.now();
+                } else {
+                    throw new Error('Health check failed');
+                }
+            } catch (error) {
+                connectionStatus = 'offline';
+                statusIndicator.className = 'status-indicator offline';
+                statusText.textContent = 'Offline';
+                console.error('Health check failed:', error);
+            }
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            const signupForm = document.getElementById('signupForm');
+            const loginForm = document.getElementById('loginForm');
+            const tagline = document.getElementById('tagline');
+
+            tabs.forEach(t => t.classList.remove('active'));
+
+            if (tab === 'signup') {
+                tabs[0].classList.add('active');
+                signupForm.style.display = 'block';
+                loginForm.style.display = 'none';
+                tagline.textContent = 'Join our investment community!';
+            } else {
+                tabs[1].classList.add('active');
+                signupForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                tagline.textContent = 'Welcome back!';
+            }
+        }
+
+        // Enhanced form submission handler
+        async function handleFormSubmission(formId, endpoint, successMessage) {
+            const form = document.getElementById(formId);
+            const messageDiv = document.getElementById(formId.replace('Form', 'Message'));
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+
+            // Get form data
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Validate data
+            if (!validateFormData(data, formId)) {
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loading-spinner active"></div>';
+            messageDiv.innerHTML = '<div class="info">Processing your request...</div>';
+
+            try {
+                // Check connection status first
+                if (connectionStatus === 'offline') {
+                    await checkHealth();
+                    if (connectionStatus === 'offline') {
+                        throw new Error('Unable to connect to server. Please check your internet connection.');
+                    }
+                }
+
+                // Make API request with enhanced fetch
+                const response = await enhancedFetch(`${API_CONFIG.primary}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                // Parse response
+                let responseData;
+                const contentType = response.headers.get('content-type');
+
+                if (contentType && contentType.includes('application/json')) {
+                    try {
+                        responseData = await response.json();
+                    } catch (parseError) {
+                        console.error('JSON parse error:', parseError);
+                        throw new Error('Invalid response format from server');
+                    }
+                } else {
+                    const text = await response.text();
+                    console.error('Non-JSON response:', text);
+                    throw new Error('Server returned invalid response format');
+                }
+
+                // Handle response based on status
+                if (response.ok) {
+                    // Success
+                    messageDiv.innerHTML = `<div class="success">${successMessage}</div>`;
+
+                    // Store token if present
+                    if (responseData.token) {
+                        localStorage.setItem('bvesterToken', responseData.token);
+                        localStorage.setItem('bvesterUser', JSON.stringify(responseData.user));
+                    }
+
+                    // Redirect after success
+                    setTimeout(() => {
+                        if (formId === 'signupForm') {
+                            window.location.href = 'login.html';
+                        } else {
+                            // Determine dashboard based on user type
+                            const userType = responseData.user?.userType || 'investor';
+                            window.location.href = userType === 'sme' ? 'sme-dashboard.html' : 'investor-dashboard.html';
+                        }
+                    }, 2000);
+                } else {
+                    // Error from server
+                    const errorMessage = responseData.error || responseData.message || 'Operation failed';
+                    messageDiv.innerHTML = `<div class="error">${errorMessage}</div>`;
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+
+                // Determine error message
+                let errorMessage = 'An unexpected error occurred';
+
+                if (error.name === 'AbortError') {
+                    errorMessage = 'Request timed out. The server may be experiencing high load.';
+                } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    errorMessage = 'Network connection failed. Please check your internet connection.';
+                } else if (error.message.includes('Load failed')) {
+                    errorMessage = 'Unable to load resources. Please refresh the page and try again.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                messageDiv.innerHTML = `<div class="error">${errorMessage}</div>`;
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        }
+
+        // Form validation
+        function validateFormData(data, formId) {
+            if (formId === 'signupForm') {
+                if (!data.name || data.name.trim().length < 2) {
+                    showError('signupMessage', 'Please enter your full name');
+                    return false;
+                }
+                if (!validateEmail(data.email)) {
+                    showError('signupMessage', 'Please enter a valid email address');
+                    return false;
+                }
+                if (!data.password || data.password.length < 6) {
+                    showError('signupMessage', 'Password must be at least 6 characters');
+                    return false;
+                }
+                if (!data.userType) {
+                    showError('signupMessage', 'Please select an account type');
+                    return false;
+                }
+            } else {
+                if (!validateEmail(data.email)) {
+                    showError('loginMessage', 'Please enter a valid email address');
+                    return false;
+                }
+                if (!data.password) {
+                    showError('loginMessage', 'Please enter your password');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Email validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            document.getElementById(elementId).innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        // Event listeners
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await handleFormSubmission('signupForm', '/api/auth/signup', 'Account created successfully! Redirecting...');
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await handleFormSubmission('loginForm', '/api/auth/login', 'Login successful! Redirecting to dashboard...');
+        });
+
+        // Initialize connection check
+        checkHealth();
+
+        // Periodic health checks
+        setInterval(checkHealth, 30000); // Check every 30 seconds
+
+        // Check connection on focus
+        window.addEventListener('focus', checkHealth);
+
+        // Handle online/offline events
+        window.addEventListener('online', () => {
+            console.log('Network connection restored');
+            checkHealth();
+        });
+
+        window.addEventListener('offline', () => {
+            console.log('Network connection lost');
+            connectionStatus = 'offline';
+            document.querySelector('.status-indicator').className = 'status-indicator offline';
+            document.querySelector('.status-text').textContent = 'Offline';
+        });
+    </script>
+</body>
+</html>

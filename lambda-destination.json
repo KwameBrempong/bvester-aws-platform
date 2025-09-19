@@ -1,0 +1,10 @@
+{
+    "FunctionName": "bvester-backend-api",
+    "MaximumRetryAttempts": 2,
+    "MaximumEventAge": 21600,
+    "DestinationConfig": {
+        "OnFailure": {
+            "Destination": "arn:aws:sns:eu-west-2:565871520457:bvester-critical"
+        }
+    }
+}

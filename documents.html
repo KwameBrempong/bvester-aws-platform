@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Management - Bvester</title>
+
+    <style>
+        :root {
+            --primary-black: #0A0A0A;
+            --rich-black: #1A1A1A;
+            --soft-black: #2A2A2A;
+            --primary-gold: #FFD700;
+            --secondary-gold: #FFA500;
+            --pure-white: #FFFFFF;
+            --off-white: #F5F5F5;
+            --dark-gray: #666666;
+            --success-green: #00C853;
+            --error-red: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-black);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--off-white);
+        }
+
+        .header {
+            background: var(--rich-black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: var(--rich-black);
+            border: 2px dashed rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+
+        .upload-section.dragover {
+            border-color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-title {
+            color: var(--primary-gold);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtitle {
+            color: var(--dark-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Document Categories */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card {
+            background: var(--rich-black);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .category-card.active {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-name {
+            color: var(--primary-gold);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .category-count {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+        }
+
+        /* Documents List */
+        .documents-section {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            color: var(--primary-gold);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            background: var(--soft-black);
+            color: var(--off-white);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-gold);
+            color: var(--primary-black);
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .document-card {
+            background: var(--soft-black);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .document-card:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: scale(1.05);
+        }
+
+        .document-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .document-name {
+            color: var(--off-white);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .document-date {
+            color: var(--dark-gray);
+            font-size: 0.75rem;
+        }
+
+        .document-status {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success-green);
+        }
+
+        .document-status.pending {
+            background: var(--secondary-gold);
+        }
+
+        /* Document Actions */
+        .document-actions {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .document-card:hover .document-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: var(--primary-gold);
+            color: var(--primary-black);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Required Documents Checklist */
+        .checklist-section {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .checklist-status {
+            font-size: 1.5rem;
+        }
+
+        .checklist-text {
+            color: var(--off-white);
+        }
+
+        .checklist-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .checklist-desc {
+            font-size: 0.875rem;
+            color: var(--dark-gray);
+        }
+
+        .checklist-action {
+            background: var(--soft-black);
+            color: var(--primary-gold);
+            border: 1px solid var(--primary-gold);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        /* Upload Modal */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--rich-black);
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            color: var(--primary-gold);
+            font-size: 1.25rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--off-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--off-white);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--soft-black);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 5px;
+            color: var(--off-white);
+            font-size: 1rem;
+        }
+
+        .upload-progress {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .progress-bar {
+            background: var(--soft-black);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary-gold), var(--secondary-gold));
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--primary-black);
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .documents-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📁 Document Management</h1>
+        <a href="#" class="back-btn" onclick="goBack()">← Back to Dashboard</a>
+    </header>
+
+    <div class="container">
+        <!-- Upload Section -->
+        <div class="upload-section" id="uploadArea">
+            <div class="upload-icon">📤</div>
+            <div class="upload-title">Upload Documents</div>
+            <div class="upload-subtitle">Drag and drop files here or click to browse</div>
+            <input type="file" id="fileInput" class="file-input" multiple accept=".pdf,.doc,.docx,.jpg,.png,.xlsx,.xls">
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Choose Files</button>
+        </div>
+
+        <!-- Required Documents Checklist -->
+        <div class="checklist-section">
+            <h2 class="section-title">📋 Required Documents Checklist</h2>
+
+            <div class="checklist-item">
+                <div class="checklist-info">
+                    <span class="checklist-status">✅</span>
+                    <div class="checklist-text">
+                        <div class="checklist-name">Business Registration Certificate</div>
+                        <div class="checklist-desc">Official registration from Registrar General</div>
+                    </div>
+                </div>
+                <button class="checklist-action">View</button>
+            </div>
+
+            <div class="checklist-item">
+                <div class="checklist-info">
+                    <span class="checklist-status">✅</span>
+                    <div class="checklist-text">
+                        <div class="checklist-name">Bank Statements (6 months)</div>
+                        <div class="checklist-desc">Recent bank statements showing cash flow</div>
+                    </div>
+                </div>
+                <button class="checklist-action">View</button>
+            </div>
+
+            <div class="checklist-item">
+                <div class="checklist-info">
+                    <span class="checklist-status">⏳</span>
+                    <div class="checklist-text">
+                        <div class="checklist-name">Business Plan</div>
+                        <div class="checklist-desc">Detailed business plan with financial projections</div>
+                    </div>
+                </div>
+                <button class="checklist-action" onclick="showUploadModal('Business Plan')">Upload</button>
+            </div>
+
+            <div class="checklist-item">
+                <div class="checklist-info">
+                    <span class="checklist-status">❌</span>
+                    <div class="checklist-text">
+                        <div class="checklist-name">Financial Statements</div>
+                        <div class="checklist-desc">Audited financial statements (if available)</div>
+                    </div>
+                </div>
+                <button class="checklist-action" onclick="showUploadModal('Financial Statements')">Upload</button>
+            </div>
+
+            <div class="checklist-item">
+                <div class="checklist-info">
+                    <span class="checklist-status">✅</span>
+                    <div class="checklist-text">
+                        <div class="checklist-name">Tax Clearance Certificate</div>
+                        <div class="checklist-desc">Valid GRA tax clearance</div>
+                    </div>
+                </div>
+                <button class="checklist-action">View</button>
+            </div>
+
+            <div class="checklist-item">
+                <div class="checklist-info">
+                    <span class="checklist-status">⏳</span>
+                    <div class="checklist-text">
+                        <div class="checklist-name">Pitch Deck</div>
+                        <div class="checklist-desc">Investment presentation for potential investors</div>
+                    </div>
+                </div>
+                <button class="checklist-action" onclick="showUploadModal('Pitch Deck')">Upload</button>
+            </div>
+        </div>
+
+        <!-- Document Categories -->
+        <div class="categories-grid">
+            <div class="category-card active" onclick="filterDocuments('all')">
+                <div class="category-icon">📂</div>
+                <div class="category-name">All Documents</div>
+                <div class="category-count">12 files</div>
+            </div>
+
+            <div class="category-card" onclick="filterDocuments('legal')">
+                <div class="category-icon">⚖️</div>
+                <div class="category-name">Legal Documents</div>
+                <div class="category-count">3 files</div>
+            </div>
+
+            <div class="category-card" onclick="filterDocuments('financial')">
+                <div class="category-icon">💰</div>
+                <div class="category-name">Financial Records</div>
+                <div class="category-count">5 files</div>
+            </div>
+
+            <div class="category-card" onclick="filterDocuments('business')">
+                <div class="category-icon">📊</div>
+                <div class="category-name">Business Plans</div>
+                <div class="category-count">2 files</div>
+            </div>
+
+            <div class="category-card" onclick="filterDocuments('tax')">
+                <div class="category-icon">🏛️</div>
+                <div class="category-name">Tax Documents</div>
+                <div class="category-count">2 files</div>
+            </div>
+        </div>
+
+        <!-- Documents List -->
+        <div class="documents-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Documents</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active">All</button>
+                    <button class="filter-btn">Recent</button>
+                    <button class="filter-btn">Pending</button>
+                    <button class="filter-btn">Verified</button>
+                </div>
+            </div>
+
+            <div class="documents-grid">
+                <div class="document-card">
+                    <div class="document-status"></div>
+                    <div class="document-actions">
+                        <button class="action-btn">👁️</button>
+                        <button class="action-btn">⬇️</button>
+                    </div>
+                    <div class="document-icon">📄</div>
+                    <div class="document-name">Business Registration.pdf</div>
+                    <div class="document-date">Jan 10, 2024</div>
+                </div>
+
+                <div class="document-card">
+                    <div class="document-status"></div>
+                    <div class="document-actions">
+                        <button class="action-btn">👁️</button>
+                        <button class="action-btn">⬇️</button>
+                    </div>
+                    <div class="document-icon">📊</div>
+                    <div class="document-name">Bank Statement Dec.pdf</div>
+                    <div class="document-date">Jan 5, 2024</div>
+                </div>
+
+                <div class="document-card">
+                    <div class="document-status"></div>
+                    <div class="document-actions">
+                        <button class="action-btn">👁️</button>
+                        <button class="action-btn">⬇️</button>
+                    </div>
+                    <div class="document-icon">📈</div>
+                    <div class="document-name">Financial Report 2023.xlsx</div>
+                    <div class="document-date">Dec 28, 2023</div>
+                </div>
+
+                <div class="document-card">
+                    <div class="document-status pending"></div>
+                    <div class="document-actions">
+                        <button class="action-btn">👁️</button>
+                        <button class="action-btn">⬇️</button>
+                    </div>
+                    <div class="document-icon">📋</div>
+                    <div class="document-name">Business Plan 2024.docx</div>
+                    <div class="document-date">Jan 15, 2024</div>
+                </div>
+
+                <div class="document-card">
+                    <div class="document-status"></div>
+                    <div class="document-actions">
+                        <button class="action-btn">👁️</button>
+                        <button class="action-btn">⬇️</button>
+                    </div>
+                    <div class="document-icon">🏛️</div>
+                    <div class="document-name">Tax Clearance.pdf</div>
+                    <div class="document-date">Nov 20, 2023</div>
+                </div>
+
+                <div class="document-card">
+                    <div class="document-status"></div>
+                    <div class="document-actions">
+                        <button class="action-btn">👁️</button>
+                        <button class="action-btn">⬇️</button>
+                    </div>
+                    <div class="document-icon">🖼️</div>
+                    <div class="document-name">Company Logo.png</div>
+                    <div class="document-date">Oct 15, 2023</div>
+                </div>
+
+                <div class="document-card" style="border: 2px dashed rgba(255, 215, 0, 0.3); background: transparent;">
+                    <div class="document-icon" style="opacity: 0.5;">➕</div>
+                    <div class="document-name" style="color: var(--primary-gold);">Add Document</div>
+                    <div class="document-date">Click to upload</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Upload Document</h3>
+                <button class="close-btn" onclick="closeUploadModal()">×</button>
+            </div>
+
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label class="form-label">Document Type</label>
+                    <select class="form-select" id="docType">
+                        <option value="">Select type...</option>
+                        <option value="registration">Business Registration</option>
+                        <option value="bank">Bank Statement</option>
+                        <option value="financial">Financial Statement</option>
+                        <option value="business">Business Plan</option>
+                        <option value="tax">Tax Document</option>
+                        <option value="pitch">Pitch Deck</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Document Name</label>
+                    <input type="text" class="form-input" id="docName" placeholder="Enter document name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Select File</label>
+                    <input type="file" class="form-input" id="modalFileInput" accept=".pdf,.doc,.docx,.jpg,.png,.xlsx,.xls">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description (Optional)</label>
+                    <input type="text" class="form-input" placeholder="Brief description">
+                </div>
+
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <small style="color: var(--dark-gray); margin-top: 0.5rem; display: block;">Uploading...</small>
+                </div>
+
+                <button type="submit" class="submit-btn">Upload Document</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get base URL based on current location
+        const BASE_URL = window.location.hostname === 'bvester.com' || window.location.hostname === 'www.bvester.com'
+            ? ''
+            : 'https://dhxakkhet5u0p.cloudfront.net';
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('bvesterToken');
+            if (!token) {
+                window.location.href = BASE_URL ? `${BASE_URL}/login.html` : '/login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Go back to dashboard
+        function goBack() {
+            const user = JSON.parse(localStorage.getItem('bvesterUser') || '{}');
+            const dashboardUrl = user.userType === 'investor'
+                ? '/investor-dashboard.html'
+                : '/sme-dashboard.html';
+            window.location.href = BASE_URL ? BASE_URL + dashboardUrl : dashboardUrl;
+        }
+
+        // Drag and Drop
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            handleFiles(files);
+        });
+
+        function handleFiles(files) {
+            console.log('Files selected:', files);
+            if (files.length > 0) {
+                showUploadModal();
+                document.getElementById('modalFileInput').files = files;
+                document.getElementById('docName').value = files[0].name.split('.')[0];
+            }
+        }
+
+        // Filter documents
+        function filterDocuments(category) {
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            console.log('Filtering by:', category);
+            // Implement filtering logic
+        }
+
+        // Upload Modal
+        function showUploadModal(docType = '') {
+            document.getElementById('uploadModal').classList.add('active');
+            if (docType) {
+                document.getElementById('modalTitle').textContent = `Upload ${docType}`;
+                document.getElementById('docName').value = docType;
+            }
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.remove('active');
+            document.getElementById('uploadForm').reset();
+            document.getElementById('uploadProgress').style.display = 'none';
+        }
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('modalFileInput');
+            if (!fileInput.files.length) {
+                alert('Please select a file');
+                return;
+            }
+
+            // Show progress
+            document.getElementById('uploadProgress').style.display = 'block';
+            const progressFill = document.getElementById('progressFill');
+
+            // Simulate upload progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressFill.style.width = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        alert('Document uploaded successfully!');
+                        closeUploadModal();
+                        // Refresh documents list
+                        location.reload();
+                    }, 500);
+                }
+            }, 200);
+        });
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                console.log('Filter:', this.textContent);
+            });
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                console.log('Documents Management loaded');
+            }
+        });
+    </script>
+</body>
+</html>
